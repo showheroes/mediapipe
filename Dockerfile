@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.7-stretch
-# FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
+FROM python:3.7-slim
 
 WORKDIR /mediapipe
 
@@ -37,26 +36,25 @@ RUN apt-get update && \
         libegl1-mesa-dev \
         mesa-common-dev \
         libgles2-mesa-dev \
-        # libopencv-core-dev \
-        # libopencv-highgui-dev \
-        # libopencv-imgproc-dev \
-        # libopencv-video-dev \
-        # libopencv-calib3d-dev \
-        # libopencv-features2d-dev \
-        software-properties-common
+        libopencv-core-dev \
+        libopencv-highgui-dev \
+        libopencv-imgproc-dev \
+        libopencv-video-dev \
+        libopencv-calib3d-dev \
+        libopencv-features2d-dev \
+        software-properties-common && \
+    add-apt-repository -y ppa:openjdk-r/ppa && \
+    apt-get update && apt-get install -y openjdk-8-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN add-apt-repository -y 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic main ' && \
-        apt-get update -q
-RUN apt-get install -y openjdk-8-jdk
-# RUN apt-get clean && \
-#         rm -rf /var/lib/apt/lists/*
-
-# RUN add-apt-repository -y ppa:deadsnakes/ppa && \
-#     apt-get install -y --no-install-recommends python3.7 python3-pip
-
-RUN pip3 install --upgrade setuptools
-RUN pip3 install future
-RUN pip3 install six
+RUN python -m pip install --upgrade setuptools
+RUN python -m pip install wheel
+RUN python -m pip install future
+RUN python -m pip install six==1.14.0
+RUN python -m pip install tensorflow==1.14.0
+RUN python -m pip install tf_slim
+RUN python -m pip install numpy
 
 # Install bazel
 ARG BAZEL_VERSION=3.4.1
@@ -77,16 +75,12 @@ RUN bash setup_opencv.sh
 
 COPY ./mediapipe /mediapipe/mediapipe
 
-# RUN bash setup_opencv.sh
-# RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
 RUN bazel clean --expunge
-# RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 mediapipe/examples/desktop/autoflip:run_autoflip
-RUN pip3 install numpy
-RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures mediapipe/examples/desktop/autoflip:run_autoflip
+
+RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
 # If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
-# RUN add-apt-repository -y 'deb http://ppa.launchpad.net/jonathonf/ffmpeg-4/ubuntu bionic main'
 RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
@@ -95,13 +89,13 @@ COPY ./server/requirements.txt /mediapipe/server/requirements.txt
 
 WORKDIR /mediapipe/server
 
-RUN pip install -r requirements.txt
+RUN python -m pip install -r requirements.txt
 
 COPY ./server/DataScienceHeroUtils /mediapipe/server/DataScienceHeroUtils
 
 WORKDIR /mediapipe/server/DataScienceHeroUtils
 
-RUN pip install -r requirements.txt && pip install .
+RUN python -m pip install -r requirements.txt && python -m pip install .
 
 COPY ./server /mediapipe/server
 
