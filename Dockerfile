@@ -64,3 +64,16 @@ COPY . /mediapipe/
 RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
 # If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
+
+# setup the server
+WORKDIR /mediapipe/server
+
+RUN pip install -r requirements.txt
+
+WORKDIR /mediapipe/server/DataScienceHeroUtils
+
+RUN pip install -r requirements.txt && pip install .
+
+WORKDIR /mediapipe/server
+
+CMD ["python", "service.py"]
