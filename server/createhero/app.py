@@ -30,7 +30,7 @@ class TaskExecutor(PeriodicCallback):
     def __init__(self, task_queue, task_data):
         self.q = task_queue
         self.d = task_data
-        super().__init__(self._do(), 1e3)
+        super().__init__(self._do, 1e3)
 
     async def _do(self):
         for item in self.q:
