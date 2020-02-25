@@ -68,15 +68,19 @@ RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/deskt
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
 # setup the server
-COPY ./server /mediapipe/server
+COPY ./server/requirements.txt /mediapipe/server/requirements.txt
 
 WORKDIR /mediapipe/server
 
 RUN pip install -r requirements.txt
 
+COPY ./server/DataScienceHeroUtils /mediapipe/server/DataScienceHeroUtils
+
 WORKDIR /mediapipe/server/DataScienceHeroUtils
 
 RUN pip install -r requirements.txt && pip install .
+
+COPY ./server /mediapipe/server
 
 WORKDIR /mediapipe/server
 
