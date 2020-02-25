@@ -60,7 +60,7 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
 VOLUME /data
 
 COPY ./mediapipe /mediapipe/mediapipe
-COPY .bazelrc /mediapipe/
+COPY .bazelrc WORKSPACE BUILD /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
 RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
