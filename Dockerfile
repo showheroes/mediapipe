@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:latest
+FROM python:3.8-slim-buster
 
 MAINTAINER <mediapipe@google.com>
 
@@ -28,8 +28,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         wget \
         unzip \
-        python3.7 \
-        python3-pip \
         libopencv-core-dev \
         libopencv-highgui-dev \
         libopencv-imgproc-dev \
@@ -42,9 +40,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN apt update && apt install -y --no-install-recommends ffmpeg
-RUN pip3 install --upgrade setuptools
-RUN pip3 install future
-RUN pip3 install six
+RUN pip install --upgrade setuptools
+RUN pip install future
+RUN pip install six
 
 # Install bazel
 ARG BAZEL_VERSION=1.1.0
