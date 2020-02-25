@@ -127,7 +127,7 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
         # 3) report either status or results if available (via download URL)
         if not self.get_query_argument('download', None):
             task_status = {'status' : status}
-            if status = VideoReformatTask.STATUS_SUCCESS:
+            if status == VideoReformatTask.STATUS_SUCCESS:
                 task_status.update({'download_url' : 'some_url?download'})
             self._exit_success(task_status)
 
