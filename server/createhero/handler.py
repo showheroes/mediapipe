@@ -14,6 +14,7 @@ class VideoReformatBaseHandler(GenericHandler):
 
 class VideoReformatUIBaseHandler(GenericHandler):
     """ UI base class, renders main page when called """
+
     def prepare(self):
         super().prepare()
         # additional stuff here
@@ -71,6 +72,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
     source file into the local filesystem, creates a task, queues the reformatting
     for processing and responds with a task ID.
     """
+
     def _validate_request(self):
         if not 'format' in self.args:
             self._exit_error('No target format specified.', status = 400)
@@ -113,6 +115,7 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
     'in progress' or with a success message. In case of completeness, the result
     may be downloaded by adding a key only parameter 'download' to the call.
     """
+    
     def get(self, task_id):
         # 1) find task in task list
         if not task_id in self.settings['tasks']:
