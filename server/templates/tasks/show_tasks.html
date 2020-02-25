@@ -1,0 +1,17 @@
+{% include 'partials/header.html' %}
+
+{% include 'partials/navigation.html' %}
+
+<div id="container">
+	{% for task in tasks %}
+		<div class="row">
+			<div class="col col-12">
+				<p>Task ID: {{ task['task_id'] }}</p>
+				<p>Task status: {{ task['status'] }}</p>
+				<p><a href="/video/flip/ui/tasks/{{task['task_id']}}/progress">Show progress</a></p>
+			</div>
+		</div>
+	{% end %}
+</div>
+
+{% include 'partials/footer.html' %}

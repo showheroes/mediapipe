@@ -1,0 +1,22 @@
+{% include 'partials/header.html' %}
+
+{% include 'partials/navigation.html' %}
+
+<div id="container">
+	{% if not status %}
+		<h1>No task with given ID {{ task_id }} found.</h1>
+	{% else %}
+		<div class="row">
+			<div class="col col-12">
+				<h4>Information on task {{ task_id }}</h4>
+				<p>Task ID: {{ task_id }}</p>
+				<p>Task status: {{ status }}</p>
+				<p>
+					<textarea readonly wrap="hard" name="progress" id="progress" rows="12" cols="100" onload="initiateProgressSocket(this, {{ task_id }})"></textarear>
+				</p>
+			</div>
+		</div>
+	{% end %}
+</div>
+
+{% include 'partials/footer.html' %}
