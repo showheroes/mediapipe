@@ -49,14 +49,15 @@ def main():
         settings['tasks'] = mgr.dict()
         settings['working_directory'] = working_directory
 
-        #fork to child processes
-        pid = tornado.process.fork_processes(2)
         #construct the app
         app = CreateHeroAPI()
         #pass the settings
         app.settings.update(settings)
         server = HTTPServer(app)
         server.add_sockets(socket_external)
+
+        #fork to child processes
+        pid = tornado.process.fork_processes(2)
         # start services in separate processes
         if pid != 1:
             task_executor = TaskExecutor(settings['task_queue'], settings['tasks'])
