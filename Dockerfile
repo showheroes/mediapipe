@@ -43,8 +43,8 @@ RUN apt-get update && \
         libopencv-calib3d-dev \
         libopencv-features2d-dev \
         software-properties-common && \
-    add-apt-repository -y ppa:openjdk-r/ppa && \
-    apt-get update && apt-get install -y openjdk-8-jdk && \
+    add-apt-repository -y -r ppa:openjdk-r/ppa && \
+    apt-get update -q && apt-get install -y openjdk-8-jdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
