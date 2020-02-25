@@ -22,7 +22,7 @@ WORKDIR /mediapipe
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gpg ca-certificates dirmngr && \
+    apt-get install -y --no-install-recommends gpg gpg-agent ca-certificates dirmngr && \
     apt-get install -y --no-install-recommends \
         build-essential \
         curl \
