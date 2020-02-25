@@ -52,7 +52,7 @@ def main():
         #fork to child processes
         pid = tornado.process.fork_processes(2)
         #construct the app
-        app = AdHeroAPI()
+        app = CreateHeroAPI()
         #pass the settings
         app.settings.update(settings)
         server = HTTPServer(app)
