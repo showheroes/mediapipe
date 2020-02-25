@@ -1,0 +1,3 @@
+[submodule "server/DataScienceHeroUtils"]
+	path = server/DataScienceHeroUtils
+	url = git@github.com:showheroes/DataScienceHeroUtils.git
