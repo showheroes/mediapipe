@@ -4,7 +4,7 @@ import random
 import time
 import threading
 import os
-import Queue
+import queue
 import uuid
 
 class AsynchronousFileReader(threading.Thread):
