@@ -28,8 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         wget \
         unzip \
-        python \
-        python-pip \
+        python3.7 \
         python3-pip \
         libopencv-core-dev \
         libopencv-highgui-dev \
@@ -43,8 +42,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN apt update && apt install -y --no-install-recommends ffmpeg
-RUN pip install --upgrade setuptools
-RUN pip install future
+RUN pip3 install --upgrade setuptools
+RUN pip3 install future
 RUN pip3 install six
 
 # Install bazel
