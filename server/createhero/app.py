@@ -33,7 +33,7 @@ class TaskExecutor(PeriodicCallback):
         super().__init__(self._do, 1e3)
 
     async def _do(self):
-        for item in self.q:
+        while not self.q.empty():
             try:
                 task = self.q.get()
                 await task.run()
