@@ -38,10 +38,11 @@ RUN apt-get update && \
         software-properties-common
 
 RUN add-apt-repository -y -r ppa:openjdk-r/ppa && \
-        apt-get update -q && apt-get install -y openjdk-8-jdk && \
-        apt-get clean && \
+        apt-get update -q
+RUN apt-get install -y openjdk-8-jdk
+RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
-        
+
 RUN apt update && apt install -y --no-install-recommends ffmpeg
 RUN pip install --upgrade setuptools
 RUN pip install future
