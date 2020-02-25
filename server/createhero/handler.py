@@ -11,6 +11,7 @@ class VideoReformatBaseHandler(GenericHandler):
 
     def get(self):
         # return documentation
+        self._exit_success({})
 
 class VideoReformatUIBaseHandler(GenericHandler):
     """ UI base class, renders main page when called """
@@ -115,7 +116,7 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
     'in progress' or with a success message. In case of completeness, the result
     may be downloaded by adding a key only parameter 'download' to the call.
     """
-    
+
     def get(self, task_id):
         # 1) find task in task list
         if not task_id in self.settings['tasks']:
