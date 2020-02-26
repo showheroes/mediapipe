@@ -46,6 +46,7 @@ class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
         return True
 
     def post(self):
+        VideoReformatHandler._validate_request(self)
         task_id = VideoReformatHandler._post_task(self)
         self.render('post/task_created.html', **task_id)
 
@@ -111,14 +112,8 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         with open(self.task.get_input_file(), 'wb') as input_file:
             input_file.write(file_obj['body'])
 
-    def _parse_request_body(self):
-        # write everything into self.args
-        self.log.info(self.request.body)
-
     def _post_task(self):
         # receive video file and put into filesystem
-        self._validate_request()
-
         # put task on queue
         self.settings['task_queue'].put(self.task)
         self.settings['tasks'][self.task.task_id] = self.task
@@ -129,6 +124,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         self._exit_success(list(self.settings['tasks'].keys()))
 
     def post(self):
+        self._validate_request()
         self._exit_success(self._post_task())
 
 
