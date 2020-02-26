@@ -15,7 +15,7 @@ class AsynchronousFileReader(threading.Thread):
     '''
 
     def __init__(self, fd, queue):
-        assert isinstance(queue, Queue.Queue)
+        assert isinstance(queue, queue.Queue)
         assert callable(fd.readline)
         threading.Thread.__init__(self)
         self._fd = fd
@@ -45,7 +45,7 @@ class VideoReformatTask(object):
     def __init__(self, working_base_dir, format, logging = False):
         self.logging = logging
         if self.logging:
-            self.log_reader_queue = Queue.Queue()
+            self.log_reader_queue = queue.Queue()
         # save format
         self.format = format
         # create task id
