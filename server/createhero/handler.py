@@ -105,8 +105,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
             self._exit_error('Videofile not complete.', status = 400)
 
         #extract file and filename
-        file_obj = self.request.files['videofile']
-        self.log.debug(file_obj)
+        file_obj = self.request.files['videofile'][0]
         self.input_filename = file_obj['filename']
 
         self.task = VideoReformatTask(self.settings['working_directory'], tf, logging = True)
