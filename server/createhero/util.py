@@ -51,6 +51,7 @@ class VideoReformatTask(object):
         self.format = format
         # create task id
         self.task_id = str(uuid.uuid4())
+        os.mkdir(os.path.join(self.working_base_dir, self.task_id))
         self.status = self.STATUS_INIT
         self.progress = []
 
