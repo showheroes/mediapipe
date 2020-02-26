@@ -106,6 +106,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
 
         #extract file and filename
         file_obj = self.request.files['videofile']
+        self.log.debug(file_obj)
         self.input_filename = file_obj['filename']
 
         self.task = VideoReformatTask(self.settings['working_directory'], tf, logging = True)
