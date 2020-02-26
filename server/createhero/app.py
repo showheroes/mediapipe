@@ -5,8 +5,8 @@ import logging
 
 class CreateHeroAPI(Application):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, settings):
+        super().__init__(**settings)
         self.log = logging.getLogger('CreateHeroAPI')
         self.add_routes()
         self.log.info('CreateHero API ready')

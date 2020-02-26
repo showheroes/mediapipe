@@ -37,7 +37,7 @@ def main():
     logger = logging.getLogger('CreateHeroAPI')
     logging.getLogger('tornado.access').setLevel(logging.WARN)
 
-    working_directory = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     socket_external = tornado.netutil.bind_sockets(8888)
 
     with mp.Manager() as mgr:
@@ -47,12 +47,15 @@ def main():
         # create shared communication dict
         settings['task_queue'] = mgr.Queue()
         settings['tasks'] = mgr.dict()
-        settings['working_directory'] = working_directory
+        settings['root_dir'] = root_dir
+        settings['template_path'] = os.path.join(root_dir, 'templates')
+        settings['static_path'] = os.path.join(root_dir, 'static')
+        settings['working_directory'] = '/data'
 
         #construct the app
-        app = CreateHeroAPI()
+        app = CreateHeroAPI(settings)
         #pass the settings
-        app.settings.update(settings)
+        # app.settings.update(settings)
         server = HTTPServer(app)
         server.add_sockets(socket_external)
 
