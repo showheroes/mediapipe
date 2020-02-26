@@ -24,6 +24,9 @@ class VideoReformatUIBaseHandler(GenericHandler):
         super().prepare()
         # additional stuff here
 
+    def _get_response_content_type(self):
+        return 'text/html'
+        
     def get(self):
         self.render('main.html')
 

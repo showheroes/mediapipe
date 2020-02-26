@@ -15,7 +15,7 @@ class CreateHeroAPI(Application):
         route_list = [
                 (r"/video/flip/tasks/(.*)", h.VideoReformatResultHandler),
                 (r"/video/flip/tasks", h.VideoReformatHandler),
-                (r"/video/flip/ui", h.VideoReformatHandler),
+                (r"/video/flip/ui", h.VideoReformatUIBaseHandler),
                 (r"/video/flip/ui/tasks/create", h.VideoReformatPostTaskUIHandler),
                 (r"/video/flip/ui/tasks/(.*)/progress", h.VideoReformatTaskProgressSocket),
                 (r"/video/flip/ui/tasks/(.*)", h.VideoReformatTaskHandler),
