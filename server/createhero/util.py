@@ -43,6 +43,7 @@ class VideoReformatTask(object):
     STATUS_STOPPED = 'stopped'
 
     def __init__(self, working_base_dir, format, logging = False):
+        self.working_base_dir = working_base_dir
         self.logging = logging
         if self.logging:
             self.log_reader_queue = queue.Queue()
@@ -54,7 +55,7 @@ class VideoReformatTask(object):
         self.progress = []
 
     def get_task_directory(self):
-        return os.path.join(working_base_dir, self.task_id)
+        return os.path.join(self.working_base_dir, self.task_id)
 
     def set_input_file(self, input_file):
         input_file_name, input_ext = os.path.splitext(input_file)
