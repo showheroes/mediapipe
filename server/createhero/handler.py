@@ -117,7 +117,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
     def _post_task(self):
         # receive video file and put into filesystem
         # put task on queue
-        self.settings['task_queue'].put(self.task)
+        self.settings['task_queue'].put(self.task.task_id)
         self.settings['tasks'][self.task.task_id] = self.task
         # return with task id
         return {'task_id' : self.task.task_id, 'status' : self.task.status}

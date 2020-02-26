@@ -35,7 +35,7 @@ class TaskExecutor(PeriodicCallback):
     async def _do(self):
         while not self.q.empty():
             try:
-                task = self.q.get()
-                await task.run()
+                task_id = self.q.get()
+                await self.d[task_id].run()
             finally:
                 self.q.task_done()
