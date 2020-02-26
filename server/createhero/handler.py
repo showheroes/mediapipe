@@ -38,6 +38,9 @@ class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
     def get(self):
         self.render('post/post_task.html')
 
+    def _get_accept_content_type(self):
+        return 'multipart/formdata'
+
     def post(self):
         task_id = VideoReformatHandler._post_task(self)
         self.render('post/task_created.html', **task_id)
@@ -50,7 +53,7 @@ class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
             data.append({'task_id' : t.task_id, 'status' : t.status})
         self.render('tasks/show_tasks.html', tasks=data)
 
-class VideoReformatTaskHandler(VideoReformatUIBaseHandler):
+class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
 
     def get(self, task_id):
         if not task_id in self.settings['tasks']:
