@@ -13,6 +13,10 @@ class VideoReformatBaseHandler(GenericHandler):
         # return documentation
         self._exit_success({})
 
+    def _authenticate(self):
+        return
+
+
 class VideoReformatUIBaseHandler(GenericHandler):
     """ UI base class, renders main page when called """
 
@@ -22,6 +26,9 @@ class VideoReformatUIBaseHandler(GenericHandler):
 
     def get(self):
         self.render('main.html')
+
+    def _authenticate(self):
+        return
 
 class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
 
