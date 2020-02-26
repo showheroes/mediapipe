@@ -13,16 +13,17 @@ import os
 import base64
 # from datadog import initialize
 
+general_log_level = logging.DEBUG
 # logging init
 root_logger = logging.getLogger()
-root_logger.setLevel(logging.INFO)
+root_logger.setLevel(general_log_level)
 if root_logger.hasHandlers():
     root_logger.handlers.clear()
 
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
-handler.setLevel(logging.INFO)
+handler.setLevel(general_log_level)
 root_logger.addHandler(handler)
 
 # start the server
@@ -35,7 +36,7 @@ def main():
     # initialize(**dd_options)
 
     logger = logging.getLogger('CreateHeroAPI')
-    logging.getLogger('tornado.access').setLevel(logging.WARN)
+    logging.getLogger('tornado.access').setLevel(general_log_level)
 
     root_dir = os.path.dirname(os.path.abspath(__file__))
     socket_external = tornado.netutil.bind_sockets(8888)
