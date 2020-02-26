@@ -92,6 +92,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
     """
 
     def _validate_request(self):
+        self.log.info('validating request')
         if not 'target_format' in self.args:
             self._exit_error('No target format specified.', status = 400)
 
@@ -109,6 +110,10 @@ class VideoReformatHandler(VideoReformatBaseHandler):
 
         with open(self.task.get_input_file(), 'wb') as input_file:
             input_file.write(file_obj['body'])
+
+    def _parse_request_body(self):
+        # write everything into self.args
+        self.log.info(self.request.body)
 
     def _post_task(self):
         # receive video file and put into filesystem
