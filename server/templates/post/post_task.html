@@ -8,6 +8,11 @@
 			<form action="/video/flip/ui/tasks/create" enctype="multipart/form-data">
 				<label for="videofile">Videofile</label>
 				<input name="videofile" required="" type="file" class="form-control" id="videofile" />
+				<label for="target_format">Target format</label>
+				<input type="radio" name="target_format" value="1:1">1:1</input>
+				<input type="radio" name="target_format" value="16:9">16:9</input>
+				<input type="radio" name="target_format" value="9:16">9:16</input>
+				<input type="submit">Create conversion task</input>
 			</form>
 		</div>
 	</div>

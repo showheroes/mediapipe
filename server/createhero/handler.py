@@ -26,7 +26,7 @@ class VideoReformatUIBaseHandler(GenericHandler):
 
     def _get_response_content_type(self):
         return 'text/html'
-        
+
     def get(self):
         self.render('main.html')
 
@@ -85,7 +85,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
     """
 
     def _validate_request(self):
-        if not 'format' in self.args:
+        if not 'target_format' in self.args:
             self._exit_error('No target format specified.', status = 400)
 
         if not 'videofile' in self.request.files:
@@ -97,7 +97,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         file_obj = self.request.files['videofile']
         self.input_filename = file_obj['filename']
 
-        self.task = VideoReformatTask(self.settings['working_directory'], self.args['format'], logging = True)
+        self.task = VideoReformatTask(self.settings['working_directory'], self.args['target_format'], logging = True)
         self.task.set_input_file(self.input_filename)
 
         with open(self.task.get_input_file(), 'wb') as input_file:
