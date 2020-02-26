@@ -39,7 +39,7 @@ class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
         self.render('post/post_task.html')
 
     def _get_accept_content_type(self):
-        return 'multipart/formdata'
+        return 'multipart/form-data'
 
     def post(self):
         task_id = VideoReformatHandler._post_task(self)
