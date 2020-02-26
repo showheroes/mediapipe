@@ -53,14 +53,14 @@ class VideoReformatTask(object):
         self.status = self.STATUS_INIT
         self.progress = []
 
-    def get_working_directory(self):
+    def get_task_directory(self):
         return os.path.join(working_base_dir, self.task_id)
 
     def set_input_file(self, input_file):
         input_file_name, input_ext = os.path.splitext(input_file)
-        output_file = input_file_name + '_' + format + input_ext
-        self.input_file = os.path.join(self.get_working_directory(), input_file)
-        self.output_file = os.path.join(self.get_working_directory(), output_file)
+        output_file = input_file_name + '_' + self.format + input_ext
+        self.input_file = os.path.join(self.get_task_directory(), input_file)
+        self.output_file = os.path.join(self.get_task_directory(), output_file)
 
         # prepare call to subprocess
         self.command = ['bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
