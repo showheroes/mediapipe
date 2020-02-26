@@ -22,7 +22,7 @@ class CreateHeroAPI(Application):
                 (r"/video/flip/ui/tasks", h.VideoReformatTasksUIHandler),
             ]
         ### FALLBACK
-        route_list.append((r"/.*", h.VideoReformatBaseHandler))
+        # route_list.append((r"/.*", h.VideoReformatBaseHandler))
         self.add_handlers(r".*", route_list)
 
 class TaskExecutor(PeriodicCallback):
