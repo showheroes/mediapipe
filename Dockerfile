@@ -44,10 +44,6 @@ RUN apt-get clean && \
 RUN add-apt-repository -y ppa:deadsnakes/ppa && \
     apt-get install -y --no-install-recommends python3.7
 
-# RUN apt update && apt install -y --no-install-recommends ffmpeg
-COPY setup_opencv.sh /mediapipe/
-RUN bash setup_opencv.sh
-
 RUN pip install --upgrade setuptools
 RUN pip install future
 RUN pip install six
@@ -65,8 +61,10 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
 VOLUME /data
 
 COPY ./mediapipe /mediapipe/mediapipe
-COPY .bazelrc WORKSPACE BUILD /mediapipe/
+COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
+
+RUN bash setup_opencv.sh
 
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
 RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS mediapipe/examples/desktop/autoflip:run_autoflip
