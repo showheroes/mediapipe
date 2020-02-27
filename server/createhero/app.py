@@ -40,6 +40,6 @@ class TaskExecutor(PeriodicCallback):
             try:
                 task_id = self.q.get()
                 task = VideoReformatTask(task_id, self.data_dir, self.d[task_id])
-                await task.run()
+                await task.start()
             finally:
                 self.q.task_done()
