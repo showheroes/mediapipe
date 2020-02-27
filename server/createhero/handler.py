@@ -1,6 +1,7 @@
 from adhero_utils.handlers import GenericHandler
 from .util import VideoReformatTask
 
+import uuid
 from tornado.websocket import WebSocketHandler
 
 class VideoReformatBaseHandler(GenericHandler):
@@ -46,6 +47,7 @@ class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
         return True
 
     def post(self):
+        # validate the request and generate a uuid task_id
         VideoReformatHandler._validate_request(self)
         task_id = VideoReformatHandler._post_task(self)
         self.render('post/task_created.html', **task_id)
@@ -79,7 +81,7 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
 
     def on_message(self, message):
         if 'progress' == message:
-            self.write_message(self.task.get_progress())
+            self.write_message('\n'.join(self.task['progress']))
 
 
 
@@ -98,29 +100,31 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         tf = self.get_argument('target_format', None)
         if not tf:
             self._exit_error('No target format specified.', status = 400)
-
+        self.target_format = tf
         if not 'videofile' in self.request.files:
             self._exit_error('No videofile provided.', status = 400)
         if not self.request.files['videofile']:
             self._exit_error('Videofile not complete.', status = 400)
 
-        #extract file and filename
+    def _post_task(self):
+        # receive video file and put into filesystem
+        # extract file and filename
         file_obj = self.request.files['videofile'][0]
         self.input_filename = file_obj['filename']
 
-        self.task = VideoReformatTask(self.settings['working_directory'], tf, logging = True)
-        self.task.set_input_file(self.input_filename)
+        # create a task ID, create the directory and place the file there
+        task_id = str(uuid.uuid4())
+        task_dir = os.path.join(self.settings['working_directory'], task_id)
+        os.mkdir(task_dir)
 
-        with open(self.task.get_input_file(), 'wb') as input_file:
+        with open(os.path.join(task_dir, self.input_filename, 'wb') as input_file:
             input_file.write(file_obj['body'])
 
-    def _post_task(self):
-        # receive video file and put into filesystem
         # put task on queue
-        self.settings['task_queue'].put(self.task.task_id)
-        self.settings['tasks'][self.task.task_id] = self.task
+        self.settings['task_queue'].put(task_id)
+        self.settings['tasks'][task_id] = {'target_format' : self.target_format}
         # return with task id
-        return {'task_id' : self.task.task_id, 'status' : self.task.status}
+        return {'task_id' : task_id, 'status' : VideoReformatTask.STATUS_SUBMITTED}
 
     def get(self):
         self._exit_success(list(self.settings['tasks'].keys()))
@@ -143,7 +147,7 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
             self._exit_error(f'Task with ID {task_id} not found.', status = 404)
         task = self.settings['tasks'][task_id]
         # 2) extract task status
-        status = task.status
+        status = task['status']
         # 3) report either status or results if available (via download URL)
         if not self.get_query_argument('download', None):
             task_status = {'status' : status}
@@ -153,7 +157,7 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
 
         # 4) OR if get parameter download is set, respond with video file
         if status == VideoReformatTask.STATUS_SUCCESS:
-            with open(task.get_output_file(), 'rb') as of:
+            with open(task['output_file'], 'rb') as of:
                 while 1:
                     data = of.read(16384)
                     if not data: break
