@@ -44,43 +44,33 @@ class VideoReformatTask(object):
     STATUS_STOPPED = 'stopped'
 
     def __init__(self, task_id, working_base_dir, task_data, logging = False):
+        self.task_id = task_id
         self.working_base_dir = working_base_dir
+        self.task_data = task_data
         self.logging = logging
         if self.logging:
             self.log_reader_queue = queue.Queue()
-        # save format
-        self.format = task_data['target_format']
         # keep track of data
-        self.task_data = task_data
         self.task_data['progress'] = []
-        # create task id
-        self.task_id = str(uuid.uuid4())
-        os.mkdir(os.path.join(self.working_base_dir, self.task_id))
+        self.set_input_file()
         self.task_data['status'] = self.STATUS_INIT
-        # self.progress = []
 
     def get_task_directory(self):
         return os.path.join(self.working_base_dir, self.task_id)
 
-    def set_input_file(self, input_file):
-        input_file_name, input_ext = os.path.splitext(input_file)
-        output_file = input_file_name + '_' + self.format + input_ext
-        self.input_file = os.path.join(self.get_task_directory(), input_file)
-        self.task_data['input_file'] = self.input_file
-        self.output_file = os.path.join(self.get_task_directory(), output_file)
-        self.task_data['output_file'] = self.output_file
+    def set_input_file(self):
+        input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
+        output_file_name = input_file_name + '_' + self.task_data['target_format'] + input_ext
+        input_file = os.path.join(self.get_task_directory(), input_file)
+        self.task_data['input_file'] = input_file
+        output_file = os.path.join(self.get_task_directory(), output_file_name)
+        self.task_data['output_file'] = output_file
 
         # prepare call to subprocess
         self.command = ['bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                         '--calculator_graph_config_file=mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
-                        f'--input_side_packets=input_video_path={self.input_file},output_video_path={self.output_file},aspect_ratio={self.format}'
+                        f'--input_side_packets=input_video_path={input_file},output_video_path={output_file},aspect_ratio={self.task_data['target_format']}'
                         ]
-
-    def get_input_file(self):
-        return self.input_file
-
-    def get_output_file(self):
-        return self.output_file
 
     async def start(self):
         if self.task_data['status'] != self.STATUS_INIT:
