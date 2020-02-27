@@ -42,11 +42,11 @@ RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
 RUN add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get install -y --no-install-recommends python3.7
+    apt-get install -y --no-install-recommends python3.7 python3-pip
 
-RUN pip install --upgrade setuptools
-RUN pip install future
-RUN pip install six
+RUN pip3 install --upgrade setuptools
+RUN pip3 install future
+RUN pip3 install six
 
 # Install bazel
 ARG BAZEL_VERSION=1.1.0
