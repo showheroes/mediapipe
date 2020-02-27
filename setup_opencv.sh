@@ -26,8 +26,8 @@ opencv_build_file="$( cd "$(dirname "$0")" ; pwd -P )"/third_party/opencv_linux.
 echo $opencv_build_file
 
 echo "Installing OpenCV from source"
-apt update && apt install build-essential git
-apt install cmake ffmpeg libavformat-dev libdc1394-22-dev libgtk2.0-dev \
+apt-get update && apt-get install -y build-essential git
+apt-get install -y cmake ffmpeg libavformat-dev libdc1394-22-dev libgtk2.0-dev \
                  libjpeg-dev libpng-dev libswscale-dev libtbb2 libtbb-dev \
                  libtiff-dev
 rm -rf /tmp/build_opencv
