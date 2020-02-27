@@ -67,7 +67,7 @@ class VideoReformatTask(object):
         self.task_data['output_file'] = output_file
 
         # prepare call to subprocess
-        self.command = ['bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
+        self.command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                         '--calculator_graph_config_file=mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
                         f'--input_side_packets=input_video_path={input_file},output_video_path={output_file},aspect_ratio={self.task_data["target_format"]}'
                         ]
