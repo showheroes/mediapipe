@@ -61,7 +61,7 @@ class VideoReformatTask(object):
     def set_input_file(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
         output_file_name = input_file_name + '_' + self.task_data['target_format'] + input_ext
-        input_file = os.path.join(self.get_task_directory(), input_file)
+        input_file = os.path.join(self.get_task_directory(), self.task_data['input_file_name'])
         self.task_data['input_file'] = input_file
         output_file = os.path.join(self.get_task_directory(), output_file_name)
         self.task_data['output_file'] = output_file
