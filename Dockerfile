@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.7-stretch
+# FROM python:3.7-stretch
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
-MAINTAINER <mediapipe@google.com>
-
-WORKDIR /io
 WORKDIR /mediapipe
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,21 +27,26 @@ RUN apt-get update && \
         git \
         wget \
         unzip \
-        libopencv-core-dev \
-        libopencv-highgui-dev \
-        libopencv-imgproc-dev \
-        libopencv-video-dev \
-        libopencv-calib3d-dev \
-        libopencv-features2d-dev \
+        # libopencv-core-dev \
+        # libopencv-highgui-dev \
+        # libopencv-imgproc-dev \
+        # libopencv-video-dev \
+        # libopencv-calib3d-dev \
+        # libopencv-features2d-dev \
         software-properties-common
 
-RUN add-apt-repository -y -r ppa:openjdk-r/ppa && \
+RUN add-apt-repository -y ppa:openjdk-r/ppa && \
         apt-get update -q
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
-RUN apt update && apt install -y --no-install-recommends ffmpeg
+RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get install -y --no-install=recommends python3.7 \
+
+# RUN apt update && apt install -y --no-install-recommends ffmpeg
+RUN bash setup_opencv.sh
+
 RUN pip install --upgrade setuptools
 RUN pip install future
 RUN pip install six
@@ -64,7 +67,8 @@ COPY ./mediapipe /mediapipe/mediapipe
 COPY .bazelrc WORKSPACE BUILD /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
-RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
+# RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
+RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS mediapipe/examples/desktop/autoflip:run_autoflip
 # If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
