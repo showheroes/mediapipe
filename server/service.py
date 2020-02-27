@@ -64,7 +64,7 @@ def main():
         pid = tornado.process.fork_processes(2)
         # start services in separate processes
         if pid != 1:
-            task_executor = TaskExecutor(settings['task_queue'], settings['tasks'])
+            task_executor = TaskExecutor(settings)
             task_executor.start()
         IOLoop.current().start()
 

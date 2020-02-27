@@ -1,6 +1,8 @@
+import createhero.handler as h
+from createhero.util import VideoReformatTask
+
 from tornado.web import Application
 from tornado.ioloop import PeriodicCallback
-import createhero.handler as h
 import logging
 
 class CreateHeroAPI(Application):
@@ -27,15 +29,18 @@ class CreateHeroAPI(Application):
 
 class TaskExecutor(PeriodicCallback):
 
-    def __init__(self, task_queue, task_data):
-        self.q = task_queue
-        self.d = task_data
+    def __init__(self, settings):
+        self.q = settings['task_queue']
+        self.d = settings['tasks']
+        self.data_dir = self.settings['working_directory']
         super().__init__(self._do, 1e3)
 
     async def _do(self):
         while not self.q.empty():
             try:
                 task_id = self.q.get()
-                await self.d[task_id].run()
+                self.d[task_id] = {}
+                task = VideoReformatTask(task_id, self.data_dir, self.d[task_id])
+                await task.run()
             finally:
                 self.q.task_done()
