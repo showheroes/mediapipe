@@ -117,7 +117,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         task_dir = os.path.join(self.settings['working_directory'], task_id)
         os.mkdir(task_dir)
 
-        with open(os.path.join(task_dir, self.input_filename, 'wb') as input_file:
+        with open(os.path.join(task_dir, self.input_filename), 'wb') as input_file:
             input_file.write(file_obj['body'])
 
         # put task on queue

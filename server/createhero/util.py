@@ -120,9 +120,9 @@ class VideoReformatTask(object):
             else:
                 self.task_data['status'] = self.STATUS_STOPPED
             # put down the data into the directory for later inspection
-            with open(os.path.join(self.get_task_directory(), 'process_output.txt')) as f:
+            with open(os.path.join(self.get_task_directory(), 'process_output.txt'), 'w') as f:
                 f.write('\n'.join(self.task_data['progress']))
-            with open(os.path.join(self.get_task_directory(), 'STATE')) as f:
+            with open(os.path.join(self.get_task_directory(), 'STATE'), 'w') as f:
                 f.write(self.status)
             return True
         return False
