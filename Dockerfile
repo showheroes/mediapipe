@@ -45,6 +45,7 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa && \
     apt-get install -y --no-install-recommends python3.7
 
 # RUN apt update && apt install -y --no-install-recommends ffmpeg
+COPY setup_opencv.sh /mediapipe/
 RUN bash setup_opencv.sh
 
 RUN pip install --upgrade setuptools
