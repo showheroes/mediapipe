@@ -42,7 +42,7 @@ RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
 RUN add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get install -y --no-install=recommends python3.7 \
+    apt-get install -y --no-install-recommends python3.7
 
 # RUN apt update && apt install -y --no-install-recommends ffmpeg
 RUN bash setup_opencv.sh
