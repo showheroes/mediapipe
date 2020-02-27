@@ -39,7 +39,6 @@ class TaskExecutor(PeriodicCallback):
         while not self.q.empty():
             try:
                 task_id = self.q.get()
-                self.d[task_id] = {}
                 task = VideoReformatTask(task_id, self.data_dir, self.d[task_id])
                 await task.run()
             finally:
