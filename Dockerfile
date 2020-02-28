@@ -28,12 +28,12 @@ RUN apt-get update && \
         wget \
         unzip \
         # libegl1-mesa-dev \
-        # libopencv-core-dev \
-        # libopencv-highgui-dev \
-        # libopencv-imgproc-dev \
-        # libopencv-video-dev \
-        # libopencv-calib3d-dev \
-        # libopencv-features2d-dev \
+        libopencv-core-dev \
+        libopencv-highgui-dev \
+        libopencv-imgproc-dev \
+        libopencv-video-dev \
+        libopencv-calib3d-dev \
+        libopencv-features2d-dev \
         software-properties-common
 
 RUN add-apt-repository -y 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic main ' && \
@@ -65,7 +65,7 @@ COPY ./mediapipe /mediapipe/mediapipe
 COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
-RUN bash setup_opencv.sh
+# RUN bash setup_opencv.sh
 # RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
 RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
 # RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures /mediapipe/mediapipe/examples/desktop/autoflip:run_autoflip
