@@ -36,7 +36,7 @@ RUN apt-get update && \
         # libopencv-features2d-dev \
         software-properties-common
 
-RUN add-apt-repository -y ppa:openjdk-r/ppa && \
+RUN add-apt-repository -y 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic main ' && \
         apt-get update -q
 RUN apt-get install -y openjdk-8-jdk
 RUN apt-get clean && \
