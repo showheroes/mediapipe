@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# FROM python:3.7-stretch
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
+FROM python:3.7-stretch
+# FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 WORKDIR /mediapipe
 
@@ -27,7 +27,7 @@ RUN apt-get update && \
         git \
         wget \
         unzip \
-        libegl1-mesa-dev \
+        # libegl1-mesa-dev \
         # libopencv-core-dev \
         # libopencv-highgui-dev \
         # libopencv-imgproc-dev \
@@ -42,8 +42,8 @@ RUN apt-get install -y openjdk-8-jdk
 RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
-RUN add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt-get install -y --no-install-recommends python3.7 python3-pip
+# RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+#     apt-get install -y --no-install-recommends python3.7 python3-pip
 
 RUN pip3 install --upgrade setuptools
 RUN pip3 install future
@@ -66,9 +66,9 @@ COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
 RUN bash setup_opencv.sh
-RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
-# RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
-RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures /mediapipe/mediapipe/examples/desktop/autoflip:run_autoflip
+# RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
+RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/autoflip:run_autoflip
+# RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures /mediapipe/mediapipe/examples/desktop/autoflip:run_autoflip
 # If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
