@@ -36,7 +36,7 @@ class VideoReformatUIBaseHandler(GenericHandler):
         return
 
     def render(self, template, **kwargs):
-        self.render(template, deploy_path = self.settings['deploy_path'], **kwargs)
+        super().render(template, deploy_path = self.settings['deploy_path'], **kwargs)
 
 class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
 
