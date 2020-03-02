@@ -35,6 +35,9 @@ class VideoReformatUIBaseHandler(GenericHandler):
     def _authenticate(self):
         return
 
+    def render(self, template, **kwargs):
+        self.render(template, deploy_path = self.settings['deploy_path'], **kwargs)
+
 class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
 
     def get(self):

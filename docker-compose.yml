@@ -7,6 +7,7 @@ services:
     environment:
       - INTERNAL_API_TOKEN=32aa1e16-3d91-435a-897b-5aaa740b18ad
       - NVIDIA_VISIBLE_DEVICES=3
+      - DEPLOY_PATH=/api
     devices:
       - /dev/nvidia-uvm:/dev/nvidia-uvm
       - /dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools
