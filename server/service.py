@@ -43,7 +43,7 @@ def main():
 
     with mp.Manager() as mgr:
         settings = {}
-        settings['deploy_path'] = os.environ.get(['DEPLOY_PATH'], '')
+        settings['deploy_path'] = os.environ.get('DEPLOY_PATH', '')
         # set internal url everywhere
         settings['documentation'] = os.path.dirname(os.path.abspath(__file__)) + '/swagger.yml'
         # create shared communication dict
