@@ -84,7 +84,9 @@ RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures --def
 RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
-RUN ffmpeg -h
+RUN add-apt-repository ppa:jonathonf/ffmpeg-4
+RUN apt-get update && apt-get install -y ffmpeg
+RUN ffmpeg
 
 # setup the server
 COPY ./server/requirements.txt /mediapipe/server/requirements.txt
