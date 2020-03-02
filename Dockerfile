@@ -84,6 +84,8 @@ RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures --def
 RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
+RUN ffmpeg -h
+
 # setup the server
 COPY ./server/requirements.txt /mediapipe/server/requirements.txt
 
