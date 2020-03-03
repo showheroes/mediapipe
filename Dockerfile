@@ -28,12 +28,12 @@ RUN apt-get update && \
         wget \
         unzip \
         # libegl1-mesa-dev \
-        libopencv-core-dev \
-        libopencv-highgui-dev \
-        libopencv-imgproc-dev \
-        libopencv-video-dev \
-        libopencv-calib3d-dev \
-        libopencv-features2d-dev \
+        # libopencv-core-dev \
+        # libopencv-highgui-dev \
+        # libopencv-imgproc-dev \
+        # libopencv-video-dev \
+        # libopencv-calib3d-dev \
+        # libopencv-features2d-dev \
         software-properties-common
 
 RUN add-apt-repository -y 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic main ' && \
@@ -69,6 +69,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB9B1D8886F44E2A
 RUN apt update
 RUN apt install -y ffmpeg
 RUN ffmpeg -version
+
+RUN bash setup_opencv.sh
 
 # RUN bash setup_opencv.sh
 # RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
