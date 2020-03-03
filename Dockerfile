@@ -85,8 +85,9 @@ RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/*
 
 # RUN add-apt-repository -y 'deb http://ppa.launchpad.net/jonathonf/ffmpeg-4/ubuntu bionic main'
-RUN apt-get install -y ffmpeg
-RUN ffmpeg
+RUN apt update
+RUN apt install -y ffmpeg
+RUN ffmpeg -version
 
 # setup the server
 COPY ./server/requirements.txt /mediapipe/server/requirements.txt
