@@ -61,14 +61,14 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
 
 VOLUME /data
 
-COPY ./mediapipe /mediapipe/mediapipe
-COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
-COPY ./third_party /mediapipe/third_party
-
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB9B1D8886F44E2A
 RUN apt update
 RUN apt install -y ffmpeg
 RUN ffmpeg -version
+
+COPY ./mediapipe /mediapipe/mediapipe
+COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
+COPY ./third_party /mediapipe/third_party
 
 RUN bash setup_opencv.sh
 
