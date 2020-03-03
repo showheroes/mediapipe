@@ -146,7 +146,7 @@ void ShotBoundaryCalculator::Transmit(mediapipe::CalculatorContext* cc,
   }
 
   double current_motion_estimate =
-      1 - cv::compareHist(current_histogram, last_histogram_, CV_COMP_CORREL);
+      1 - cv::compareHist(current_histogram, last_histogram_, cv::HistCompMethods::HISTCMP_CORREL);
   last_histogram_ = current_histogram;
   motion_history_.push_front(current_motion_estimate);
 
