@@ -24,7 +24,7 @@
 //                         rgb_frame.Height());
 //   cv::Mat rgb_frame_mat = ::mediapipe::formats::MatView(&rgb_frame);
 //   cv::Mat gray_frame_mat = ::mediapipe::formats::MatView(&gray_frame);
-//   cv::cvtColor(rgb_frame_mat, gray_frame_mat, CV_RGB2GRAY);
+//   cv::cvtColor(rgb_frame_mat, gray_frame_mat, cv::COLOR_RGB2GRAY);
 //
 // Resize an ImageFrame:
 //   ImageFrame small_image(ImageFormat::GRAY8, 10, 10);

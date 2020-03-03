@@ -783,7 +783,7 @@ void MotionAnalysis::VisualizeBlurAnalysisRegions(cv::Mat* input_view) {
   CHECK(input_view != nullptr);
 
   cv::Mat intensity;
-  cv::cvtColor(*input_view, intensity, CV_RGB2GRAY);
+  cv::cvtColor(*input_view, intensity, cv::COLOR_RGB2GRAY);
   cv::Mat corner_values;
   cv::cornerMinEigenVal(intensity, corner_values, 3);
 
