@@ -65,6 +65,10 @@ COPY ./mediapipe /mediapipe/mediapipe
 COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
+RUN apt update
+RUN apt install -y ffmpeg
+RUN ffmpeg -version 
+
 # RUN bash setup_opencv.sh
 # RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
 RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 mediapipe/examples/desktop/autoflip:run_autoflip
@@ -73,12 +77,6 @@ RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 m
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
 # RUN add-apt-repository -y 'deb http://ppa.launchpad.net/jonathonf/ffmpeg-4/ubuntu bionic main'
-RUN apt update
-RUN apt install -y ffmpeg
-RUN ffmpeg -version
-RUN apt-get clean && \
-        rm -rf /var/lib/apt/lists/*
-
 # setup the server
 COPY ./server/requirements.txt /mediapipe/server/requirements.txt
 
