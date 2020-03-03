@@ -65,6 +65,7 @@ COPY ./mediapipe /mediapipe/mediapipe
 COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB9B1D8886F44E2A
 RUN apt update
 RUN apt install -y ffmpeg
 RUN ffmpeg -version 
@@ -77,6 +78,9 @@ RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 m
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
 # RUN add-apt-repository -y 'deb http://ppa.launchpad.net/jonathonf/ffmpeg-4/ubuntu bionic main'
+RUN apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
+
 # setup the server
 COPY ./server/requirements.txt /mediapipe/server/requirements.txt
 
