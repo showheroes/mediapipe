@@ -166,9 +166,9 @@ void FaceToRegionCalculator::ExtendSalientRegionWithPoint(
       float x = std::max(0.0f, location.xmin());
       float y = std::max(0.0f, location.ymin());
       float width =
-          std::min(location.width() - abs(x - location.xmin()), 1 - x);
+          std::min(location.width() - std::abs(x - location.xmin()), 1 - x);
       float height =
-          std::min(location.height() - abs(y - location.ymin()), 1 - y);
+          std::min(location.height() - std::abs(y - location.ymin()), 1 - y);
 
       // Convert the face to a region.
       if (options_.export_whole_face()) {

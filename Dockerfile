@@ -66,11 +66,12 @@ RUN apt update
 RUN apt install -y ffmpeg
 RUN ffmpeg -version
 
-COPY ./mediapipe /mediapipe/mediapipe
 COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
 RUN bash setup_opencv.sh
+
+COPY ./mediapipe /mediapipe/mediapipe
 
 # RUN bash setup_opencv.sh
 # RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
