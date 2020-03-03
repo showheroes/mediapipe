@@ -115,7 +115,7 @@ mediapipe::Status VisualScorer::CalculateColorfulness(
     const cv::Mat& image, float* colorfulness) const {
   // Convert the image to HSV.
   cv::Mat image_hsv;
-  cv::cvtColor(image, image_hsv, CV_RGB2HSV);
+  cv::cvtColor(image, image_hsv, cv::COLOR_RGB2HSV);
 
   // Mask out pixels that are too dark or too bright.
   cv::Mat mask(image.rows, image.cols, CV_8UC1);
