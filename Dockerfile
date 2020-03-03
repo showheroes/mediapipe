@@ -39,8 +39,8 @@ RUN apt-get update && \
 RUN add-apt-repository -y 'deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu bionic main ' && \
         apt-get update -q
 RUN apt-get install -y openjdk-8-jdk
-RUN apt-get clean && \
-        rm -rf /var/lib/apt/lists/*
+# RUN apt-get clean && \
+#         rm -rf /var/lib/apt/lists/*
 
 # RUN add-apt-repository -y ppa:deadsnakes/ppa && \
 #     apt-get install -y --no-install-recommends python3.7 python3-pip
@@ -76,6 +76,8 @@ RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 m
 RUN apt update
 RUN apt install -y ffmpeg
 RUN ffmpeg -version
+RUN apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
 
 # setup the server
 COPY ./server/requirements.txt /mediapipe/server/requirements.txt
