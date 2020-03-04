@@ -36,6 +36,9 @@ class CreateHeroAPI(Application):
             self.settings['tasks'][task] = {}
             VideoReformatTask(task, self.settings['working_directory'], self.settings['tasks'][task])
             self.log.debug(f'found task with id {task}, settings are {self.settings["tasks"][task]}')
+            if self.settings['tasks'][task]['status'] == VideoReformatTask.STATUS_INIT:
+                self.log.debug('found taks has status init, putting on queue')
+                self.settings['task_queue'].put(task)
 
 
 class TaskExecutor(PeriodicCallback):
