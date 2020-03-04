@@ -49,7 +49,7 @@ class VideoReformatTask(object):
     STATUS_STOPPED = 'stopped'
 
     def __init__(self, task_id, working_base_dir, task_data, logging = False):
-        self.log = logging.getLogger(self.__name__)
+        self.log = logging.getLogger(__name__)
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_data = task_data
