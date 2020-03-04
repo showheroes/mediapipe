@@ -48,7 +48,7 @@ class VideoReformatTask(object):
     STATUS_SUCCESS = 'success'
     STATUS_STOPPED = 'stopped'
 
-    def __init__(self, task_id, working_base_dir, task_data, logging = False):
+    def __init__(self, task_id, working_base_dir, task_data):
         self.log = logging.getLogger(__name__)
         self.task_id = task_id
         self.working_base_dir = working_base_dir
@@ -119,26 +119,16 @@ class VideoReformatTask(object):
         if self.task_data['status'] != self.STATUS_INIT:
             return "Task not yet initialized."
         # Launch the command as subprocess, route stderr to stdout
-        if self.logging:
-            self.process = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            # Launch the asynchronous readers of the process' stdout and stderr.
-            self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
-            self.log_reader.run()
-        else:
-            self.process = subprocess.Popen(self.command)
-            self.set_status(self.STATUS_RUNNING)
+        self.process = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # Launch the asynchronous readers of the process' stdout and stderr.
+        self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
+        self.log_reader.run()
+        self.set_status(self.STATUS_RUNNING)
+
         while not self.is_finished():
             while not self.log_reader_queue.empty():
                 self.task_data['progress'].append(self.log_reader_queue.get())
                 self.set_status(self.STATUS_RUNNING)
-
-    # def get_progress(self):
-    #     if not self.logging:
-    #         return ['']
-    #     # get the progress from the subprocess
-    #     while not self.log_reader_queue.empty():
-    #         self.progress.append(self.log_reader_queue.get())
-    #     return '\n'.join(progress)
 
     def is_finished(self):
         status = self.process.poll()
