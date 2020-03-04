@@ -38,7 +38,7 @@ node {
   output_stream: "TENSORS:detection_tensors"
   options: {
     [mediapipe.TfLiteInferenceCalculatorOptions.ext] {
-      model_path: "mediapipe/models/face_detection_front.tflite"
+      model_path: "/mediapipe/mediapipe/models/face_detection_front.tflite"
     }
   }
 }
@@ -119,7 +119,7 @@ node {
   output_stream: "labeled_detections"
   options: {
     [mediapipe.DetectionLabelIdToTextCalculatorOptions.ext] {
-      label_map_path: "mediapipe/models/face_detection_front_labelmap.txt"
+      label_map_path: "/mediapipe/mediapipe/models/face_detection_front_labelmap.txt"
     }
   }
 }
