@@ -68,7 +68,7 @@ class VideoReformatTask(object):
     def read_status(self):
         self.log.debug('read task data')
         data_file = os.path.join(self.get_task_directory(), 'task_data')
-        if os.path.isfile(data_file):
+        if os.path.exists(data_file):
             self.log.debug('found json data, reading...')
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
