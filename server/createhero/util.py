@@ -52,6 +52,7 @@ class VideoReformatTask(object):
         self.log = logging.getLogger(__name__)
         self.task_id = task_id
         self.working_base_dir = working_base_dir
+        self.task_lib = task_lib
         self.task_data = {}
         self.task_data['progress'] = []
         self.read_status()
@@ -61,8 +62,10 @@ class VideoReformatTask(object):
             self.log_reader_queue = queue.Queue()
             self.prepare()
             self.set_status(self.STATUS_INIT)
+        self.update_tasklib()
 
-        task_lib[task_id] = self.task_data
+    def update_tasklib(self):
+        self.task_lib[self.task_id] = self.task_data
 
     def get_task_directory(self):
         return os.path.join(self.working_base_dir, self.task_id)
@@ -80,12 +83,14 @@ class VideoReformatTask(object):
         else:
             self.log.debug('apparently a new task')
             self.set_status(self.STATUS_SUBMITTED)
+        self.update_tasklib()
 
     def set_status(self, status):
         self.task_data['status'] = status
         self.log.debug(f'setting task_data status to {status}, task_data now: {self.task_data}')
         with open(os.path.join(self.get_task_directory(), 'task_data'), 'w') as f:
             json.dump(self.task_data, f)
+        self.update_tasklib()
 
     def initialize(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
@@ -105,23 +110,23 @@ class VideoReformatTask(object):
     def prepare(self):
         # extract audio from source
         extract_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-f', 'mp3', '-b:a', '192k', '-vn', self.task_data['audio_file']], capture_output=True, text=True)
-        self.task_data['progress'].append(extract_process.stdout.splitlines())
+        self.task_data['progress'].extend(extract_process.stdout)
 
         # strip audio off of input source
         stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
-        self.task_data['progress'].append(stripoff_process.stdout.splitlines())
-
-        # prepare call to subprocess
-        self.command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
-                        '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
-                        f'--input_side_packets=input_video_path={self.task_data["input_file_no_audio"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
-                        ]
+        self.task_data['progress'].extend(stripoff_process.stdout)
+        self.update_tasklib()
 
     async def start(self):
         if self.task_data['status'] != self.STATUS_INIT:
             return "Task not yet initialized."
+        # prepare call to subprocess
+        command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
+                        '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
+                        f'--input_side_packets=input_video_path={self.task_data["input_file_no_audio"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
+                        ]
         # Launch the command as subprocess, route stderr to stdout
-        self.process = subprocess.Popen(self.command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         # Launch the asynchronous readers of the process' stdout and stderr.
         self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
         self.log_reader.run()
@@ -140,11 +145,11 @@ class VideoReformatTask(object):
             self.task_data['progress'].append(join_process.stdout.splitlines())
 
             # Let's be tidy and join the threads we've started.
-            log_reader.join()
+            self.log_reader.join()
 
             # Close subprocess' file descriptors.
-            process.stdout.close()
-            process.stderr.close()
+            self.process.stdout.close()
+            self.process.stderr.close()
             if status == 0:
                 self.set_status(self.STATUS_SUCCESS)
             else:
