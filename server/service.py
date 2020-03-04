@@ -45,7 +45,7 @@ def main():
     logger.debug('running ffmpeg for debugging')
     p = subprocess.run(['ffmpeg', '-h'], capture_output=True, text=True)
     logger.debug(p.stdout)
-    
+
     with mp.Manager() as mgr:
         settings = {}
         settings['deploy_path'] = os.environ.get('DEPLOY_PATH', '')
@@ -63,7 +63,7 @@ def main():
         app = CreateHeroAPI(settings)
         #pass the settings
         # app.settings.update(settings)
-        server = HTTPServer(app)
+        server = HTTPServer(app, max_body_size = 5.2e8)
         server.add_sockets(socket_external)
 
         #fork to child processes
