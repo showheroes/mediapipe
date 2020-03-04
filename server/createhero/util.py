@@ -102,11 +102,11 @@ class VideoReformatTask(object):
 
     def prepare(self):
         # extract audio from source
-        extract_process = subprocess.run(['ffmpeg', '-i', input_file, '-f', 'mp3', '-b:a', '192k', '-vn', audio_file], capture_output=True, text=True)
+        extract_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-f', 'mp3', '-b:a', '192k', '-vn', self.task_data['audio_file']], capture_output=True, text=True)
         self.task_data['progress'].append(extract_process.stdout.splitlines())
 
         # strip audio off of input source
-        stripoff_process = subprocess.run(['ffmpeg', '-i', input_file, '-c:v', 'copy', '-an', input_no_audio], capture_output=True, text=True)
+        stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
         self.task_data['progress'].append(stripoff_process.stdout.splitlines())
 
         # prepare call to subprocess
