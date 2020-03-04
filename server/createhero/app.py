@@ -33,8 +33,7 @@ class CreateHeroAPI(Application):
         self.log.debug('reading old tasks')
         task_list = [f.name for f in os.scandir(self.settings['working_directory']) if f.is_dir()]
         for task in task_list:
-            self.settings['tasks'][task] = {}
-            VideoReformatTask(task, self.settings['working_directory'], self.settings['tasks'][task])
+            VideoReformatTask(task, self.settings['working_directory'], self.settings['tasks'])
             self.log.debug(f'found task with id {task}, settings are {self.settings["tasks"][task]}')
             if self.settings['tasks'][task]['status'] == VideoReformatTask.STATUS_INIT:
                 self.log.debug('found taks has status init, putting on queue')
@@ -53,7 +52,7 @@ class TaskExecutor(PeriodicCallback):
         while not self.q.empty():
             try:
                 task_id = self.q.get()
-                task = VideoReformatTask(task_id, self.data_dir, self.d[task_id])
+                task = VideoReformatTask(task_id, self.data_dir, self.d)
                 await task.start()
             finally:
                 self.q.task_done()

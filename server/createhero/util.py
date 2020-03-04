@@ -48,11 +48,12 @@ class VideoReformatTask(object):
     STATUS_SUCCESS = 'success'
     STATUS_STOPPED = 'stopped'
 
-    def __init__(self, task_id, working_base_dir, task_data):
+    def __init__(self, task_id, working_base_dir, task_lib):
         self.log = logging.getLogger(__name__)
         self.task_id = task_id
         self.working_base_dir = working_base_dir
-        self.task_data = task_data
+        self.task_data = {}
+        task_lib[task_id] = self.task_data
         self.task_data['progress'] = []
         self.read_status()
 
