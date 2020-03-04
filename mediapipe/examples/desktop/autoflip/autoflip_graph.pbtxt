@@ -8,7 +8,7 @@ node {
   input_side_packet: "INPUT_FILE_PATH:input_video_path"
   output_stream: "VIDEO:video_raw"
   output_stream: "VIDEO_PRESTREAM:video_header"
-  output_side_packet: "SAVED_AUDIO_PATH:audio_path"
+#  output_side_packet: "SAVED_AUDIO_PATH:audio_path"
 }
 
 # VIDEO_PREP: Scale the input video before feature extraction.
@@ -106,7 +106,7 @@ node {
         type { standard: FACE_CORE_LANDMARKS }
         min_score: 0.85
         max_score: 0.9
-        is_required: false
+        is_required: true
       }
       signal_settings {
         type { standard: FACE_ALL_LANDMARKS }
@@ -192,7 +192,7 @@ node {
   input_stream: "VIDEO:cropped_frames"
   input_stream: "VIDEO_PRESTREAM:output_frames_video_header"
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
-  input_side_packet: "AUDIO_FILE_PATH:audio_path"
+#  input_side_packet: "AUDIO_FILE_PATH:audio_path"
   options: {
     [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
