@@ -53,10 +53,10 @@ class VideoReformatTask(object):
         self.working_base_dir = working_base_dir
         self.task_data = task_data
         self.task_data['progress'] = []
-        self.initialize()
         self.read_status()
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
+            self.initialize()
             self.log_reader_queue = queue.Queue()
             self.prepare()
             self.set_status(self.STATUS_INIT)
@@ -69,7 +69,7 @@ class VideoReformatTask(object):
         if os.path.isfile(data_file):
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
-        elif [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]:
+        elif os.path.isdir(self.get_task_directory()) and [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]:
             self.set_status(self.STATUS_STOPPED)
         else:
             self.set_status(self.STATUS_SUBMITTED)
