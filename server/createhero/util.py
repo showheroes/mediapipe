@@ -128,8 +128,10 @@ class VideoReformatTask(object):
                         '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
                         f'--input_side_packets=input_video_path={self.task_data["input_file_no_audio"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
                         ]
+        self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
         self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.log.debug(f'[{self.task_id}] process started')
         # Launch the asynchronous readers of the process' stdout and stderr.
         self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
         self.log_reader.run()
