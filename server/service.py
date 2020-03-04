@@ -55,6 +55,9 @@ def main():
         settings['static_path'] = os.path.join(root_dir, 'static')
         settings['working_directory'] = '/data'
 
+        #fork to child processes
+        pid = tornado.process.fork_processes(2)
+
         #construct the app
         app = CreateHeroAPI(settings)
         #pass the settings
@@ -62,8 +65,6 @@ def main():
         server = HTTPServer(app, max_body_size = 5.2e8)
         server.add_sockets(socket_external)
 
-        #fork to child processes
-        pid = tornado.process.fork_processes(2)
         # start services in separate processes
         if pid != 1:
             task_executor = TaskExecutor(settings)
