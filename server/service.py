@@ -42,10 +42,6 @@ def main():
     root_dir = os.path.dirname(os.path.abspath(__file__))
     socket_external = tornado.netutil.bind_sockets(8888)
 
-    logger.debug('running ffmpeg for debugging')
-    p = subprocess.run(['ffmpeg', '-h'], capture_output=True, text=True)
-    logger.debug(p.stdout)
-
     with mp.Manager() as mgr:
         settings = {}
         settings['deploy_path'] = os.environ.get('DEPLOY_PATH', '')
