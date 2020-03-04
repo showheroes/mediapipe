@@ -55,11 +55,11 @@ class VideoReformatTask(object):
         self.task_lib = task_lib
         self.task_data = {}
         self.task_data['progress'] = []
+        self.log_reader_queue = queue.Queue()
         self.read_status()
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
             self.initialize()
-            self.log_reader_queue = queue.Queue()
             self.prepare()
             self.set_status(self.STATUS_INIT)
         self.update_tasklib()
@@ -77,9 +77,12 @@ class VideoReformatTask(object):
             self.log.debug('found json data, reading...')
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
-        elif os.path.isdir(self.get_task_directory()) and [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and 'mp3' in f.name]:
-            self.log.debug('no json data, but mp3 source file found')
-            self.set_status(self.STATUS_STOPPED)
+        elif os.path.isdir(self.get_task_directory()):
+            source_files = [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
+            if any(map(lambda fname : fname.endswith('mp3'), source_files)):
+                self.log.debug('no json data, but mp3 source file found')
+                self.set_status(self.STATUS_STOPPED)
+
         else:
             self.log.debug('apparently a new task')
             self.set_status(self.STATUS_SUBMITTED)
