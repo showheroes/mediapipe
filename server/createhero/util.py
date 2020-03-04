@@ -53,7 +53,6 @@ class VideoReformatTask(object):
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_data = {}
-        task_lib[task_id] = self.task_data
         self.task_data['progress'] = []
         self.read_status()
 
@@ -62,6 +61,8 @@ class VideoReformatTask(object):
             self.log_reader_queue = queue.Queue()
             self.prepare()
             self.set_status(self.STATUS_INIT)
+
+        task_lib[task_id] = self.task_data
 
     def get_task_directory(self):
         return os.path.join(self.working_base_dir, self.task_id)
