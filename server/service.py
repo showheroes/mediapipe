@@ -68,7 +68,7 @@ def main():
         server.add_sockets(socket_external)
 
         # start services in separate processes
-        if pid != 1:
+        if pid == 1:
             task_executor = TaskExecutor(settings)
             task_executor.start()
         IOLoop.current().start()
