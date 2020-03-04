@@ -6,6 +6,7 @@ import threading
 import os
 import queue
 import uuid
+import json
 
 class AsynchronousFileReader(threading.Thread):
     '''
@@ -51,16 +52,35 @@ class VideoReformatTask(object):
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_data = task_data
-        self.logging = logging
-        if self.logging:
-            self.log_reader_queue = queue.Queue()
-        # keep track of data
         self.task_data['progress'] = []
         self.initialize()
-        self.task_data['status'] = self.STATUS_INIT
+        self.read_status()
+
+        if self.task_data['status'] == self.STATUS_SUBMITTED:
+            self.log_reader_queue = queue.Queue()
+            self.prepare()
+            self.set_status(self.STATUS_INIT)
 
     def get_task_directory(self):
         return os.path.join(self.working_base_dir, self.task_id)
+
+    def read_status(self):
+        data_file = os.path.join(self.get_task_directory(), 'task_data')
+        if os.path.isfile(data_file):
+            with open(data_file, 'r') as f:
+                self.task_data.update(json.load(f))
+        elif:
+            # check for mp4 or mp3 files
+            source_files =  [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
+            if l:
+                self.set_status(self.STATUS_STOPPED)
+        else:
+            self.set_status(self.STATUS_SUBMITTED)
+
+    def set_status(self, status):
+        self.task_data['status'] = status
+        with open(os.path.join(self.get_task_directory(), 'task_data'), 'w') as f:
+            json.dump(self.task_data, f)
 
     def initialize(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
@@ -77,6 +97,7 @@ class VideoReformatTask(object):
         output_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_' + self.task_data['target_format'] + '_no_audio' + input_ext)
         self.task_data['output_file_no_audio'] = output_no_audio
 
+    def prepare(self):
         # extract audio from source
         extract_process = subprocess.run(['ffmpeg', '-i', input_file, '-f', 'mp3', '-ab', '192000', '-vn', audio_file], capture_output=True, text=True)
         self.task_data['progress'].append(extract_process.stdout.splitlines())
@@ -102,10 +123,11 @@ class VideoReformatTask(object):
             self.log_reader.run()
         else:
             self.process = subprocess.Popen(self.command)
-        self.task_data['status'] = self.STATUS_RUNNING
-        if self.logging:
-            while not self.is_finished() and not self.log_reader_queue.empty():
+            self.set_status(self.STATUS_RUNNING)
+        while not self.is_finished():
+            while not self.log_reader_queue.empty():
                 self.task_data['progress'].append(self.log_reader_queue.get())
+                self.set_status(self.STATUS_RUNNING)
 
     # def get_progress(self):
     #     if not self.logging:
@@ -129,13 +151,8 @@ class VideoReformatTask(object):
             process.stdout.close()
             process.stderr.close()
             if status == 0:
-                self.task_data['status'] = self.STATUS_SUCCESS
+                self.set_status(self.STATUS_SUCCESS)
             else:
-                self.task_data['status'] = self.STATUS_STOPPED
-            # put down the data into the directory for later inspection
-            with open(os.path.join(self.get_task_directory(), 'process_output.txt'), 'w') as f:
-                f.write('\n'.join(self.task_data['progress']))
-            with open(os.path.join(self.get_task_directory(), 'STATE'), 'w') as f:
-                f.write(self.status)
+                self.set_status(self.STATUS_STOPPED)
             return True
         return False

@@ -11,6 +11,7 @@ class CreateHeroAPI(Application):
         super().__init__(**settings)
         self.log = logging.getLogger('CreateHeroAPI')
         self.add_routes()
+        self.read_old_tasks()
         self.log.info('CreateHero API ready')
 
     def add_routes(self):
@@ -26,6 +27,13 @@ class CreateHeroAPI(Application):
         ### FALLBACK
         # route_list.append((r"/.*", h.VideoReformatBaseHandler))
         self.add_handlers(r".*", route_list)
+
+    def read_old_tasks(self):
+        task_list = [f.name for f in os.scandir(self.settings['working_directory']) if f.is_dir()]
+        for task in task_list:
+            self.settings['tasks'][task] = {}
+            VideoReformatTask(task, self.settings['working_directory'], self.settings['tasks'][task])
+
 
 class TaskExecutor(PeriodicCallback):
 
