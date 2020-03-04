@@ -21,6 +21,10 @@ class AsynchronousFileReader(threading.Thread):
         self._fd = fd
         self._queue = queue
 
+    def set_source(self, fd):
+        assert callable(fd.readline)
+        self._fd = fd
+
     def run(self):
         '''The body of the tread: read lines and put them on the queue.'''
         for line in iter(self._fd.readline, ''):
@@ -52,13 +56,13 @@ class VideoReformatTask(object):
             self.log_reader_queue = queue.Queue()
         # keep track of data
         self.task_data['progress'] = []
-        self.set_input_file()
+        self.initialize()
         self.task_data['status'] = self.STATUS_INIT
 
     def get_task_directory(self):
         return os.path.join(self.working_base_dir, self.task_id)
 
-    def set_input_file(self):
+    def initialize(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
         output_file_name = input_file_name + '_' + self.task_data['target_format'] + input_ext
         input_file = os.path.join(self.get_task_directory(), self.task_data['input_file_name'])
@@ -66,10 +70,25 @@ class VideoReformatTask(object):
         output_file = os.path.join(self.get_task_directory(), output_file_name)
         self.task_data['output_file'] = output_file
 
+        audio_file = os.path.join(self.get_task_directory(), input_file_name + '.mp3')
+        self.task_data['audio_file'] = audio_file
+        input_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_no_audio' + input_ext)
+        self.task_data['input_file_no_audio'] = input_no_audio
+        output_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_' + self.task_data['target_format'] + '_no_audio' + input_ext)
+        self.task_data['output_file_no_audio'] = output_no_audio
+
+        # extract audio from source
+        extract_process = subprocess.run(['ffmpeg', '-i', input_file, '-f', 'mp3', '-ab', '192000', '-vn', audio_file], capture_output=True, text=True)
+        self.task_data['progress'].append(list(iter(extract_process.stdout.readline, '')))
+
+        # strip audio off of input source
+        stripoff_process = subprocess.run(['ffmpeg', '-i', input_file, '-codec', 'copy', '-an', input_no_audio], capture_output=True, text=True)
+        self.task_data['progress'].append(list(iter(stripoff_process.stdout.readline, '')))
+
         # prepare call to subprocess
         self.command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                         '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
-                        f'--input_side_packets=input_video_path={input_file},output_video_path={output_file},aspect_ratio={self.task_data["target_format"]}'
+                        f'--input_side_packets=input_video_path={input_no_audio},output_video_path={output_no_audio},aspect_ratio={self.task_data["target_format"]}'
                         ]
 
     async def start(self):
@@ -99,6 +118,10 @@ class VideoReformatTask(object):
     def is_finished(self):
         status = self.process.poll()
         if status:
+            # rejoin video and audio
+            join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
+            self.task_data['progress'].append(list(iter(join_process.stdout.readline, '')))
+
             # Let's be tidy and join the threads we've started.
             log_reader.join()
 
