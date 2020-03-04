@@ -61,7 +61,7 @@ class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
     def get(self):
         data = []
         for t in self.settings['tasks']:
-            data.append({'task_id' : t.task_id, 'status' : t.status})
+            data.append({'task_id' : t, 'status' : self.settings['tasks'][t]['status']})
         self.render('tasks/show_tasks.html', tasks=data)
 
 class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
