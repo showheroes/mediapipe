@@ -7,7 +7,7 @@ import os
 import queue
 import uuid
 import json
-
+import logging
 class AsynchronousFileReader(threading.Thread):
     '''
     Helper class to implement asynchronous reading of a file
@@ -49,6 +49,7 @@ class VideoReformatTask(object):
     STATUS_STOPPED = 'stopped'
 
     def __init__(self, task_id, working_base_dir, task_data, logging = False):
+        self.log = logging.getLogger(self.__name__)
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_data = task_data
@@ -65,17 +66,22 @@ class VideoReformatTask(object):
         return os.path.join(self.working_base_dir, self.task_id)
 
     def read_status(self):
+        self.log.debug('read task data')
         data_file = os.path.join(self.get_task_directory(), 'task_data')
         if os.path.isfile(data_file):
+            self.log.debug('found json data, reading...')
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
-        elif os.path.isdir(self.get_task_directory()) and [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]:
+        elif os.path.isdir(self.get_task_directory()) and [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and 'mp3' in f.name]:
+            self.log.debug('no json data, but mp3 source file found')
             self.set_status(self.STATUS_STOPPED)
         else:
+            self.log.debug('apparently a new task')
             self.set_status(self.STATUS_SUBMITTED)
 
     def set_status(self, status):
         self.task_data['status'] = status
+        self.log.debug(f'setting task_data status to {status}, task_data now: {self.task_data}')
         with open(os.path.join(self.get_task_directory(), 'task_data'), 'w') as f:
             json.dump(self.task_data, f)
 
