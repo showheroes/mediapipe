@@ -30,10 +30,12 @@ class CreateHeroAPI(Application):
         self.add_handlers(r".*", route_list)
 
     def read_old_tasks(self):
+        self.log.debug('reading old tasks')
         task_list = [f.name for f in os.scandir(self.settings['working_directory']) if f.is_dir()]
         for task in task_list:
             self.settings['tasks'][task] = {}
             VideoReformatTask(task, self.settings['working_directory'], self.settings['tasks'][task])
+            self.log.debug(f'found task with id {task}, settings are {self.settings["tasks"][task]}')
 
 
 class TaskExecutor(PeriodicCallback):
