@@ -15,12 +15,12 @@ class AsynchronousFileReader(threading.Thread):
     be consumed in another thread.
     '''
 
-    def __init__(self, fd, queue):
-        assert isinstance(queue, queue.Queue)
+    def __init__(self, fd, q):
+        assert isinstance(q, queue.Queue)
         assert callable(fd.readline)
         threading.Thread.__init__(self)
         self._fd = fd
-        self._queue = queue
+        self._queue = q
 
     def set_source(self, fd):
         assert callable(fd.readline)
