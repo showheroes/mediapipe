@@ -79,11 +79,11 @@ class VideoReformatTask(object):
 
         # extract audio from source
         extract_process = subprocess.run(['ffmpeg', '-i', input_file, '-f', 'mp3', '-ab', '192000', '-vn', audio_file], capture_output=True, text=True)
-        self.task_data['progress'].append(list(iter(extract_process.stdout.readline, '')))
+        self.task_data['progress'].append(extract_process.stdout.splitlines())
 
         # strip audio off of input source
         stripoff_process = subprocess.run(['ffmpeg', '-i', input_file, '-codec', 'copy', '-an', input_no_audio], capture_output=True, text=True)
-        self.task_data['progress'].append(list(iter(stripoff_process.stdout.readline, '')))
+        self.task_data['progress'].append(stripoff_process.stdout.splitlines())
 
         # prepare call to subprocess
         self.command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
@@ -120,7 +120,7 @@ class VideoReformatTask(object):
         if status:
             # rejoin video and audio
             join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
-            self.task_data['progress'].append(list(iter(join_process.stdout.readline, '')))
+            self.task_data['progress'].append(join_process.stdout.splitlines())
 
             # Let's be tidy and join the threads we've started.
             log_reader.join()
