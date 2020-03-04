@@ -4,6 +4,7 @@ from createhero.util import VideoReformatTask
 from tornado.web import Application
 from tornado.ioloop import PeriodicCallback
 import logging
+import os
 
 class CreateHeroAPI(Application):
 
