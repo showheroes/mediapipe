@@ -127,7 +127,9 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         # put task on queue
         self.settings['tasks'][task_id] = {
             'target_format' : self.target_format,
-            'input_file_name' : self.input_filename
+            'input_file_name' : self.input_filename,
+            'task_id' : task_id,
+            'status' : VideoReformatTask.STATUS_SUBMITTED
         }
         self.settings['task_queue'].put(task_id)
         # return with task id
