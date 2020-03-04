@@ -47,6 +47,7 @@ class TaskExecutor(PeriodicCallback):
         self.q = settings['task_queue']
         self.d = settings['tasks']
         self.data_dir = settings['working_directory']
+        self.log = logging.getLogger("TaskExecutor")
         super().__init__(self._do, 1e3)
 
     async def _do(self):
@@ -54,6 +55,7 @@ class TaskExecutor(PeriodicCallback):
             try:
                 task_id = self.q.get()
                 task = VideoReformatTask(task_id, self.data_dir, self.d)
+                self.log.debug(f'starting task {task_id}')
                 await task.start()
             finally:
                 self.q.task_done()
