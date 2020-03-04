@@ -43,6 +43,8 @@ def main():
     socket_external = tornado.netutil.bind_sockets(8888)
 
     with mp.Manager() as mgr:
+        mgr.register("TaskExecutor", TaskExecutor)
+
         settings = {}
         settings['deploy_path'] = os.environ.get('DEPLOY_PATH', '')
         # set internal url everywhere
