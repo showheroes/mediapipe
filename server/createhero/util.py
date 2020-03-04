@@ -69,11 +69,8 @@ class VideoReformatTask(object):
         if os.path.isfile(data_file):
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
-        elif:
-            # check for mp4 or mp3 files
-            source_files =  [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
-            if l:
-                self.set_status(self.STATUS_STOPPED)
+        elif [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]:
+            self.set_status(self.STATUS_STOPPED)
         else:
             self.set_status(self.STATUS_SUBMITTED)
 
