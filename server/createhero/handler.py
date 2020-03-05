@@ -81,10 +81,7 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
     def check_origin(self, origin):
         parsed_origin = up.urlparse(origin)
-        log = logging.getLogger('WebsocketHandler')
-        log.debug(f'parsing origin {origin}')
         let_through = '.showheroes.com' in parsed_origin.netloc
-        log.debug(f'letting it through? {let_through}')
         return let_through
 
     def open(self, task_id):
@@ -94,7 +91,6 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
         self.task = self.settings['tasks'][task_id]
 
     def on_message(self, message):
-        self.log.debug(message)
         if 'progress' == message:
             self.write_message('\n'.join(self.task['progress']))
 
