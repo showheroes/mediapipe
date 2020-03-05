@@ -155,7 +155,10 @@ class VideoReformatTask(object):
             self.task_data['progress'].extend(join_process.stdout.splitlines())
 
             # Let's be tidy and join the threads we've started.
-            self.log_reader.join()
+            try:
+                self.log_reader.join()
+            except RuntimeError as re:
+                self.log.warn(f'Could not join log reader thread: {re}')
 
             # Close subprocess' file descriptors.
             self.process.stdout.close()
