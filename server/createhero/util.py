@@ -62,13 +62,14 @@ class VideoReformatTask(object):
         else:
             self.task_data = self.task_lib[self.task_id]
 
-        self.task_data['progress'] = []
+        if not 'progress' in self.task_data['progress']:
+            self.task_data['progress'] = []
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
             self.initialize()
             self.prepare()
             self.set_status(self.STATUS_INIT)
-        self.update_tasklib()
+        self.store_task_data()
 
     def update_tasklib(self):
         self.task_lib[self.task_id] = self.task_data
@@ -93,11 +94,12 @@ class VideoReformatTask(object):
         else:
             self.log.debug('apparently a new task')
             self.set_status(self.STATUS_SUBMITTED)
-        self.update_tasklib()
 
     def set_status(self, status):
         self.task_data['status'] = status
         self.log.debug(f'setting task_data status to {status}')
+
+    def store_task_data(self):
         with open(os.path.join(self.get_task_directory(), 'task_data'), 'w') as f:
             json.dump(self.task_data, f)
         self.update_tasklib()
@@ -125,7 +127,6 @@ class VideoReformatTask(object):
         # strip audio off of input source
         stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
         self.task_data['progress'].extend(stripoff_process.stdout.splitlines())
-        self.update_tasklib()
 
     async def start(self):
         if self.task_data['status'] != self.STATUS_INIT:
@@ -144,6 +145,8 @@ class VideoReformatTask(object):
             output = self.process.stdout.readline()
             if output:
                 self.task_data['progress'].append(output)
+                # make changes available in managed dict but do not write
+                self.update_tasklib()
             if self.is_finished():
                 break
         # Launch the asynchronous readers of the process' stdout and stderr.
@@ -177,5 +180,6 @@ class VideoReformatTask(object):
                 self.set_status(self.STATUS_SUCCESS)
             else:
                 self.set_status(self.STATUS_STOPPED)
+            self.store_task_data()
             return True
         return False
