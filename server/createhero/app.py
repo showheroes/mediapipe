@@ -12,7 +12,6 @@ class CreateHeroAPI(Application):
         super().__init__(**settings)
         self.log = logging.getLogger('CreateHeroAPI')
         self.add_routes()
-        self.read_old_tasks()
         self.log.info('CreateHero API ready')
 
     def add_routes(self):
@@ -29,16 +28,6 @@ class CreateHeroAPI(Application):
         # route_list.append((r"/.*", h.VideoReformatBaseHandler))
         self.add_handlers(r".*", route_list)
 
-    def read_old_tasks(self):
-        self.log.debug('reading old tasks')
-        task_list = [f.name for f in os.scandir(self.settings['working_directory']) if f.is_dir()]
-        for task in task_list:
-            if task not in self.settings['tasks']:
-                VideoReformatTask(task, self.settings['working_directory'], self.settings['tasks'])
-                self.log.debug(f'found task with id {task}, settings are {self.settings["tasks"][task]}')
-                if self.settings['tasks'][task]['status'] == VideoReformatTask.STATUS_INIT:
-                    self.log.debug('found taks has status init, putting on queue')
-                    self.settings['task_queue'].put(task)
 
 
 class TaskExecutor(PeriodicCallback):
@@ -48,14 +37,27 @@ class TaskExecutor(PeriodicCallback):
         self.d = settings['tasks']
         self.data_dir = settings['working_directory']
         self.log = logging.getLogger("TaskExecutor")
+        self.review_old_tasks()
         super().__init__(self._do, 1e3)
+
+    def review_old_tasks(self):
+        self.log.debug('reading old tasks')
+        task_list = [f.name for f in os.scandir(self.data_dir) if f.is_dir()]
+        for task in task_list:
+            if task not in self.d:
+                await self._load_or_create_and_run_task(task)
 
     async def _do(self):
         while not self.q.empty():
             try:
                 task_id = self.q.get()
-                task = VideoReformatTask(task_id, self.data_dir, self.d)
-                self.log.debug(f'starting task {task_id}')
-                await task.start()
+                await self._load_or_create_and_run_task(task_id)
             finally:
                 self.q.task_done()
+
+    async def _load_or_create_and_run_task(self, task_id):
+        task = VideoReformatTask(task_id, self.data_dir, self.d)
+        self.log.debug(f'task with id {task}, settings are {self.d[task]}')
+        if self.d[task]['status'] == VideoReformatTask.STATUS_INIT:
+            self.log.debug('task has status init, executing')
+            await task.start()
