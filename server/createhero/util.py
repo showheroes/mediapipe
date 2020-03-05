@@ -62,7 +62,7 @@ class VideoReformatTask(object):
         else:
             self.task_data = self.task_lib[self.task_id]
 
-        if not 'progress' in self.task_data['progress']:
+        if not 'progress' in self.task_data:
             self.task_data['progress'] = []
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
