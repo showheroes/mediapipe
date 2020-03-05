@@ -74,10 +74,8 @@ class VideoReformatTask(object):
         return os.path.join(self.working_base_dir, self.task_id)
 
     def read_status(self):
-        self.log.debug('read task data')
         data_file = os.path.join(self.get_task_directory(), 'task_data')
         if os.path.exists(data_file):
-            self.log.debug('found json data, reading...')
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
         elif os.path.isdir(self.get_task_directory()):
@@ -93,7 +91,7 @@ class VideoReformatTask(object):
 
     def set_status(self, status):
         self.task_data['status'] = status
-        self.log.debug(f'setting task_data status to {status}, task_data now: {self.task_data}')
+        self.log.debug(f'setting task_data status to {status}')
         with open(os.path.join(self.get_task_directory(), 'task_data'), 'w') as f:
             json.dump(self.task_data, f)
         self.update_tasklib()
@@ -134,18 +132,24 @@ class VideoReformatTask(object):
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
         self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        self.log.debug(f'[{self.task_id}] process started')
-        # Launch the asynchronous readers of the process' stdout and stderr.
-        self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
-        self.log.debug(f'[{self.task_id}] created log reader')
-        self.log_reader.run()
-        self.log.debug(f'[{self.task_id}] log reader running')
         self.set_status(self.STATUS_RUNNING)
+        self.log.debug(f'[{self.task_id}] process started')
+        while True:
+            output = self.process.stdout.readline()
+            if output:
+                self.task_data['progress'].append(output)
+            if self.is_finished():
+                break
+        # Launch the asynchronous readers of the process' stdout and stderr.
+        # self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
+        # self.log.debug(f'[{self.task_id}] created log reader')
+        # self.log_reader.run()
+        # self.log.debug(f'[{self.task_id}] log reader running')
 
-        while not self.is_finished():
-            while not self.log_reader_queue.empty():
-                self.task_data['progress'].append(self.log_reader_queue.get())
-                self.set_status(self.STATUS_RUNNING)
+        # while not self.is_finished():
+        #     while not self.log_reader_queue.empty():
+        #         self.task_data['progress'].append(self.log_reader_queue.get())
+        #         self.set_status(self.STATUS_RUNNING)
 
     def is_finished(self):
         status = self.process.poll()
@@ -154,11 +158,11 @@ class VideoReformatTask(object):
             join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
             self.task_data['progress'].extend(join_process.stdout.splitlines())
 
-            # Let's be tidy and join the threads we've started.
-            try:
-                self.log_reader.join()
-            except RuntimeError as re:
-                self.log.warn(f'Could not join log reader thread: {re}')
+            # # Let's be tidy and join the threads we've started.
+            # try:
+            #     self.log_reader.join()
+            # except RuntimeError as re:
+            #     self.log.warn(f'Could not join log reader thread: {re}')
 
             # Close subprocess' file descriptors.
             if self.process.stdout:
