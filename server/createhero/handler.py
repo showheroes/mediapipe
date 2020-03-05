@@ -5,6 +5,7 @@ import uuid
 from tornado.websocket import WebSocketHandler
 import os
 import json
+import urllib.parse as up
 
 class VideoReformatBaseHandler(GenericHandler):
 
@@ -77,6 +78,9 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
     UI socket for monitoring a task, returns stdout messages and the download link when ready.
     """
+    def check_origin(self, origin):
+        parsed_origin = up.urlparse(origin)
+        return parsed_origin.netloc.endswith(".showheroes.com")
 
     def open(self, task_id):
         # when opening the websocket, get the task
