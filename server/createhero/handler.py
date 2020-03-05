@@ -92,7 +92,7 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
 
     def on_message(self, message):
         if 'progress' == message:
-            self.write_message('\n'.join(self.task['progress']))
+            self.write_message(''.join(self.task['progress']))
 
 
 

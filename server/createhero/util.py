@@ -122,11 +122,11 @@ class VideoReformatTask(object):
     def prepare(self):
         # extract audio from source
         extract_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-f', 'mp3', '-b:a', '192k', '-vn', self.task_data['audio_file']], capture_output=True, text=True)
-        self.task_data['progress'].extend(extract_process.stdout.splitlines())
+        self.task_data['progress'].extend(extract_process.stdout.splitlines(keepends=True))
 
         # strip audio off of input source
         stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
-        self.task_data['progress'].extend(stripoff_process.stdout.splitlines())
+        self.task_data['progress'].extend(stripoff_process.stdout.splitlines(keepends=True))
 
     async def start(self):
         if self.task_data['status'] != self.STATUS_INIT:
@@ -166,7 +166,7 @@ class VideoReformatTask(object):
         if status:
             # rejoin video and audio
             join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
-            self.task_data['progress'].extend(join_process.stdout.splitlines())
+            self.task_data['progress'].extend(join_process.stdout.splitlines(keepends=True))
 
             # # Let's be tidy and join the threads we've started.
             # try:
