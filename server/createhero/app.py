@@ -37,17 +37,18 @@ class TaskExecutor(PeriodicCallback):
         self.d = settings['tasks']
         self.data_dir = settings['working_directory']
         self.log = logging.getLogger("TaskExecutor")
-        self.review_old_tasks()
         super().__init__(self._do, 1e3)
 
-    def review_old_tasks(self):
+    async def review_old_tasks(self):
         self.log.debug('reading old tasks')
         task_list = [f.name for f in os.scandir(self.data_dir) if f.is_dir()]
         for task in task_list:
             if task not in self.d:
-                self._load_or_create_and_run_task(task)
+                self.log.debug(f'loading task {task}')
+                await self._load_or_create_and_run_task(task)
 
     async def _do(self):
+        self.review_old_tasks()
         while not self.q.empty():
             try:
                 task_id = self.q.get()
