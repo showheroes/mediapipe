@@ -34,6 +34,8 @@ RUN apt-get update && \
         unzip \
         ffmpeg \
         libegl1-mesa-dev \
+        mesa-common-dev \
+        libgles2-mesa-dev \
         # libopencv-core-dev \
         # libopencv-highgui-dev \
         # libopencv-imgproc-dev \
