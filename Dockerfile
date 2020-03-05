@@ -33,7 +33,7 @@ RUN apt-get update && \
         wget \
         unzip \
         ffmpeg \
-        # libegl1-mesa-dev \
+        libegl1-mesa-dev \
         # libopencv-core-dev \
         # libopencv-highgui-dev \
         # libopencv-imgproc-dev \
@@ -77,8 +77,8 @@ COPY ./mediapipe /mediapipe/mediapipe
 # RUN bash setup_opencv.sh
 # RUN apt-get install -y --no-install-recommends libgles2-mesa-dev
 RUN bazel clean --expunge
-RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 mediapipe/examples/desktop/autoflip:run_autoflip
-# RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures /mediapipe/mediapipe/examples/desktop/autoflip:run_autoflip
+# RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --define HAVE_FFMPEG=1 mediapipe/examples/desktop/autoflip:run_autoflip
+RUN bazel build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --verbose_failures /mediapipe/mediapipe/examples/desktop/autoflip:run_autoflip
 # If we want the docker image to contain the pre-built object_detection_offline_demo binary, do the following
 # RUN bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/demo:object_detection_tensorflow_demo
 
