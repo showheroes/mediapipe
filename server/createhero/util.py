@@ -56,13 +56,13 @@ class VideoReformatTask(object):
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_lib = task_lib
-        self.task_data['progress'] = []
-        self.log_reader_queue = queue.Queue()
         if task_id not in self.task_lib:
             self.task_data = {}
             self.read_status()
         else:
             self.task_data = self.task_lib[self.task_id]
+
+        self.task_data['progress'] = []
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
             self.initialize()
@@ -86,6 +86,9 @@ class VideoReformatTask(object):
             if any(map(lambda fname : fname.endswith('mp3'), source_files)):
                 self.log.debug('no json data, but mp3 source file found')
                 self.set_status(self.STATUS_STOPPED)
+            else:
+                self.log.debug('just found raw input, treat as submitted')
+                self.set_status(self.STATUS_SUBMITTED)
 
         else:
             self.log.debug('apparently a new task')
