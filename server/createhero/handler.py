@@ -6,6 +6,7 @@ from tornado.websocket import WebSocketHandler
 import os
 import json
 import urllib.parse as up
+import logging
 
 class VideoReformatBaseHandler(GenericHandler):
 
@@ -80,7 +81,11 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
     def check_origin(self, origin):
         parsed_origin = up.urlparse(origin)
-        return parsed_origin.netloc.endswith(".showheroes.com")
+        log = logging.getLogger('WebsocketHandler')
+        log.debug(f'parsing origin {origin}')
+        let_through = '.showheroes.com' in parsed_origin.netloc
+        log.debug(f'letting it through? {let_through}')
+        return let_through
 
     def open(self, task_id):
         # when opening the websocket, get the task
