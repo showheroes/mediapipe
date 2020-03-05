@@ -98,6 +98,7 @@ class VideoReformatTask(object):
     def set_status(self, status):
         self.task_data['status'] = status
         self.log.debug(f'setting task_data status to {status}')
+        self.update_tasklib()
 
     def store_task_data(self):
         with open(os.path.join(self.get_task_directory(), 'task_data'), 'w') as f:
