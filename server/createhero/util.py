@@ -161,8 +161,8 @@ class VideoReformatTask(object):
                 self.log.warn(f'Could not join log reader thread: {re}')
 
             # Close subprocess' file descriptors.
-            self.process.stdout.close()
-            self.process.stderr.close()
+            if self.process.stdout:
+                self.process.stdout.close()
             if status == 0:
                 self.set_status(self.STATUS_SUCCESS)
             else:
