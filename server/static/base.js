@@ -1,7 +1,8 @@
-function initiateProgressSocket(textarea, taskID) {
+function initiateProgressSocket(textarea, taskID, deployPath) {
 	let host = getBaseURL();
-	let socket = new Websocket("wss://" + host + "/video/ui/reformat/tasks/ " + taskID + "/progress");
-
+	console.log("got host: " + host);
+	let socket = new Websocket("wss://" + host + "/" + deployPath + "/video/flip/ui/tasks/ " + taskID + "/progress");
+	console.log("constructed websocket")
 	socket.onopen = function(e) {
 		console.log("initiated progress socket");
 		socket.send("progress");

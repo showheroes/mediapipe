@@ -12,7 +12,7 @@
 				<p>Task ID: {{ task_id }}</p>
 				<p>Task status: {{ status }}</p>
 				<p>
-					<textarea readonly wrap="hard" name="progress" id="progress" rows="12" cols="100" onload="initiateProgressSocket(this, {{ task_id }})">
+					<textarea readonly wrap="hard" name="progress" id="progress" rows="12" cols="100" onload="initiateProgressSocket(this, {{ task_id }}, {{ deploy_path }})">
 					</textarea>
 				</p>
 			</div>
