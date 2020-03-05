@@ -12,7 +12,7 @@
 				<p>Task ID: {{ task_id }}</p>
 				<p>Task status: {{ status }}</p>
 				<p>
-					<textarea readonly wrap="hard" name="progress" id="progress" rows="12" cols="100" onload="initiateProgressSocket(this, {{ task_id }}, {{ deploy_path }})">
+					<textarea readonly wrap="hard" name="progress" id="progress" rows="12" cols="100">
 					</textarea>
 				</p>
 			</div>
@@ -20,4 +20,10 @@
 	{% end %}
 </div>
 
+<script type="application/javascript">
+	$( document ).ready(function() {
+		console.log( "opening socket..." );
+		initiateProgressSocket($('#progress'), {{ task_id }}, {{ deploy_path }})
+	});
+</script>
 {% include '../partials/footer.html' %}

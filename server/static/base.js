@@ -10,7 +10,7 @@ function initiateProgressSocket(textarea, taskID, deployPath) {
 
 	socket.onmessage = function(event) {
 		console.log("[Progress] " + event.data);
-		$(textarea).val(event.data);
+		textarea.val(event.data);
 	};
 
 	socket.onclose = function(event) {
