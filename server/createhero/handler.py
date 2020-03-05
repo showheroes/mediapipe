@@ -4,6 +4,7 @@ from .util import VideoReformatTask
 import uuid
 from tornado.websocket import WebSocketHandler
 import os
+import json
 
 class VideoReformatBaseHandler(GenericHandler):
 
