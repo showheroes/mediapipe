@@ -20,7 +20,8 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	  }
 	};
 	window.setInterval(function(){
-		socket.send("progress")
+		socket.send("progress");
+		console.log("reloading progress");
 	}, 1500);
 }
 

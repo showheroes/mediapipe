@@ -149,6 +149,7 @@ class VideoReformatTask(object):
                 self.task_data['progress'].append(output)
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
+            self.log.debug("check if finished")
             if self.is_finished():
                 break
         # Launch the asynchronous readers of the process' stdout and stderr.
