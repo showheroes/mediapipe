@@ -56,10 +56,13 @@ class VideoReformatTask(object):
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_lib = task_lib
-        self.task_data = {}
         self.task_data['progress'] = []
         self.log_reader_queue = queue.Queue()
-        self.read_status()
+        if task_id not in self.task_lib:
+            self.task_data = {}
+            self.read_status()
+        else:
+            self.task_data = self.task_lib[self.task_id]
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
             self.initialize()
