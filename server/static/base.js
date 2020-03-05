@@ -8,7 +8,6 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 
 	socket.onmessage = function(event) {
 		progressWindow.html(event.data);
-		setTimeout(socket.send("progress"), 1000);
 	};
 
 	socket.onclose = function(event) {
@@ -20,7 +19,9 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	    alert('[close] Connection died');
 	  }
 	};
-
+	window.setInterval(function(){
+		socket.send("progress")
+	}, 1500);
 }
 
 function getBaseURL() {
