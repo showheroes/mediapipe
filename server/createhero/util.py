@@ -30,7 +30,7 @@ class AsynchronousFileReader(threading.Thread):
     def run(self):
         '''The body of the tread: read lines and put them on the queue.'''
         self.log.debug('file reader running...')
-        for line in iter(self._fd.readline, ''):
+        for line in iter(self._fd.readline, b''):
             self.log.debug(f'putting on queue: {line}')
             self._queue.put(line)
 
