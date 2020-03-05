@@ -2,7 +2,9 @@ $(document).ready(function(){
 	function initiateProgressSocket(textarea, taskID, deployPath) {
 		let host = getBaseURL();
 		console.log("got host: " + host);
-		let socket = new Websocket("wss://" + host + "/" + deployPath + "/video/flip/ui/tasks/ " + taskID + "/progress");
+		let socketPath = "wss://" + host + "/" + deployPath + "/video/flip/ui/tasks/ " + taskID + "/progress";
+		console.log("opening websocket at " + socketPath)
+		let socket = new WebSocket(socketPath);
 		console.log("constructed websocket")
 		socket.onopen = function(e) {
 			console.log("initiated progress socket");
@@ -29,5 +31,5 @@ $(document).ready(function(){
 	function getBaseURL() {
 		return window.location.host;
 	}
-	
+
 });
