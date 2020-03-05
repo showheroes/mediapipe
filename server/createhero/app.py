@@ -47,9 +47,7 @@ class TaskExecutor(PeriodicCallback):
                 await self._load_or_create_and_run_task(task_id)
 
     async def _do(self):
-        self.log.debug('reading old tasks')
         await self.review_old_tasks()
-        self.log.debug('running queue now')
         while not self.q.empty():
             try:
                 task_id = self.q.get()
