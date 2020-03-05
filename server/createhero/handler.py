@@ -125,13 +125,18 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         with open(os.path.join(task_dir, self.input_filename), 'wb') as input_file:
             input_file.write(file_obj['body'])
 
-        # put task on queue
-        self.settings['tasks'][task_id] = {
+        # save task_data
+        task_data = {
             'target_format' : self.target_format,
             'input_file_name' : self.input_filename,
             'task_id' : task_id,
             'status' : VideoReformatTask.STATUS_SUBMITTED
         }
+        self.settings['tasks'][task_id] = task_data
+        with open(os.path.join(task_dir, 'task_data'), 'w') as f:
+            json.dump(task_data, f)
+
+        # put task on queue
         self.settings['task_queue'].put(task_id)
         # return with task id
         return {'task_id' : task_id, 'status' : VideoReformatTask.STATUS_SUBMITTED}
