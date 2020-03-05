@@ -45,7 +45,7 @@ class TaskExecutor(PeriodicCallback):
         task_list = [f.name for f in os.scandir(self.data_dir) if f.is_dir()]
         for task in task_list:
             if task not in self.d:
-                await self._load_or_create_and_run_task(task)
+                self._load_or_create_and_run_task(task)
 
     async def _do(self):
         while not self.q.empty():
