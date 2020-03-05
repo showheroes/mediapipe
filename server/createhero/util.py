@@ -144,7 +144,7 @@ class VideoReformatTask(object):
         while True:
             output = self.process.stdout.readline()
             if output:
-                self.task_data['progress'].append(output)
+                self.task_data['progress'].append(output.decode())
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
             if self.is_finished():
