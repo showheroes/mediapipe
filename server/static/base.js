@@ -8,8 +8,7 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 
 	socket.onmessage = function(event) {
 		progressWindow.html(event.data);
-		wait(1000);
-		socket.send("progress")
+		setTimeout(socket.send("progress"), 1000);
 	};
 
 	socket.onclose = function(event) {
