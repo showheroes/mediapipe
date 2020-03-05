@@ -11,12 +11,11 @@
 				<h4>Information on task {{ task_id }}</h4>
 				<p>Task ID: {{ task_id }}</p>
 				<p>Task status: {{ status }}</p>
-				<p>
-					<textarea readonly wrap="hard" name="progress" id="progress" rows="12" cols="100">
-					</textarea>
-				</p>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col col-12" id="progress" style="font-family: Consolas,monospace;">
+			</div>
 	{% end %}
 </div>
 
