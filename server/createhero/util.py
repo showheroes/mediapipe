@@ -21,6 +21,7 @@ class AsynchronousFileReader(threading.Thread):
         threading.Thread.__init__(self)
         self._fd = fd
         self._queue = q
+        self.log = logging.getLogger(__name__)
 
     def set_source(self, fd):
         assert callable(fd.readline)
@@ -28,7 +29,9 @@ class AsynchronousFileReader(threading.Thread):
 
     def run(self):
         '''The body of the tread: read lines and put them on the queue.'''
+        self.log.debug('file reader running...')
         for line in iter(self._fd.readline, ''):
+            self.log.debug(f'putting on queue: {line}')
             self._queue.put(line)
 
     def eof(self):
@@ -113,11 +116,11 @@ class VideoReformatTask(object):
     def prepare(self):
         # extract audio from source
         extract_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-f', 'mp3', '-b:a', '192k', '-vn', self.task_data['audio_file']], capture_output=True, text=True)
-        self.task_data['progress'].extend(extract_process.stdout)
+        self.task_data['progress'].extend(extract_process.stdout.splitlines())
 
         # strip audio off of input source
         stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
-        self.task_data['progress'].extend(stripoff_process.stdout)
+        self.task_data['progress'].extend(stripoff_process.stdout.splitlines())
         self.update_tasklib()
 
     async def start(self):
@@ -134,7 +137,9 @@ class VideoReformatTask(object):
         self.log.debug(f'[{self.task_id}] process started')
         # Launch the asynchronous readers of the process' stdout and stderr.
         self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
+        self.log.debug(f'[{self.task_id}] created log reader')
         self.log_reader.run()
+        self.log.debug(f'[{self.task_id}] log reader running')
         self.set_status(self.STATUS_RUNNING)
 
         while not self.is_finished():
@@ -147,7 +152,7 @@ class VideoReformatTask(object):
         if status:
             # rejoin video and audio
             join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
-            self.task_data['progress'].append(join_process.stdout.splitlines())
+            self.task_data['progress'].extend(join_process.stdout.splitlines())
 
             # Let's be tidy and join the threads we've started.
             self.log_reader.join()
