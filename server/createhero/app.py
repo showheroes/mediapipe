@@ -40,11 +40,11 @@ class TaskExecutor(PeriodicCallback):
         super().__init__(self._do, 1e3)
 
     async def review_old_tasks(self):
-        task_list = [f.name for f in os.scandir(self.data_dir) if f.is_dir()]
-        for task in task_list:
-            if task not in self.d:
-                self.log.debug(f'loading task {task}')
-                await self._load_or_create_and_run_task(task)
+        task_id_list = [f.name for f in os.scandir(self.data_dir) if f.is_dir()]
+        for task_id in task_id_list:
+            if task_id not in self.d:
+                self.log.debug(f'loading task {task_id}')
+                await self._load_or_create_and_run_task(task_id)
 
     async def _do(self):
         self.log.debug('reading old tasks')
@@ -59,7 +59,7 @@ class TaskExecutor(PeriodicCallback):
 
     async def _load_or_create_and_run_task(self, task_id):
         task = VideoReformatTask(task_id, self.data_dir, self.d)
-        self.log.debug(f'processing task with id {task}')
-        if self.d[task]['status'] == VideoReformatTask.STATUS_INIT:
+        self.log.debug(f'processing task with id {task_id}, settings are {self.d[task_id]}')
+        if self.d[task_id]['status'] == VideoReformatTask.STATUS_INIT:
             self.log.debug('task has status init, executing')
             await task.start()
