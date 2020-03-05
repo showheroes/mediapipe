@@ -23,7 +23,7 @@
 <script type="application/javascript">
 	$( document ).ready(function() {
 		console.log( "opening socket..." );
-		initiateProgressSocket($('#progress'), {{ task_id }}, {{ deploy_path }})
+		initiateProgressSocket($('#progress'), "{{ task_id }}", "{{ deploy_path }}")
 	});
 </script>
 {% include '../partials/footer.html' %}
