@@ -1,18 +1,14 @@
-function initiateProgressSocket(textarea, taskID, deployPath) {
+function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	let host = getBaseURL();
-	console.log("got host: " + host);
 	let socketPath = "ws://" + host + "/" + deployPath + "/video/flip/ui/tasks/" + taskID + "/progress";
-	console.log("opening websocket at " + socketPath)
 	let socket = new WebSocket(socketPath);
-	console.log("constructed websocket")
 	socket.onopen = function(e) {
-		console.log("initiated progress socket");
 		socket.send("progress");
 	};
 
 	socket.onmessage = function(event) {
-		console.log("[Progress] " + event.data);
-		textarea.val(event.data);
+		progressWindow.html(event.data);
+		socket.send("progress")
 	};
 
 	socket.onclose = function(event) {
