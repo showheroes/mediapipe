@@ -446,18 +446,15 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
 // sizes, the other for the actual removal of borders from the frames.
 ::mediapipe::Status SceneCroppingCalculator::RemoveStaticBorders(
     CalculatorContext* cc, int* top_border_size, int* bottom_border_size) {
-  LOG_EVERY_N(ERROR, 10) << "in remove static borders";
   *top_border_size = 0;
   *bottom_border_size = 0;
   MP_RETURN_IF_ERROR(ComputeSceneStaticBordersSize(
       static_features_, top_border_size, bottom_border_size));
-  LOG_EVERY_N(ERROR, 10) << "checked static border sizes";
   const double scale = static_cast<double>(frame_height_) / key_frame_height_;
   top_border_distance_ = std::round(scale * *top_border_size);
   const int bottom_border_distance = std::round(scale * *bottom_border_size);
   effective_frame_height_ =
       frame_height_ - top_border_distance_ - bottom_border_distance;
-  LOG_EVERY_N(ERROR, 10) << "computed scale (" << scale << "), border distance (" << top_border_distance_ << ") and frame height (" << effective_frame_height_ << ")";
 
   // Store shallow copy of the original frames for debug display if required
   // before static areas are removed.
@@ -469,8 +466,6 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
   if (top_border_distance_ > 0 || bottom_border_distance > 0) {
     VLOG(1) << "Remove top border " << top_border_distance_ << " bottom border "
             << bottom_border_distance;
-    LOG_EVERY_N(ERROR, 10) << "Remove top border " << top_border_distance_ << " bottom border "
-            << bottom_border_distance;
     // Remove borders from frames.
     cv::Rect roi(0, top_border_distance_, frame_width_,
                  effective_frame_height_);
@@ -480,12 +475,9 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
       scene_frames_or_empty_[i] = tmp;
     }
     // Adjust detection bounding boxes.
-    LOG_EVERY_N(ERROR, 10) << "Adjust bounding boxes";
     for (int i = 0; i < key_frame_infos_.size(); ++i) {
-      LOG_EVERY_N(ERROR, 10) << "key frame info #" << i;
       DetectionSet adjusted_detections;
       const auto& detections = key_frame_infos_[i].detections();
-      LOG_EVERY_N(ERROR, 10) << "Found " << detections.detections_size() << " regions";
       for (int j = 0; j < detections.detections_size(); ++j) {
         const auto& detection = detections.detections(j);
         SalientRegion adjusted_detection = detection;
@@ -550,15 +542,11 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
 
   // Removes any static borders.
   int top_static_border_size, bottom_static_border_size;
-  LOG_EVERY_N(ERROR, 10)
-      << "Removing static borders..."
   MP_RETURN_IF_ERROR(RemoveStaticBorders(cc, &top_static_border_size,
                                          &bottom_static_border_size));
 
   // Decides if solid background color padding is possible and sets up color
   // interpolation functions in CIELAB. Uses linear interpolation by default.
-  LOG_EVERY_N(ERROR, 10)
-      << "Setup background color...";
   MP_RETURN_IF_ERROR(FindSolidBackgroundColor(
       static_features_, static_features_timestamps_,
       options_.solid_background_frames_padding_fraction(),
@@ -567,8 +555,6 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
 
   // Computes key frame crop regions and moves information from raw
   // key_frame_infos_ to key_frame_crop_results.
-  LOG_EVERY_N(ERROR, 10)
-      << "Compute key frame crop regions...";
   MP_RETURN_IF_ERROR(InitializeFrameCropRegionComputer());
   const int num_key_frames = key_frame_infos_.size();
   std::vector<KeyFrameCropResult> key_frame_crop_results(num_key_frames);
@@ -578,8 +564,6 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   }
 
   // Analyzes scene camera motion and generates FocusPointFrames.
-  LOG_EVERY_N(ERROR, 10)
-      << "Analyze scene camera motion and generate FocusPointFrames...";
 //  auto analyzer_options = options_.scene_camera_motion_analyzer_options();
 //  analyzer_options.set_allow_sweeping(analyzer_options.allow_sweeping() &&
 //                                      !has_solid_background_);
@@ -597,8 +581,6 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
           &scene_camera_motion));
 
   // Crops scene frames.
-  LOG_EVERY_N(ERROR, 10)
-      << "Crop scene frames...";
   std::vector<cv::Mat> cropped_frames;
   std::vector<cv::Rect> crop_from_locations;
 
@@ -616,8 +598,6 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   float vertical_fill_percent;
   std::vector<cv::Rect> render_to_locations;
   std::vector<cv::Scalar> padding_colors;
-  LOG_EVERY_N(ERROR, 10)
-      << "Format and output cropped frames...";
   MP_RETURN_IF_ERROR(FormatAndOutputCroppedFrames(
       scene_summary.crop_window_width(), scene_summary.crop_window_height(),
       scene_frame_timestamps_.size(), &render_to_locations, &apply_padding,
@@ -636,8 +616,6 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   }
 
   // Optionally outputs visualization frames.
-  LOG_EVERY_N(ERROR, 10)
-      << "Output visualization frames...";
   MP_RETURN_IF_ERROR(OutputVizFrames(key_frame_crop_results, focus_point_frames,
                                      crop_from_locations,
                                      scene_summary.crop_window_width(),
@@ -647,14 +625,9 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   const double end_sec = Timestamp(scene_frame_timestamps_.back()).Seconds();
   VLOG(1) << absl::StrFormat("Processed a scene from %.2f sec to %.2f sec",
                              start_sec, end_sec);
-  LOG_EVERY_N(ERROR, 10)
-     << absl::StrFormat("Processed a scene from %.2f sec to %.2f sec",
-                                start_sec, end_sec);
 
   // Optionally makes summary.
   if (cc->Outputs().HasTag(kOutputSummary)) {
-    LOG_EVERY_N(ERROR, 10)
-        << "Generate summary...";
     auto* scene_summary = summary_->add_scene_summaries();
     scene_summary->set_start_sec(start_sec);
     scene_summary->set_end_sec(end_sec);
