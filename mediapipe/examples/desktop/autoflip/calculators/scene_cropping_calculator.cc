@@ -316,14 +316,14 @@ namespace {
       for (int j = 0; j < detections.detections_size(); ++j) {
         const auto& detection = detections.detections(j);
         SalientRegion adjusted_detection = detection;
-        LOG(INFO) << "top_border_distance_: " << top_border_distance_;
-        LOG(INFO) << "frame_width_: " << frame_width_;
-        LOG(INFO) << "effective_frame_height_: " << (top_border_distance_ + effective_frame_height_);
-        LOG(INFO) << "border distance + frame height: " << effective_frame_height_;
-        LOG(INFO) << "location x" << adjusted_detection.mutable_location()->x();
-        LOG(INFO) << "location y" << adjusted_detection.mutable_location()->y();
-        LOG(INFO) << "location width" << adjusted_detection.mutable_location()->width();
-        LOG(INFO) << "location height" << adjusted_detection.mutable_location()->height();
+        LOG_EVERY_N(ERROR, 10) << "top_border_distance_: " << top_border_distance_;
+        LOG_EVERY_N(ERROR, 10) << "frame_width_: " << frame_width_;
+        LOG_EVERY_N(ERROR, 10) << "effective_frame_height_: " << (top_border_distance_ + effective_frame_height_);
+        LOG_EVERY_N(ERROR, 10) << "border distance + frame height: " << effective_frame_height_;
+        LOG_EVERY_N(ERROR, 10) << "location x" << adjusted_detection.mutable_location()->x();
+        LOG_EVERY_N(ERROR, 10) << "location y" << adjusted_detection.mutable_location()->y();
+        LOG_EVERY_N(ERROR, 10) << "location width" << adjusted_detection.mutable_location()->width();
+        LOG_EVERY_N(ERROR, 10) << "location height" << adjusted_detection.mutable_location()->height();
 
         // Clamp the box to be within the de-bordered frame.
         if (!ClampRect(0, top_border_distance_, frame_width_,
