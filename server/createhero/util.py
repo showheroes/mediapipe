@@ -140,7 +140,7 @@ class VideoReformatTask(object):
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
         my_env = os.environ.copy()
-        my_env['GLOG_logtostderr'] = 1
+        my_env['GLOG_logtostderr'] = "1"
         self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=my_env)
         self.set_status(self.STATUS_RUNNING)
         self.log.debug(f'[{self.task_id}] process started')
