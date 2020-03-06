@@ -21,7 +21,7 @@ class CreateHeroAPI(Application):
                 (r"/video/flip/ui", h.VideoReformatUIBaseHandler),
                 (r"/video/flip/ui/tasks/create", h.VideoReformatPostTaskUIHandler),
                 (r"/video/flip/ui/tasks/(.*)/progress", h.VideoReformatTaskProgressSocket),
-                (r"/video/flip/ui/tasks/(.*)", h.VideoReformatTaskUIHandler),
+                (r"/video/flip/ui/tasks/([^?]+).*", h.VideoReformatTaskUIHandler),
                 (r"/video/flip/ui/tasks", h.VideoReformatTasksUIHandler),
             ]
         ### FALLBACK
