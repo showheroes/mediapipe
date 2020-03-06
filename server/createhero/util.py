@@ -133,13 +133,15 @@ class VideoReformatTask(object):
         if self.task_data['status'] != self.STATUS_INIT:
             return "Task not yet initialized."
         # prepare call to subprocess
-        command = ['GLOG_logtostderr=1', '/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
+        command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                         '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
                         f'--input_side_packets=input_video_path={self.task_data["input_file_no_audio"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
                         ]
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
-        self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        my_env = os.environ.copy()
+        my_env['GLOG_logtostderr'] = 1
+        self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=my_env)
         self.set_status(self.STATUS_RUNNING)
         self.log.debug(f'[{self.task_id}] process started')
         while True:
