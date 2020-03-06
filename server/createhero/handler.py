@@ -70,6 +70,7 @@ class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
 class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
 
     def get(self, task_id):
+        self.log.debug(f'got path suffix: {task_id}')
         params = ''
         if '?' in task_id:
             task_id, params = path.split('?')
