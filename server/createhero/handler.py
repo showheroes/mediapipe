@@ -89,9 +89,11 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
         if not task_id in self.settings['tasks']:
             self.close(404, reason = f'No task with ID {task_id} found.')
         self.task_id =  task_id
+        self.log = logging.getLogger("WebSocketHandler")
 
     def on_message(self, message):
         task = self.settings['tasks'][self.task_id]
+        self.log.debug(f'got message: {message}')
         if 'progress' == message:
             answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', task['progress'])))
             self.write_message(answer)
