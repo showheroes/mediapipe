@@ -1,26 +1,32 @@
 {% extends '../main.html' %}
 {% block content %}
 	<form action="{{ deploy_path }}/video/flip/ui/tasks/create" enctype="multipart/form-data" method="post">
-		<div class="form-group" id="inputFile">
-			<label for="videofile">Videofile</label>
-			<input name="videofile" required="" type="file" class="form-control-file" id="videofile" aria-describedby="videofileHelp" placeholder="Specify input file."/>
-			<small id="videofileHelp" class="form-text text-muted">The file you wish to get transformed.</small>
+		<div class="form-row">
+			<div class="form-group col-md-8" id="inputFile">
+				<label for="videofile">Videofile</label>
+				<input name="videofile" required="" type="file" class="form-control-file" id="videofile" aria-describedby="videofileHelp" placeholder="Specify input file."/>
+				<small id="videofileHelp" class="form-text text-muted">The file you wish to get transformed.</small>
+			</div>
+			<div class="form-group col-md-4" id="outputFormat">
+				<label for="target_format">Target format</label>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="target_format" id="target_format_1_1" value="1_1" checked />
+					<label class="form-check-label" for="target_format_1_1">1:1</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="target_format" id="target_format_16_9" value="16_9" />
+					<label class="form-check-label" for="target_format_16_9">16:9</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="target_format" id="target_format_9_16" value="9_16" />
+					<label class="form-check-label" for="target_format_9_16">9:16</label>
+				</div>
+			</div>
 		</div>
-		<div class="form-group" id="outputFormat">
-			<label for="target_format">Target format</label>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="target_format" id="target_format_1_1" value="1_1" checked />
-				<label class="form-check-label" for="target_format_1_1">1:1</label>
-			</div>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="target_format" id="target_format_16_9" value="16_9" />
-				<label class="form-check-label" for="target_format_16_9">16:9</label>
-			</div>
-			<div class="form-check">
-				<input class="form-check-input" type="radio" name="target_format" id="target_format_9_16" value="9_16" />
-				<label class="form-check-label" for="target_format_9_16">9:16</label>
+		<div class="form-row">
+			<div class="col">
+				<button type="submit" class="btn btn-primary">Create conversion task</button>
 			</div>
 		</div>
-		<button type="submit" class="btn btn-primary">Create conversion task</button>
 	</form>
 {% end %}
