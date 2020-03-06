@@ -60,6 +60,15 @@ void NormalizedRectToRect(const RectF& normalized_location, const int width,
 
 ::mediapipe::Status ClampRect(const int x0, const int y0, const int x1,
                               const int y1, Rect* location) {
+  LOG_EVERY_N(ERROR, 10) << "x0: " << x0;
+  LOG_EVERY_N(ERROR, 10) << "y0: " << y0;
+  LOG_EVERY_N(ERROR, 10) << "x1: " << x1;
+  LOG_EVERY_N(ERROR, 10) << "y1: " << y1;
+  LOG_EVERY_N(ERROR, 10) << "location x" << location->x();
+  LOG_EVERY_N(ERROR, 10) << "location y" << location->y();
+  LOG_EVERY_N(ERROR, 10) << "location width" << location->width();
+  LOG_EVERY_N(ERROR, 10) << "location height" << location->height();
+
   RET_CHECK(!(location->x() >= x1 || location->x() + location->width() <= x0 ||
               location->y() >= y1 || location->y() + location->height() <= y0));
 
