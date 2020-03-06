@@ -71,6 +71,7 @@ class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
 
     def get(self, task_id):
         self.log.debug(f'got path suffix: {task_id}')
+        self.log.debug(self.get_query_argument('download', None))
         params = ''
         if '?' in task_id:
             task_id, params = path.split('?')
