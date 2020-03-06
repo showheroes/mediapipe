@@ -57,7 +57,5 @@ class TaskExecutor(PeriodicCallback):
 
     async def _load_or_create_and_run_task(self, task_id):
         task = VideoReformatTask(task_id, self.data_dir, self.d)
-        self.log.debug(f'processing task with id {task_id}, settings are {self.d[task_id]}')
         if self.d[task_id]['status'] == VideoReformatTask.STATUS_INIT:
-            self.log.debug('task has status init, executing')
             await task.start()
