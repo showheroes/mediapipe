@@ -91,10 +91,11 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
         self.task_id =  task_id
 
     def on_message(self, message):
+        task = self.settings['tasks'][self.task_id]
         if 'progress' == message:
-            answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', self.settings['tasks'][self.task_id]['progress'])))
+            answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', task['progress'])))
             self.write_message(answer)
-        if self.task['status'] == VideoReformatTask.STATUS_STOPPED or self.task['status'] == VideoReformatTask.STATUS_SUCCESS:
+        if task['status'] == VideoReformatTask.STATUS_STOPPED or task['status'] == VideoReformatTask.STATUS_SUCCESS:
             self.close(200, reason = "Process stopped")
 
 
