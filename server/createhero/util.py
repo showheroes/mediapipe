@@ -151,7 +151,7 @@ class VideoReformatTask(object):
         if self.task_data['status'] != self.STATUS_INIT:
             return "Task not yet initialized."
         # prepare call to subprocess
-        command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
+        command = ['GLOG_logtostderr=1', '/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                         '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
                         f'--input_side_packets=input_video_path={self.task_data["input_file"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
                         ]

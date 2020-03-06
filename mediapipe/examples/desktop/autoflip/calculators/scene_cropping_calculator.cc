@@ -371,9 +371,12 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
       !cc->Inputs().Tag(kInputShotBoundaries).Value().IsEmpty()) {
     is_end_of_scene = cc->Inputs().Tag(kInputShotBoundaries).Get<bool>();
   }
-
-  if (!scene_frame_timestamps_.empty() && (is_end_of_scene)) {
+  const bool force_buffer_flush =
+      scene_frames_.size() >= options_.max_scene_size();
+  if (!scene_frames_.empty() && (is_end_of_scene || force_buffer_flush)) {
     continue_last_scene_ = false;
+    LOG_EVERY_N(ERROR, 10)
+        << "Processing scene...";
     MP_RETURN_IF_ERROR(ProcessScene(is_end_of_scene, cc));
   }
 
@@ -539,6 +542,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
 
   // Removes any static borders.
   int top_static_border_size, bottom_static_border_size;
+  LOG_EVERY_N(ERROR, 10)
+      << "Removing static borders..."
   MP_RETURN_IF_ERROR(RemoveStaticBorders(cc, &top_static_border_size,
                                          &bottom_static_border_size));
 
