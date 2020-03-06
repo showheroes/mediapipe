@@ -233,6 +233,8 @@ namespace {
   const bool force_buffer_flush =
       scene_frames_.size() >= options_.max_scene_size();
   if (!scene_frames_.empty() && (is_end_of_scene || force_buffer_flush)) {
+    LOG_EVERY_N(ERROR, 10)
+        << "Processing scene...";
     MP_RETURN_IF_ERROR(ProcessScene(is_end_of_scene, cc));
   }
 
@@ -383,6 +385,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   FilterKeyFrameInfo();
 
   // Removes any static borders.
+  LOG_EVERY_N(ERROR, 10)
+      << "Removing static borders..."
   MP_RETURN_IF_ERROR(RemoveStaticBorders());
 
   // Decides if solid background color padding is possible and sets up color
