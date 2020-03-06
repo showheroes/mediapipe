@@ -73,6 +73,14 @@ class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
         if not task_id in self.settings['tasks']:
             self.render('tasks/show_task.html', task_id = task_id, status = None)
         task = self.settings['tasks'][task_id]
+        if self.get_query_argument('download', None) and task['status'] == VideoReformatTask.STATUS_SUCCESS:
+            self.set_header('Content-Type', 'video/mp4')
+            with open(task['output_file'], 'rb') as f:
+                while 1:
+                    data = f.read(16384) # or some other nice-sized chunk
+                    if not data: break
+                    self.write(data)
+            self.finish()
         self.render('tasks/show_task.html', **task)
 
 class VideoReformatTaskProgressSocket(WebSocketHandler):
@@ -179,7 +187,8 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
         if not self.get_query_argument('download', None):
             task_status = {'status' : status}
             if status == VideoReformatTask.STATUS_SUCCESS:
-                task_status.update({'download_url' : 'some_url?download'})
+                dl_path = self.setting['deploy_path'] + '/video/flip/ui/tasks/' + task_id + '?download'
+                task_status.update({'download_url' : dl_path})
             self._exit_success(task_status)
 
         # 4) OR if get parameter download is set, respond with video file
