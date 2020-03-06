@@ -5,13 +5,13 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	var intervalHandler;
 	socket.onopen = function(e) {
 		intervalHandler = setInterval(() => {
-			socket.send("progress");
 			var spinnerSpan = $('span');
 			spinnerSpan.addClass('spinner-grow spinner-grow-sm mr-4');
 			spinnerSpan.attr('role','status');
 			spinnerSpan.attr('aria-hidden', 'true');
 			progressWindow.append(spinnerSpan);
 			console.log("[action] reloading progress");
+			socket.send("progress");
 		}, 1500);
 	};
 
