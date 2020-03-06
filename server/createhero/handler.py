@@ -56,8 +56,8 @@ class VideoReformatPostTaskUIHandler(VideoReformatUIBaseHandler):
     def post(self):
         # validate the request and generate a uuid task_id
         VideoReformatHandler._validate_request(self)
-        task_id = VideoReformatHandler._post_task(self)
-        VideoReformatTaskUIHandler.get(self, task_id)
+        task = VideoReformatHandler._post_task(self)
+        VideoReformatTaskUIHandler.get(self, task['task_id'])
 
 class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
 
