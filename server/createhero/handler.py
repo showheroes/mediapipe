@@ -75,7 +75,7 @@ class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
         task = self.settings['tasks'][task_id]
         if self.get_query_argument('download', None) != None and task['status'] == VideoReformatTask.STATUS_SUCCESS:
             self.set_header('Content-Type', 'video/mp4')
-            self.set_header('Content-Disposition', f'attachment; filename={os.path.basename(taks["output_file"])}')
+            self.set_header('Content-Disposition', f'attachment; filename={os.path.basename(task["output_file"])}')
             with open(task['output_file'], 'rb') as f:
                 while 1:
                     data = f.read(16384) # or some other nice-sized chunk
