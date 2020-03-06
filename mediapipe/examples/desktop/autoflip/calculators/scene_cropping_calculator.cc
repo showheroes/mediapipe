@@ -399,6 +399,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
 
   // Decides if solid background color padding is possible and sets up color
   // interpolation functions in CIELAB. Uses linear interpolation by default.
+  LOG_EVERY_N(ERROR, 10)
+      << "Setup background color...";
   MP_RETURN_IF_ERROR(FindSolidBackgroundColor(
       static_features_, static_features_timestamps_,
       options_.solid_background_frames_padding_fraction(),
@@ -406,6 +408,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
       &background_color_a_function_, &background_color_b_function_));
 
   // Computes key frame crop regions.
+  LOG_EVERY_N(ERROR, 10)
+      << "Compute key frame crop regions...";
   MP_RETURN_IF_ERROR(InitializeFrameCropRegionComputer());
   const int num_key_frames = key_frame_infos_.size();
   std::vector<KeyFrameCropResult> key_frame_crop_results(num_key_frames);
@@ -415,6 +419,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   }
 
   // Analyzes scene camera motion and generates FocusPointFrames.
+  LOG_EVERY_N(ERROR, 10)
+      << "Analyze scene camera motion and generate FocusPointFrames...";
   auto analyzer_options = options_.scene_camera_motion_analyzer_options();
   analyzer_options.set_allow_sweeping(analyzer_options.allow_sweeping() &&
                                       !has_solid_background_);
@@ -430,6 +436,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
           &scene_summary, &focus_point_frames, &scene_camera_motion));
 
   // Crops scene frames.
+  LOG_EVERY_N(ERROR, 10)
+      << "Crop scene frames...";
   std::vector<cv::Mat> cropped_frames;
   MP_RETURN_IF_ERROR(scene_cropper_->CropFrames(
       scene_summary, scene_frames_, focus_point_frames,
@@ -438,6 +446,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   // Formats and outputs cropped frames.
   bool apply_padding = false;
   float vertical_fill_precent;
+  LOG_EVERY_N(ERROR, 10)
+      << "Format and output cropped frames...";
   MP_RETURN_IF_ERROR(FormatAndOutputCroppedFrames(
       cropped_frames, &apply_padding, &vertical_fill_precent, cc));
 
@@ -452,6 +462,8 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   }
 
   // Optionally outputs visualization frames.
+  LOG_EVERY_N(ERROR, 10)
+      << "Output visualization frames...";
   MP_RETURN_IF_ERROR(OutputVizFrames(key_frame_crop_results, focus_point_frames,
                                      scene_summary.crop_window_width(),
                                      scene_summary.crop_window_height(), cc));
@@ -460,9 +472,14 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
   const double end_sec = Timestamp(scene_frame_timestamps_.back()).Seconds();
   VLOG(1) << absl::StrFormat("Processed a scene from %.2f sec to %.2f sec",
                              start_sec, end_sec);
+  LOG_EVERY_N(ERROR, 10)
+     << absl::StrFormat("Processed a scene from %.2f sec to %.2f sec",
+                                start_sec, end_sec);
 
   // Optionally makes summary.
   if (cc->Outputs().HasTag(kOutputSummary)) {
+    LOG_EVERY_N(ERROR, 10)
+        << "Generate summary...";
     auto* scene_summary = summary_->add_scene_summaries();
     scene_summary->set_start_sec(start_sec);
     scene_summary->set_end_sec(end_sec);
