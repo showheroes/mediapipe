@@ -72,17 +72,23 @@ void NormalizedRectToRect(const RectF& normalized_location, const int width,
   RET_CHECK(!(location->x() >= x1 || location->x() + location->width() <= x0 ||
               location->y() >= y1 || location->y() + location->height() <= y0));
 
+  LOG_EVERY_N(ERROR, 10) << "check surroundings";
   int clamped_left, clamped_right, clamped_top, clamped_bottom;
   RET_CHECK(MathUtil::Clamp(x0, x1, location->x(), &clamped_left));
+  LOG_EVERY_N(ERROR, 10) << "checked clamped left";
   RET_CHECK(MathUtil::Clamp(x0, x1, location->x() + location->width(),
                             &clamped_right));
+  LOG_EVERY_N(ERROR, 10) << "checked clamped right";
   RET_CHECK(MathUtil::Clamp(y0, y1, location->y(), &clamped_top));
+  LOG_EVERY_N(ERROR, 10) << "checked clamped top";
   RET_CHECK(MathUtil::Clamp(y0, y1, location->y() + location->height(),
                             &clamped_bottom));
+  LOG_EVERY_N(ERROR, 10) << "checked clamped bottom";
   location->set_x(clamped_left);
   location->set_y(clamped_top);
   location->set_width(std::max(0, clamped_right - clamped_left));
   location->set_height(std::max(0, clamped_bottom - clamped_top));
+  LOG_EVERY_N(ERROR, 10) << "reporting ok status";
   return ::mediapipe::OkStatus();
 }
 
