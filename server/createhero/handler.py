@@ -77,6 +77,7 @@ class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
             self.render('tasks/show_task.html', task_id = task_id, status = None)
         task = self.settings['tasks'][task_id]
         if 'download' in params and task['status'] == VideoReformatTask.STATUS_SUCCESS:
+            self.log.debug('found download param and successful status')
             self.set_header('Content-Type', 'video/mp4')
             with open(task['output_file'], 'rb') as f:
                 while 1:
@@ -84,7 +85,8 @@ class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
                     if not data: break
                     self.write(data)
             self.finish()
-        self.render('tasks/show_task.html', **task)
+        else:
+            self.render('tasks/show_task.html', **task)
 
 class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
