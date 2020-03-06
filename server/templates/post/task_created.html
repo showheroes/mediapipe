@@ -1,16 +1,7 @@
-{% include '../partials/header.html' %}
-
-{% include '../partials/navigation.html' %}
-
-<div id="container">
-	<div class="row">
-		<div class="col col-12">
-			<h4>Successfully created a task</h4>
-			<p>Task ID: {{ task_id }}</p>
-			<p>Task status: {{ status }}</p>
-			<p><a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task_id }}">Monitor progress here</a></p>
-		</div>
-	</div>
-</div>
-
-{% include '../partials/footer.html' %}
+{% extends '../main.html' %}
+{% block content %}
+	<h4>Successfully created a task</h4>
+	<p>Task ID: {{ task_id }}</p>
+	<p>Task status: {{ status }}</p>
+	<p><a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task_id }}">Monitor progress here</a></p>
+{% end %}

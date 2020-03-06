@@ -1,32 +1,23 @@
-{% include '../partials/header.html' %}
-
-{% include '../partials/navigation.html' %}
-
-<div id="container">
-	<div class="row">
-		<div class="col col-md-12">
-			{% if not status %}
-				<h1>No task with given ID {{ task_id }} found.</h1>
-			{% else %}
-				<div class="row">
-					<div class="col col-12">
-						<h4>Information on task {{ task_id }}</h4>
-						<p>Task ID: {{ task_id }}</p>
-						<p>Task status: {{ status }}</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col col-12" id="progress" style="font-family: Consolas,monospace; font-size: 10px;">
-					</div>
-			{% end %}
+{% extends '../mainhtml' %}
+{% block content %}
+	{% if not status %}
+		<h1>No task with given ID {{ task_id }} found.</h1>
+	{% else %}
+		<div class="row">
+			<div class="col col-12">
+				<h4>Information on task {{ task_id }}</h4>
+				<p>Task ID: {{ task_id }}</p>
+				<p>Task status: {{ status }}</p>
+			</div>
 		</div>
-	</div>
-</div>
-
-<script type="application/javascript">
-	$(document).ready(function() {
-		console.log( "opening socket..." );
-		initiateProgressSocket($('#progress'), "{{ task_id }}", "{{ deploy_path }}")
-	});
-</script>
-{% include '../partials/footer.html' %}
+		<div class="row">
+			<div class="col col-12" id="progress" style="font-family: Consolas,monospace; font-size: 10px;">
+			</div>
+	{% end %}
+	<script type="application/javascript">
+		$(document).ready(function() {
+			console.log( "opening socket..." );
+			initiateProgressSocket($('#progress'), "{{ task_id }}", "{{ deploy_path }}")
+		});
+	</script>
+{% end ß%}

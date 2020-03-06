@@ -1,29 +1,21 @@
-{% include '../partials/header.html' %}
-
-{% include '../partials/navigation.html' %}
-
-<div id="container">
-		<div class="row">
-			<div class="col col-12">
-				<table class="table">
-					<thead>
-						<tr>
-							<td>Task ID</td>
-							<td>Status</td>
-							<td>Monitor</td>
-						</tr>
-					</thead>
-					<tbody>
-						{% for task in tasks %}
-							<tr>
-								<td>{{ task['task_id'] }}</td>
-								<td>{{ task['status'] }}</td>
-								<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
-							</tr>
-						{% end %}
-					</tbody>
-			</div>
-		</div>
-</div>
-
-{% include '../partials/footer.html' %}
+{% extends '../main.html' %}
+{% block content %}
+	<table class="table">
+		<thead>
+			<tr>
+				<td>Task ID</td>
+				<td>Status</td>
+				<td>Monitor</td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for task in tasks %}
+				<tr>
+					<td>{{ task['task_id'] }}</td>
+					<td>{{ task['status'] }}</td>
+					<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
+				</tr>
+			{% end %}
+		</tbody>
+	</table>
+{% end %}

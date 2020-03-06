@@ -1,15 +1,18 @@
 {% include 'partials/header.html' %}
 
 {% include 'partials/navigation.html' %}
-
-        <div class="container">
-
-            <!-- Main Content -->
-						<h1>Video Reformatting using Mediapipe</h1>
-						<p>
-							This is a thin wrapper around Google's autoflip mediapipe component. See <a href="https://ai.googleblog.com/2020/02/autoflip-open-source-framework-for.html">here</a> for more details.
-						</p>
-        </div> <!-- /container -->
-
+<div id="container">
+	<div class="row justify-content-center">
+		<div class="col col-md-10" id="content">
+			{% block content %}
+				<!-- Main Content -->
+				<h1>Video Reformatting using Mediapipe</h1>
+				<p>
+					This is a thin wrapper around Google's autoflip mediapipe component. See <a href="https://ai.googleblog.com/2020/02/autoflip-open-source-framework-for.html">here</a> for more details.
+				</p>
+			{% end %}
+		</div>
+	</div>
+</div>
 
 {% include 'partials/footer.html' %}
