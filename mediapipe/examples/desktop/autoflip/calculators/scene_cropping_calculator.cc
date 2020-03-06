@@ -386,7 +386,7 @@ void SceneCroppingCalculator::FilterKeyFrameInfo() {
 
   // Removes any static borders.
   LOG_EVERY_N(ERROR, 10)
-      << "Removing static borders..."
+      << "Removing static borders...";
   MP_RETURN_IF_ERROR(RemoveStaticBorders());
 
   // Decides if solid background color padding is possible and sets up color
