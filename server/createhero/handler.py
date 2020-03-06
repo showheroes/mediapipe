@@ -70,9 +70,10 @@ class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
 class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
 
     def get(self, task_id):
-        params = []
+        params = ''
         if '?' in task_id:
             task_id, params = path.split('?')
+        self.log.debug(f'found parameters: {params}')
         if not task_id in self.settings['tasks']:
             self.render('tasks/show_task.html', task_id = task_id, status = None)
         task = self.settings['tasks'][task_id]
