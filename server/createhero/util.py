@@ -151,7 +151,6 @@ class VideoReformatTask(object):
                 self.task_data['progress'].append(output)
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
-            self.log.debug("check if finished")
             if self.is_finished():
                 break
         # Launch the asynchronous readers of the process' stdout and stderr.
@@ -167,6 +166,7 @@ class VideoReformatTask(object):
 
     def is_finished(self):
         status = self.process.poll()
+        self.log.debug(f'current status {status}')
         if status:
             # rejoin video and audio
             join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
