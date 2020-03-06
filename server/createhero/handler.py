@@ -88,11 +88,11 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
         # when opening the websocket, get the task
         if not task_id in self.settings['tasks']:
             self.close(404, reason = f'No task with ID {task_id} found.')
-        self.task = self.settings['tasks'][task_id]
+        self.task_id =  task_id
 
     def on_message(self, message):
         if 'progress' == message:
-            answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', self.task['progress'])))
+            answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', self.settings['tasks'][task_id]['progress'])))
             self.write_message(answer)
         if self.task['status'] == VideoReformatTask.STATUS_STOPPED or self.task['status'] == VideoReformatTask.STATUS_SUCCESS:
             self.close(200, reason = "Process stopped")
