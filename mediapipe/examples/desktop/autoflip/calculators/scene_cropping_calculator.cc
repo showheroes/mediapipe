@@ -15,6 +15,7 @@
 #include "mediapipe/examples/desktop/autoflip/calculators/scene_cropping_calculator.h"
 
 #include <cmath>
+#include <iostream>
 
 #include "absl/memory/memory.h"
 #include "absl/strings/str_format.h"
@@ -313,6 +314,21 @@ namespace {
       for (int j = 0; j < detections.detections_size(); ++j) {
         const auto& detection = detections.detections(j);
         SalientRegion adjusted_detection = detection;
+        std::cout << "top_border_distance_";
+        std::cout << top_border_distance_;
+        std::cout << "frame_width_";
+        std::cout << frame_width_;
+        std::cout << "effective_frame_height_";
+        std::cout << effective_frame_height_;
+        std::cout << "location x";
+        std::cout << adjusted_detection.mutable_location()->x();
+        std::cout << "location y";
+        std::cout << adjusted_detection.mutable_location()->y();
+        std::cout << "location width";
+        std::cout << adjusted_detection.mutable_location()->width();
+        std::cout << "location height";
+        std::cout << adjusted_detection.mutable_location()->height();
+
         // Clamp the box to be within the de-bordered frame.
         if (!ClampRect(0, top_border_distance_, frame_width_,
                        top_border_distance_ + effective_frame_height_,
