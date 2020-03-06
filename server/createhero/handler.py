@@ -70,10 +70,13 @@ class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
 class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
 
     def get(self, task_id):
+        params = []
+        if '?' in task_id:
+            task_id, params = path.split('?')
         if not task_id in self.settings['tasks']:
             self.render('tasks/show_task.html', task_id = task_id, status = None)
         task = self.settings['tasks'][task_id]
-        if self.get_query_argument('download', None) and task['status'] == VideoReformatTask.STATUS_SUCCESS:
+        if 'download' in params and task['status'] == VideoReformatTask.STATUS_SUCCESS:
             self.set_header('Content-Type', 'video/mp4')
             with open(task['output_file'], 'rb') as f:
                 while 1:
@@ -177,6 +180,9 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
     """
 
     def get(self, task_id):
+        params = []
+        if '?' in task_id:
+            task_id, params = path.split('?')
         # 1) find task in task list
         if not task_id in self.settings['tasks']:
             self._exit_error(f'Task with ID {task_id} not found.', status = 404)
@@ -184,7 +190,7 @@ class VideoReformatResultHandler(VideoReformatBaseHandler):
         # 2) extract task status
         status = task['status']
         # 3) report either status or results if available (via download URL)
-        if not self.get_query_argument('download', None):
+        if not 'download' in params:
             task_status = {'status' : status}
             if status == VideoReformatTask.STATUS_SUCCESS:
                 dl_path = self.setting['deploy_path'] + '/video/flip/ui/tasks/' + task_id + '?download'
