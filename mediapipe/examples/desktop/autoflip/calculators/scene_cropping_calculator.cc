@@ -446,15 +446,18 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
 // sizes, the other for the actual removal of borders from the frames.
 ::mediapipe::Status SceneCroppingCalculator::RemoveStaticBorders(
     CalculatorContext* cc, int* top_border_size, int* bottom_border_size) {
+  LOG_EVERY_N(ERROR, 10) << "in remove static borders";
   *top_border_size = 0;
   *bottom_border_size = 0;
   MP_RETURN_IF_ERROR(ComputeSceneStaticBordersSize(
       static_features_, top_border_size, bottom_border_size));
+  LOG_EVERY_N(ERROR, 10) << "checked static border sizes";
   const double scale = static_cast<double>(frame_height_) / key_frame_height_;
   top_border_distance_ = std::round(scale * *top_border_size);
   const int bottom_border_distance = std::round(scale * *bottom_border_size);
   effective_frame_height_ =
       frame_height_ - top_border_distance_ - bottom_border_distance;
+  LOG_EVERY_N(ERROR, 10) << "computed scale (" << scale << "), border distance (" << top_border_distance_ << ") and frame height (" << effective_frame_height_ << ")";
 
   // Store shallow copy of the original frames for debug display if required
   // before static areas are removed.
@@ -466,6 +469,8 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
   if (top_border_distance_ > 0 || bottom_border_distance > 0) {
     VLOG(1) << "Remove top border " << top_border_distance_ << " bottom border "
             << bottom_border_distance;
+    LOG_EVERY_N(ERROR, 10) << "Remove top border " << top_border_distance_ << " bottom border "
+            << bottom_border_distance;
     // Remove borders from frames.
     cv::Rect roi(0, top_border_distance_, frame_width_,
                  effective_frame_height_);
@@ -475,9 +480,12 @@ bool HasFrameSignal(::mediapipe::CalculatorContext* cc) {
       scene_frames_or_empty_[i] = tmp;
     }
     // Adjust detection bounding boxes.
+    LOG_EVERY_N(ERROR, 10) << "Adjust bounding boxes";
     for (int i = 0; i < key_frame_infos_.size(); ++i) {
+      LOG_EVERY_N(ERROR, 10) << "key frame info #" << i;
       DetectionSet adjusted_detections;
       const auto& detections = key_frame_infos_[i].detections();
+      LOG_EVERY_N(ERROR, 10) << "Found " << detections.detections_size() << " regions";
       for (int j = 0; j < detections.detections_size(); ++j) {
         const auto& detection = detections.detections(j);
         SalientRegion adjusted_detection = detection;
