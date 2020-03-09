@@ -6,6 +6,7 @@
 				<td>Task ID</td>
 				<td>Status</td>
 				<td>Monitor</td>
+				<td>Download</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -14,6 +15,13 @@
 					<td>{{ task['task_id'] }}</td>
 					<td>{{ task['status'] }}</td>
 					<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
+					<td>
+						{% if 'success' in task['status'] %}
+							<a href="{{ deploy_path }}/video/flip/ui/task/{{ task['task_id']}}?download">Download</a>
+						{% else %}
+							N/A
+						{% end %}
+					</td>
 				</tr>
 			{% end %}
 		</tbody>
