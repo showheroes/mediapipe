@@ -1,4 +1,5 @@
 {% extends '../main.html' %}
+{% import os %}
 {% block content %}
 	{% if not status %}
 		<h1>No task with given ID {{ task_id }} found.</h1>
@@ -7,6 +8,7 @@
 			<div class="col col-12">
 				<h4>Information on task {{ task_id }}</h4>
 				<p>Task ID: {{ task_id }}</p>
+				<p>Source video: {{ os.path.basename(input_file) }}</p>
 				<p>Task status: {{ status }}</p>
 			</div>
 		</div>

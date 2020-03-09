@@ -1,9 +1,11 @@
 {% extends '../main.html' %}
 {% block content %}
+	{% import os %}
 	<table class="table">
 		<thead>
 			<tr>
 				<td>Task ID</td>
+				<td>Source video</td>
 				<td>Status</td>
 				<td>Monitor</td>
 				<td>Download</td>
@@ -13,6 +15,7 @@
 			{% for task in tasks %}
 				<tr>
 					<td>{{ task['task_id'] }}</td>
+					<td>{{ os.path.basename(task['input_file'])}}</td>
 					<td>{{ task['status'] }}</td>
 					<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
 					<td>
