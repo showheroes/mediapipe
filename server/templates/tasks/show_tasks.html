@@ -15,7 +15,7 @@
 			{% for task in tasks %}
 				<tr>
 					<td>{{ task['task_id'] }}</td>
-					<td>{{ os.path.basename(task['input_file'])}}</td>
+					<td>{{ task['input_file_name'] }}</td>
 					<td>{{ task['status'] }}</td>
 					<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
 					<td>
