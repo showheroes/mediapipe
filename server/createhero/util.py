@@ -122,14 +122,14 @@ class VideoReformatTask(object):
 
     def prepare(self):
         # extract audio from source
-        extract_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-f', 'mp3', '-b:a', '192k', '-vn', self.task_data['audio_file']], capture_output=True, text=True)
+        extract_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', self.task_data['input_file'], '-vn', '-f', 'adts', self.task_data['audio_file']], capture_output=True, text=True)
         self.task_data['progress'].extend(extract_process.stdout.splitlines(keepends=True))
         self.update_tasklib()
 
         # strip audio off of input source
-        stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
-        self.task_data['progress'].extend(stripoff_process.stdout.splitlines(keepends=True))
-        self.update_tasklib()
+        # stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
+        # self.task_data['progress'].extend(stripoff_process.stdout.splitlines(keepends=True))
+        # self.update_tasklib()
 
     async def start(self):
         if self.task_data['status'] != self.STATUS_INIT:
@@ -137,7 +137,7 @@ class VideoReformatTask(object):
         # prepare call to subprocess
         command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                         '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
-                        f'--input_side_packets=input_video_path={self.task_data["input_file_no_audio"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
+                        f'--input_side_packets=input_video_path={self.task_data["input_file"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
                         ]
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
@@ -149,7 +149,6 @@ class VideoReformatTask(object):
         while True:
             output = self.process.stdout.readline().decode()
             if output:
-                self.log.debug(output)
                 self.task_data['progress'].append(output)
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
@@ -171,7 +170,7 @@ class VideoReformatTask(object):
         self.log.debug(f'current status {status}')
         if status != None:
             # rejoin video and audio
-            join_process = subprocess.run(['ffmpeg', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-shortest', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '256k', self.task_data['output_file']], capture_output=True, text=True)
+            join_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-c', 'copy', '-map', '0:v:0', '-map', '1:a:0', self.task_data['output_file']], capture_output=True, text=True)
             self.task_data['progress'].extend(join_process.stdout.splitlines(keepends=True))
             self.update_tasklib()
             # # Let's be tidy and join the threads we've started.
