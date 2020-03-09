@@ -95,6 +95,7 @@ class VideoReformatTaskRestartHandler(VideoReformatUIBaseHandler):
         task['progress'] = []
         task['status'] = VideoReformatTask.STATUS_INIT
         self.settings['tasks'][task_id] = task
+        self.settings['task_queue'].put(task_id)
         self.render('tasks/show_task.html', **task)
 
 class VideoReformatTaskProgressSocket(WebSocketHandler):
