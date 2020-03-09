@@ -1,6 +1,6 @@
 {% extends '../main.html' %}
-{% import os %}
 {% block content %}
+	{% import os %}
 	{% if not status %}
 		<h1>No task with given ID {{ task_id }} found.</h1>
 	{% else %}
