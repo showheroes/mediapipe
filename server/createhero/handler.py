@@ -92,7 +92,7 @@ class VideoReformatTaskRestartHandler(VideoReformatUIBaseHandler):
             self.render('tasks/show_task.html', task_id = task_id, status=None)
 
         task = self.settings['tasks'][task_id]
-        task.pop('progress', None)
+        task['progress'] = []
         task['status'] = VideoReformatTask.STATUS_INIT
         self.settings['tasks'][task_id] = task
         self.render('tasks/show_task.html', **task)
