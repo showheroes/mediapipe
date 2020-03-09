@@ -9,6 +9,7 @@
 				<td>Status</td>
 				<td>Monitor</td>
 				<td>Download</td>
+				<td>Restart</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,6 +24,11 @@
 							<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id']}}?download">Download</a>
 						{% else %}
 							N/A
+						{% end %}
+					</td>
+					<td>
+						{% if 'stopped' in task['status'] %}
+							<a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}/restart">Show progress</a>
 						{% end %}
 					</td>
 				</tr>

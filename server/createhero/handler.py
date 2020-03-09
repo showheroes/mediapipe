@@ -85,6 +85,18 @@ class VideoReformatTaskUIHandler(VideoReformatUIBaseHandler):
         else:
             self.render('tasks/show_task.html', **task)
 
+class VideoReformatTaskRestartHandler(VideoReformatUIBaseHandler):
+
+    def get(self, task_id):
+        if not task_id in self.settings['tasks']:
+            self.render('tasks/show_task.html', task_id = task_id, status=None)
+
+        task = self.settings['tasks'][task_id]
+        task.pop('progress', None)
+        task['status'] = VideoReformatTask.STATUS_INIT
+        self.settings['tasks'][task_id] = task
+        self.render('tasks/show_task.html', **task)
+
 class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
     UI socket for monitoring a task, returns stdout messages and the download link when ready.
