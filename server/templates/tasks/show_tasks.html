@@ -17,7 +17,7 @@
 					<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
 					<td>
 						{% if 'success' in task['status'] %}
-							<a href="{{ deploy_path }}/video/flip/ui/task/{{ task['task_id']}}?download">Download</a>
+							<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id']}}?download">Download</a>
 						{% else %}
 							N/A
 						{% end %}
