@@ -116,7 +116,6 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
 
     def on_message(self, message):
         task = self.settings['tasks'][self.task_id]
-        self.log.debug(f'got message: {message}')
         if 'progress' == message:
             answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', task['progress'])))
             self.write_message(answer)
