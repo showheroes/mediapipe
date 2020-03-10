@@ -127,9 +127,29 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
     if (has_valid_location) {
       auto* detection = processed_detections->add_detections();
       *detection = original_detection;
-      LOG_EVERY_N(ERROR, 10) << "original_frame_width: " << original_frame_width << ", original_frame_height" << original_frame_height;
+      //// HACKHACKHACK ////
+      int diff_x = (&location)->x() + (&location)->width() - original_frame_width;
+      int diff_y = (&location)->y() + (&location)->height() - original_frame_height;
+      LOG_EVERY_N(ERROR, 10) << "width difference: " << diff_x << ", height difference: " << diff_y;
       LOG_EVERY_N(ERROR, 10) << "location x: " << (&location)->x() << ", location y: " << (&location)->y();
       LOG_EVERY_N(ERROR, 10) << "location width: " << (&location)->width() << ", location height: " << (&location)->height();
+
+      if (diff_x < 0) {
+        if ((&location)->x() >= std::abs(diff_x)) {
+          (&location)->set_x((&location)->x() + diff_x);
+        } else {
+          (&location)->set_width((&location)->width() + diff_x);
+        }
+
+      }
+      if (diff_y < 0) {
+        if ((&location)->y() >= std::abs(diff_y)) {
+          (&location)->set_y((&location)->y() + diff_y);
+        } else {
+          (&location)->set_height((&location)->height() + diff_y);
+        }
+
+      }
       RET_CHECK_OK(
           ClampRect(original_frame_width, original_frame_height, &location));
       *(detection->mutable_location()) = location;
