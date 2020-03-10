@@ -128,8 +128,8 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
       auto* detection = processed_detections->add_detections();
       *detection = original_detection;
       LOG_EVERY_N(ERROR, 10) << "original_frame_width: " << original_frame_width << ", original_frame_height" << original_frame_height;
-      LOG_EVERY_N(ERROR, 10) << "location x: " << location->x() << ", location y: " << location->y();
-      LOG_EVERY_N(ERROR, 10) << "location width: " << location->width() << ", location height: " << location->height();
+      LOG_EVERY_N(ERROR, 10) << "location x: " << (&location)->x() << ", location y: " << (&location)->y();
+      LOG_EVERY_N(ERROR, 10) << "location width: " << (&location)->width() << ", location height: " << (&location)->height();
       RET_CHECK_OK(
           ClampRect(original_frame_width, original_frame_height, &location));
       *(detection->mutable_location()) = location;
