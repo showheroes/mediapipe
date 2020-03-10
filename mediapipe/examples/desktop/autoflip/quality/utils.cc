@@ -134,19 +134,19 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
       LOG_EVERY_N(ERROR, 10) << "location x: " << (&location)->x() << ", location y: " << (&location)->y();
       LOG_EVERY_N(ERROR, 10) << "location width: " << (&location)->width() << ", location height: " << (&location)->height();
 
-      if (diff_x < 0) {
-        if ((&location)->x() >= std::abs(diff_x)) {
-          (&location)->set_x((&location)->x() + diff_x);
+      if (diff_x > 0) {
+        if ((&location)->x() >= diff_x) {
+          (&location)->set_x((&location)->x() - diff_x);
         } else {
-          (&location)->set_width((&location)->width() + diff_x);
+          (&location)->set_width((&location)->width() - diff_x);
         }
 
       }
-      if (diff_y < 0) {
-        if ((&location)->y() >= std::abs(diff_y)) {
-          (&location)->set_y((&location)->y() + diff_y);
+      if (diff_y > 0) {
+        if ((&location)->y() >= diff_y) {
+          (&location)->set_y((&location)->y() - diff_y);
         } else {
-          (&location)->set_height((&location)->height() + diff_y);
+          (&location)->set_height((&location)->height() - diff_y);
         }
 
       }
