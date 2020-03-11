@@ -144,16 +144,16 @@ class VideoReformatTask(object):
         my_env = os.environ.copy()
         my_env['GLOG_logtostderr'] = "1"
         self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=my_env)
+        log_reader_queue = queue.Queue()
+        log_reader = AsynchronousFileReader(self.process.stdout, log_reader_queue)
+        log_reader.run()
         self.set_status(self.STATUS_RUNNING)
         self.log.debug(f'[{self.task_id}] process started')
-        while True:
-            output = self.process.stdout.readline().decode()
-            if output:
-                self.task_data['progress'].append(output)
+        while not self.is_finished():
+            while not log_reader_queue.empty():
+                self.task_data['progress'].append(log_reader_queue.get())
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
-            if self.is_finished():
-                break
         # Launch the asynchronous readers of the process' stdout and stderr.
         # self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
         # self.log.debug(f'[{self.task_id}] created log reader')
