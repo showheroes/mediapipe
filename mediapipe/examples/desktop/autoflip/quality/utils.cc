@@ -55,11 +55,16 @@ void NormalizedRectToRect(const RectF& normalized_location, const int width,
 
 ::mediapipe::Status ClampRect(const int width, const int height,
                               Rect* location) {
+  LOG_EVERY_N(ERROR, 10) << "in ClampRect constructor, calling more specific constructor";
   return ClampRect(0, 0, width, height, location);
 }
 
 ::mediapipe::Status ClampRect(const int x0, const int y0, const int x1,
                               const int y1, Rect* location) {
+  LOG_EVERY_N(ERROR, 10) << "in ClampRect main constructor";
+  LOG_EVERY_N(ERROR, 10) << "x-values: loc_x = " << location->x() << ", x1 = " << x1 << ", loc_x + loc_width = " << location->x() + location->width() << ", x0 = " << x0;
+  LOG_EVERY_N(ERROR, 10) << "y-values: loc_y = " << location->y() << ", y1 = " << y1 << ", loc_y + locheight = " << location->y() + location->height() << ", y0 = " << y0;
+
   RET_CHECK(!(location->x() >= x1 || location->x() + location->width() <= x0 ||
               location->y() >= y1 || location->y() + location->height() <= y0));
 
@@ -167,6 +172,7 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
         LOG_EVERY_N(ERROR, 10) << "[check] original width: " << original_frame_width << ", original height: " << original_frame_height;
 
       }
+      LOG_EVERY_N(ERROR, 10) << "calling ClampRect constructor";
       RET_CHECK_OK(
           ClampRect(original_frame_width, original_frame_height, &location));
       *(detection->mutable_location()) = location;
