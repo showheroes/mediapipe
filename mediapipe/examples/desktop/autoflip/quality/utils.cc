@@ -139,10 +139,10 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
 
         LOG_EVERY_N(ERROR, 10) << "adjusting width, x difference is " << diff_x;
         if ((&location)->x() >= diff_x) {
-          (&location)->set_x((&location)->x() - diff_x);
+          (&location)->set_x((&location)->x() - diff_x - 1);
           LOG_EVERY_N(ERROR, 10) << "loc_x is now: " << (&location)->x();
         } else {
-          (&location)->set_width((&location)->width() - diff_x);
+          (&location)->set_width((&location)->width() - diff_x - 1);
           LOG_EVERY_N(ERROR, 10) << "loc_width is now: " << (&location)->width();
         }
         LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
@@ -156,10 +156,10 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
 
         LOG_EVERY_N(ERROR, 10) << "adjusting height, y difference is " << diff_y;
         if ((&location)->y() >= diff_y) {
-          (&location)->set_y((&location)->y() - diff_y);
+          (&location)->set_y((&location)->y() - diff_y - 1);
           LOG_EVERY_N(ERROR, 10) << "loc_y is now: " << (&location)->y();
         } else {
-          (&location)->set_height((&location)->height() - diff_y);
+          (&location)->set_height((&location)->height() - diff_y - 1);
           LOG_EVERY_N(ERROR, 10) << "loc_height is now: " << (&location)->height();
         }
         LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
