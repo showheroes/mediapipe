@@ -31,7 +31,7 @@ class AsynchronousFileReader(threading.Thread):
         '''The body of the tread: read lines and put them on the queue.'''
         self.log.debug('file reader running...')
         for line in iter(self._fd.readline, b''):
-            self.log.debug(f'putting on queue: {line}')
+            # self.log.debug(f'putting on queue: {line}')
             self._queue.put(line)
 
     def eof(self):
@@ -147,11 +147,14 @@ class VideoReformatTask(object):
         log_reader_queue = queue.Queue()
         log_reader = AsynchronousFileReader(self.process.stdout, log_reader_queue)
         log_reader.run()
+        self.log.debug('log reader is running')
         self.set_status(self.STATUS_RUNNING)
         self.log.debug(f'[{self.task_id}] process started')
         while not self.is_finished():
             while not log_reader_queue.empty():
-                self.task_data['progress'].append(log_reader_queue.get())
+                cur_line = log_reader_queue.get()
+                self.log.debug(f'got output line: {cur_line}')
+                self.task_data['progress'].append(cur_line)
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
         # Launch the asynchronous readers of the process' stdout and stderr.
