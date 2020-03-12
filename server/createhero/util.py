@@ -8,6 +8,8 @@ import queue
 import uuid
 import json
 import logging
+import re
+import time
 class AsynchronousFileReader(threading.Thread):
     '''
     Helper class to implement asynchronous reading of a file
@@ -107,7 +109,7 @@ class VideoReformatTask(object):
 
     def initialize(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
-        output_file_name = input_file_name + '_' + self.task_data['target_format'] + input_ext
+        output_file_name = input_file_name + '_' + self.task_data['target_format'].replace(':','_') + input_ext
         input_file = os.path.join(self.get_task_directory(), self.task_data['input_file_name'])
         self.task_data['input_file'] = input_file
         output_file = os.path.join(self.get_task_directory(), output_file_name)
@@ -117,7 +119,7 @@ class VideoReformatTask(object):
         self.task_data['audio_file'] = audio_file
         input_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_no_audio' + input_ext)
         self.task_data['input_file_no_audio'] = input_no_audio
-        output_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_' + self.task_data['target_format'] + '_no_audio' + input_ext)
+        output_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_' + self.task_data['target_format'].replace(':','_') + '_no_audio' + input_ext)
         self.task_data['output_file_no_audio'] = output_no_audio
 
     def prepare(self):
@@ -126,6 +128,16 @@ class VideoReformatTask(object):
         self.task_data['progress'].extend(extract_process.stdout.splitlines(keepends=True))
         self.update_tasklib()
 
+        # get video length
+        vid_length_process = subprocess.Popen(['ffmpeg', '-i', self.task_data['input_file']], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        extract_duration_process = subprocess.Popen(['grep', 'Duration'], stdin=vid_length_process.stdout, stdout=subprocess.PIPE)
+        vid_length_process.wait()
+        dur_string = extract_duration_process.stdout.readline().decode().strip()
+        m = re.match(r'Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),.*', dur_string)
+        self.duration = 100
+        if m.groups():
+            (hours, minutes, seconds, hundredths) = map(int, m.groups())
+            self.duration = hours*3600 + minutes*60 + seconds + hundredths/100
         # strip audio off of input source
         # stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
         # self.task_data['progress'].extend(stripoff_process.stdout.splitlines(keepends=True))
@@ -144,6 +156,7 @@ class VideoReformatTask(object):
         my_env = os.environ.copy()
         my_env['GLOG_logtostderr'] = "1"
         self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=my_env)
+        self.process_start_time = time.time()
         log_reader_queue = queue.Queue()
         log_reader = AsynchronousFileReader(self.process.stdout, log_reader_queue)
         log_reader.start()
@@ -169,6 +182,10 @@ class VideoReformatTask(object):
 
     def is_finished(self):
         status = self.process.poll()
+        cur_duration = time.time() - self.process_start_time
+        if cur_duration > self.duration:
+            self.process.kill()
+            status = 1
         # self.log.debug(f'current status {status}')
         if status != None:
             # rejoin video and audio
