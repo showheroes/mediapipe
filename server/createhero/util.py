@@ -146,7 +146,7 @@ class VideoReformatTask(object):
         self.process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=my_env)
         log_reader_queue = queue.Queue()
         log_reader = AsynchronousFileReader(self.process.stdout, log_reader_queue)
-        log_reader.run()
+        log_reader.start()
         self.log.debug('log reader is running')
         self.set_status(self.STATUS_RUNNING)
         self.log.debug(f'[{self.task_id}] process started')
