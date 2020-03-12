@@ -153,7 +153,6 @@ class VideoReformatTask(object):
         while not self.is_finished():
             while not log_reader_queue.empty():
                 cur_line = log_reader_queue.get()
-                self.log.debug(f'got output line: {cur_line}')
                 self.task_data['progress'].append(cur_line)
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
