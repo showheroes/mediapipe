@@ -170,7 +170,7 @@ class VideoReformatTask(object):
 
     def is_finished(self):
         status = self.process.poll()
-        self.log.debug(f'current status {status}')
+        # self.log.debug(f'current status {status}')
         if status != None:
             # rejoin video and audio
             join_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-c', 'copy', '-map', '0:v:0', '-map', '1:a:0', self.task_data['output_file']], capture_output=True, text=True)
