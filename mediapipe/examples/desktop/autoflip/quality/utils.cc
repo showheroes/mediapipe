@@ -55,7 +55,7 @@ void NormalizedRectToRect(const RectF& normalized_location, const int width,
 
 ::mediapipe::Status ClampRect(const int width, const int height,
                               Rect* location) {
-  LOG_EVERY_N(ERROR, 10) << "in ClampRect constructor, calling more specific constructor";
+  // LOG_EVERY_N(ERROR, 10) << "in ClampRect constructor, calling more specific constructor";
   return ClampRect(0, 0, width, height, location);
 }
 
@@ -145,41 +145,41 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
       int diff_x = (&location)->x() + (&location)->width() - original_frame_width;
       int diff_y = (&location)->y() + (&location)->height() - original_frame_height;
       if (diff_x > 0) {
-        LOG_EVERY_N(ERROR, 10) << "[before adjust] location x: " << (&location)->x() << ", location y: " << (&location)->y();
-        LOG_EVERY_N(ERROR, 10) << "[before adjust] location width: " << (&location)->width() << ", location height: " << (&location)->height();
-        LOG_EVERY_N(ERROR, 10) << "[before adjust] original width: " << original_frame_width << ", original height: " << original_frame_height;
-
-        LOG_EVERY_N(ERROR, 10) << "adjusting width, x difference is " << diff_x;
+        // LOG_EVERY_N(ERROR, 10) << "[before adjust] location x: " << (&location)->x() << ", location y: " << (&location)->y();
+        // LOG_EVERY_N(ERROR, 10) << "[before adjust] location width: " << (&location)->width() << ", location height: " << (&location)->height();
+        // LOG_EVERY_N(ERROR, 10) << "[before adjust] original width: " << original_frame_width << ", original height: " << original_frame_height;
+        //
+        // LOG_EVERY_N(ERROR, 10) << "adjusting width, x difference is " << diff_x;
         if ((&location)->x() >= diff_x) {
           (&location)->set_x((&location)->x() - diff_x - 1);
-          LOG_EVERY_N(ERROR, 10) << "loc_x is now: " << (&location)->x();
+          // LOG_EVERY_N(ERROR, 10) << "loc_x is now: " << (&location)->x();
         } else {
           (&location)->set_width((&location)->width() - diff_x - 1);
-          LOG_EVERY_N(ERROR, 10) << "loc_width is now: " << (&location)->width();
+          // LOG_EVERY_N(ERROR, 10) << "loc_width is now: " << (&location)->width();
         }
-        LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
-        LOG_EVERY_N(ERROR, 10) << "[check] location width: " << (&location)->width() << ", location height: " << (&location)->height();
-        LOG_EVERY_N(ERROR, 10) << "[check] original width: " << original_frame_width << ", original height: " << original_frame_height;
+        // LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
+        // LOG_EVERY_N(ERROR, 10) << "[check] location width: " << (&location)->width() << ", location height: " << (&location)->height();
+        // LOG_EVERY_N(ERROR, 10) << "[check] original width: " << original_frame_width << ", original height: " << original_frame_height;
       }
       if (diff_y > 0) {
-        LOG_EVERY_N(ERROR, 10) << "[before adjust] location x: " << (&location)->x() << ", location y: " << (&location)->y();
-        LOG_EVERY_N(ERROR, 10) << "[before adjust] location width: " << (&location)->width() << ", location height: " << (&location)->height();
-        LOG_EVERY_N(ERROR, 10) << "[before adjust] original width: " << original_frame_width << ", original height: " << original_frame_height;
-
-        LOG_EVERY_N(ERROR, 10) << "adjusting height, y difference is " << diff_y;
+        // LOG_EVERY_N(ERROR, 10) << "[before adjust] location x: " << (&location)->x() << ", location y: " << (&location)->y();
+        // LOG_EVERY_N(ERROR, 10) << "[before adjust] location width: " << (&location)->width() << ", location height: " << (&location)->height();
+        // LOG_EVERY_N(ERROR, 10) << "[before adjust] original width: " << original_frame_width << ", original height: " << original_frame_height;
+        //
+        // LOG_EVERY_N(ERROR, 10) << "adjusting height, y difference is " << diff_y;
         if ((&location)->y() >= diff_y) {
           (&location)->set_y((&location)->y() - diff_y - 1);
-          LOG_EVERY_N(ERROR, 10) << "loc_y is now: " << (&location)->y();
+          // LOG_EVERY_N(ERROR, 10) << "loc_y is now: " << (&location)->y();
         } else {
           (&location)->set_height((&location)->height() - diff_y - 1);
-          LOG_EVERY_N(ERROR, 10) << "loc_height is now: " << (&location)->height();
+          // LOG_EVERY_N(ERROR, 10) << "loc_height is now: " << (&location)->height();
         }
-        LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
-        LOG_EVERY_N(ERROR, 10) << "[check] location width: " << (&location)->width() << ", location height: " << (&location)->height();
-        LOG_EVERY_N(ERROR, 10) << "[check] original width: " << original_frame_width << ", original height: " << original_frame_height;
+        // LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
+        // LOG_EVERY_N(ERROR, 10) << "[check] location width: " << (&location)->width() << ", location height: " << (&location)->height();
+        // LOG_EVERY_N(ERROR, 10) << "[check] original width: " << original_frame_width << ", original height: " << original_frame_height;
 
       }
-      LOG_EVERY_N(ERROR, 10) << "calling ClampRect constructor";
+      // LOG_EVERY_N(ERROR, 10) << "calling ClampRect constructor";
       RET_CHECK_OK(
           ClampRect(original_frame_width, original_frame_height, &location));
       *(detection->mutable_location()) = location;
