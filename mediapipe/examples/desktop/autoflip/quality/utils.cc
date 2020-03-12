@@ -61,19 +61,19 @@ void NormalizedRectToRect(const RectF& normalized_location, const int width,
 
 ::mediapipe::Status ClampRect(const int x0, const int y0, const int x1,
                               const int y1, Rect* location) {
-  LOG_EVERY_N(ERROR, 10) << "in ClampRect main constructor";
-  LOG_EVERY_N(ERROR, 10) << "x-values: loc_x = " << location->x() << ", x1 = " << x1 << ", loc_x + loc_width = " << location->x() + location->width() << ", x0 = " << x0;
-  LOG_EVERY_N(ERROR, 10) << "y-values: loc_y = " << location->y() << ", y1 = " << y1 << ", loc_y + locheight = " << location->y() + location->height() << ", y0 = " << y0;
-
-  if (location->x() >= x1 || location->x() + location->width() <= x0 ||
-              location->y() >= y1 || location->y() + location->height() <= y0) {
-    LOG_EVERY_N(ERROR, 10) << "[not met] conditions not met!";
-    LOG_EVERY_N(ERROR, 10) << "[not met] x-values: loc_x (" << location->x() << ") >= x1 (" << x1 << "), loc_x + loc_width (" << location->x() + location->width() << ") <= x0 (" << x0 << ")";
-    LOG_EVERY_N(ERROR, 10) << "[not met] y-values: loc_y (" << location->y() << ") >= y1 (" << y1 << "), loc_y + locheight (" << location->y() + location->height() << ") <= y0 (" << y0 << ")";
-  }
-
-  RET_CHECK(!(location->x() >= x1 || location->x() + location->width() <= x0 ||
-              location->y() >= y1 || location->y() + location->height() <= y0));
+  // LOG_EVERY_N(ERROR, 10) << "in ClampRect main constructor";
+  // LOG_EVERY_N(ERROR, 10) << "x-values: loc_x = " << location->x() << ", x1 = " << x1 << ", loc_x + loc_width = " << location->x() + location->width() << ", x0 = " << x0;
+  // LOG_EVERY_N(ERROR, 10) << "y-values: loc_y = " << location->y() << ", y1 = " << y1 << ", loc_y + locheight = " << location->y() + location->height() << ", y0 = " << y0;
+  //
+  // if (location->x() >= x1 || location->x() + location->width() <= x0 ||
+  //             location->y() >= y1 || location->y() + location->height() <= y0) {
+  //   LOG_EVERY_N(ERROR, 10) << "[not met] conditions not met!";
+  //   LOG_EVERY_N(ERROR, 10) << "[not met] x-values: loc_x (" << location->x() << ") >= x1 (" << x1 << "), loc_x + loc_width (" << location->x() + location->width() << ") <= x0 (" << x0 << ")";
+  //   LOG_EVERY_N(ERROR, 10) << "[not met] y-values: loc_y (" << location->y() << ") >= y1 (" << y1 << "), loc_y + locheight (" << location->y() + location->height() << ") <= y0 (" << y0 << ")";
+  // }
+  //
+  // RET_CHECK(!(location->x() >= x1 || location->x() + location->width() <= x0 ||
+  //             location->y() >= y1 || location->y() + location->height() <= y0));
 
   int clamped_left, clamped_right, clamped_top, clamped_bottom;
   RET_CHECK(MathUtil::Clamp(x0, x1, location->x(), &clamped_left));
