@@ -32,7 +32,7 @@ class AsynchronousFileReader(threading.Thread):
         self.log.debug('file reader running...')
         for line in iter(self._fd.readline, b''):
             # self.log.debug(f'putting on queue: {line}')
-            self._queue.put(line)
+            self._queue.put(line.decode())
 
     def eof(self):
         '''Check whether there is no more content to expect.'''
