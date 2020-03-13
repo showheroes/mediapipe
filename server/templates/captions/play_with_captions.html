@@ -2,7 +2,7 @@
 {% block content %}
 	<div class="row">
 		<div class="col col-md-6">
-			<video autoplay="true" src="{{ video_url }}">
+			<video autoplay="true" src="{{ video_url }}" controls>
 				<track kind="captions" lang="{{ captions_language }}" srclang="{{ captions_language }}" label="{{ captions_label}}" src="{{ captions_source }}" />
 			</video>
 		</div>
