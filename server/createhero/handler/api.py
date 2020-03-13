@@ -173,7 +173,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             'file_path' : os.path.join(self.settings['working_directory'],
                             self.task_id, captions_filename),
             'captions_label' : self.lang_dict[self.args['language']],
-            'captions_source' : f'{self.settings["deploy_path"]}/static/video/{task_id}/{captions_filename}'
+            'captions_source' : f'{self.settings["deploy_path"]}/static/video/{self.task_id}/{captions_filename}'
         }
         # update managed dict
         self.settings['tasks'][self.task_id] = self.task_data
