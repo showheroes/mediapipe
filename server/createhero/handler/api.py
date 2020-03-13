@@ -6,6 +6,7 @@ import json
 import langdetect
 import math
 import os
+import re
 import uuid
 
 class VideoReformatHandler(VideoReformatBaseHandler):
@@ -158,7 +159,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
                 t_start = self._to_number(title['offset']) - gap_start
                 t_end = t_start + self._to_number(title['duration'])
                 video_text_track.append(f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)}\n')
-                video_text_track.append(f'{title.text.strip()}\n\n')
+                video_text_track.append(f'{re.sub("\n+","\n",title.text).strip()}\n\n')
 
         video_text_track_string = ''.join(video_text_track)
         if 'language' not in self.args or not self.args['language']:
