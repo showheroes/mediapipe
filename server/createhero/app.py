@@ -16,12 +16,14 @@ class CreateHeroAPI(Application):
 
     def add_routes(self):
         route_list = [
-                (r"/video/flip/tasks/(.*)", h.VideoReformatResultHandler),
-                (r"/video/flip/tasks", h.VideoReformatHandler),
+                (r"/video/flip/tasks/(.*)", h.api.VideoReformatResultHandler),
+                (r"/video/flip/tasks", h.api.VideoReformatHandler),
                 (r"/video/flip/ui", h.VideoReformatUIBaseHandler),
-                (r"/video/flip/ui/tasks/create", h.VideoReformatPostTaskUIHandler),
-                (r"/video/flip/ui/tasks/(.*)/progress", h.VideoReformatTaskProgressSocket),
-                (r"/video/flip/ui/tasks/(.*)/restart", h.VideoReformatTaskRestartHandler),
+                (r"/video/flip/ui/tasks/create", h.ui.VideoReformatPostTaskUIHandler),
+                (r"/video/flip/ui/tasks/(.*)/progress", h.ui.VideoReformatTaskProgressSocket),
+                (r"/video/flip/ui/tasks/(.*)/restart", h.ui.VideoReformatTaskRestartHandler),
+                (r"/video/flip/ui/tasks/(.*)/captions/create", h.ui.VideoAddCaptionHandler),
+                (r"/video/flip/ui/tasks/(.*)/captions", h.ui.VideoCaptionPlayUIHandler),
                 (r"/video/flip/ui/tasks/(.*)", h.VideoReformatTaskUIHandler),
                 (r"/video/flip/ui/tasks", h.VideoReformatTasksUIHandler),
             ]
