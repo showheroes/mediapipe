@@ -1,5 +1,5 @@
 from . import VideoReformatBaseHandler, VideoTaskBaseHandler
-from .util import VideoReformatTask
+from ..util import VideoReformatTask
 
 from bs4 import BeautifulSoup
 import json
