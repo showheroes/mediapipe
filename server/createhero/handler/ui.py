@@ -97,7 +97,7 @@ class VideoCaptionPlayUIHandler(VideoCaptionHandler, VideoUIMixin):
     def get(self, task_id):
         """ This renders the chosen video with the subtitles enabled. """
         self._validate_get()
-        caption_data = self.task_data['captions'][self.language]['url']
+        caption_data = self.task_data['captions'][self.language]
         video_url = f'{self.settings["deploy_path"]}/static/video/{task_id}/{self.task_data["input_file_name"]}'
         self.render('captions/play_with_captions.html',
             video_url = video_url,
