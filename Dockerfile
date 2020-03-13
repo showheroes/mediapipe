@@ -67,7 +67,7 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
     /bazel/installer.sh  && \
     rm -f /bazel/installer.sh
 
-VOLUME /data
+VOLUME /mediapipe/server/static/video
 
 COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party

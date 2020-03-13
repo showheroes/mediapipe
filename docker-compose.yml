@@ -14,7 +14,7 @@ services:
       - /dev/nvidia3:/dev/nvidia3
       - /dev/nvidiactl:/dev/nvidiactl
     volumes:
-      - /home/forge/video:/data
+      - /home/forge/video:/mediapipe/server/static/video
     networks:
       - external
     ports:
