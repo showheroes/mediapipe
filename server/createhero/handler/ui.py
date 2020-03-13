@@ -78,6 +78,12 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
 class VideoAddCaptionHandler(VideoCaptionHandler, VideoUIMixin):
     """ Render the input form for caption transformations and receive POST requests. """
 
+    def _validate_request(self):
+        self.args = {}
+        lang = self.get_argument('language', None)
+        if lang != None:
+            self.args['language'] = lang
+
     def get(self, task_id):
         self.render('captions/post_captions.html', **self.task_data)
 

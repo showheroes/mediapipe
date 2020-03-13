@@ -20,7 +20,8 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         return 'multipart/form-data'
 
     def _validate_request(self):
-        super()._validate_request()
+        # super()._validate_request()
+        self.args = {}
         tf = self.get_argument('target_format', None)
         if not tf:
             self._exit_error('No target format specified.', status = 400)
