@@ -4,6 +4,7 @@ from ..util import VideoReformatTask
 from bs4 import BeautifulSoup
 import json
 import langdetect
+import math
 import os
 import uuid
 
@@ -189,8 +190,8 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         sec_removed = sec_string.replace('s','')
         if '/' in sec_removed:
             numerator, denominator = sec_removed.split('/')
-            return float(numerator)/float(denominator)
-        return float(sec_removed)
+            return math.floor(float(numerator)/float(denominator))
+        return int(sec_removed)
 
     def _create_time_string(self, seconds):
         hrs = seconds // 3600
