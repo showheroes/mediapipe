@@ -24,8 +24,8 @@ class CreateHeroAPI(Application):
                 (r"/video/flip/ui/tasks/(.*)/restart", h.ui.VideoReformatTaskRestartHandler),
                 (r"/video/flip/ui/tasks/(.*)/captions/create", h.ui.VideoAddCaptionHandler),
                 (r"/video/flip/ui/tasks/(.*)/captions", h.ui.VideoCaptionPlayUIHandler),
-                (r"/video/flip/ui/tasks/(.*)", h.VideoReformatTaskUIHandler),
-                (r"/video/flip/ui/tasks", h.VideoReformatTasksUIHandler),
+                (r"/video/flip/ui/tasks/(.*)", h.ui.VideoReformatTaskUIHandler),
+                (r"/video/flip/ui/tasks", h.ui.VideoReformatTasksUIHandler),
             ]
         ### FALLBACK
         # route_list.append((r"/.*", h.VideoReformatBaseHandler))
