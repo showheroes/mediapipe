@@ -179,7 +179,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         self.settings['tasks'][self.task_id] = self.task_data
         task_dir = os.path.join(self.settings['working_directory'], self.task_id)
         with open(os.path.join(task_dir, 'task_data'), 'w') as f:
-            json.dump(task_data, f)
+            json.dump(self.task_data, f)
 
         with open(self.task_data['captions'][self.args['language']]['file_path'], 'w') as vtt_file:
             vtt_file.write(f'WEBVTT Kind: captions; Language: {self.args["language"]}\n\n')
