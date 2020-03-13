@@ -39,7 +39,7 @@ class VideoReformatTaskUIHandler(VideoTaskUIBaseHandler):
                     self.write(data)
             self.finish()
         else:
-            self.render('tasks/show_task.html', **self.settings['tasks'][task_id])
+            self.render('tasks/show_task.html', **self.task_data)
 
 class VideoReformatTaskRestartHandler(VideoTaskUIBaseHandler):
 
@@ -48,7 +48,7 @@ class VideoReformatTaskRestartHandler(VideoTaskUIBaseHandler):
         self.task_data['status'] = VideoReformatTask.STATUS_SUBMITTED
         self.settings['tasks'][task_id] = self.task_data
         self.settings['task_queue'].put(task_id)
-        self.render('tasks/show_task.html', **task)
+        self.render('tasks/show_task.html', **self.task_data)
 
 class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
