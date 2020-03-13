@@ -1,4 +1,5 @@
 tornado
 requests
+lxml
 bs4
 langdetect
