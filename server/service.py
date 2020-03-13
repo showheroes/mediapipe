@@ -55,7 +55,7 @@ def main():
         settings['root_dir'] = root_dir
         settings['template_path'] = os.path.join(root_dir, 'templates')
         settings['static_path'] = os.path.join(root_dir, 'static')
-        settings['working_directory'] = '/data'
+        settings['working_directory'] = os.path.join(root_dir, 'static', 'video')
 
         #fork to child processes
         pid = tornado.process.fork_processes(2)
