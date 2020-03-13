@@ -3,20 +3,20 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	let socketPath = "ws://" + host + "/" + deployPath + "/video/flip/ui/tasks/" + taskID + "/progress";
 	let socket = new WebSocket(socketPath);
 	var intervalHandler;
+	var spinnerSpan = $('span');
+	spinnerSpan.addClass('spinner-grow spinner-grow-sm mr-4');
+	spinnerSpan.attr('role','status');
+	spinnerSpan.attr('aria-hidden', 'true');
 	socket.onopen = function(e) {
+		progressWindow.append(spinnerSpan);
 		intervalHandler = setInterval(() => {
-			var spinnerSpan = $('span');
-			spinnerSpan.addClass('spinner-grow spinner-grow-sm mr-4');
-			spinnerSpan.attr('role','status');
-			spinnerSpan.attr('aria-hidden', 'true');
-			progressWindow.append(spinnerSpan);
-			console.log("[action] reloading progress");
 			socket.send("progress");
 		}, 1500);
 	};
 
 	socket.onmessage = function(event) {
 		progressWindow.html(event.data);
+		progressWindow.append(spinnerSpan);
 		window.scrollTo(0, document.body.scrollHeight);
 	};
 
