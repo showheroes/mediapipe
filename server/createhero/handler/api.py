@@ -171,12 +171,12 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             self.task_data['captions'] = {}
         self.task_data['captions'][language] = {
             'file_path' : os.path.join(self.settings['working_directory'],
-                            task_id, captions_filename),
+                            self.task_id, captions_filename),
             'captions_label' : self.lang_dict[language],
             'captions_source' : f'{self.settings["deploy_path"]}/static/video/{task_id}/{captions_filename}'
         }
         # update managed dict
-        self.settings['tasks'][task_data] = self.task_data
+        self.settings['tasks'][self.task_id] = self.task_data
         with open(self.task_data['captions'][language]['file_path'], 'w') as vtt_file:
             vtt_file.write(f'WEBVTT Kind: captions; Language: {self.args["language"]}\n\n')
             vtt_file.write(video_text_track_string)
