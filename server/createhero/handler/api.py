@@ -143,7 +143,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         xml_file = self.request.files['fcpro_file'][0]
 
         # parse xml
-        soup = BeautifulSoup(xml_file['body'], xml)
+        soup = BeautifulSoup(xml_file['body'], 'xml')
         # get the sequences
         sequences = soup.library.find_all('sequence')
         video_text_track = []
