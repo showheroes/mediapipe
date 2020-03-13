@@ -39,7 +39,7 @@ class VideoReformatTaskUIHandler(VideoTaskUIBaseHandler):
                     self.write(data)
             self.finish()
         else:
-            self.render('tasks/show_task.html', **task)
+            self.render('tasks/show_task.html', **self.settings['tasks'][task_id])
 
 class VideoReformatTaskRestartHandler(VideoTaskUIBaseHandler):
 
