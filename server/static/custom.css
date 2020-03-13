@@ -10,3 +10,12 @@ html {
 .col {
 	width: auto;
 }
+
+video::cue {
+	width: 75%;
+	height: 15%;
+	margin-bottom: 25px;
+	text-align: center;
+	background-color: yellow;
+	color: black;
+}
