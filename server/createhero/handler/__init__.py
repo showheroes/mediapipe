@@ -15,6 +15,13 @@ class VideoBaseHandler(GenericHandler):
     def _authenticate(self):
         return
 
+class VideoUIMixin(VideoBaseHandler):
+
+    def _get_response_content_type(self):
+        return 'text/html'
+
+    def render(self, template, **kwargs):
+        super().render(template, deploy_path = self.settings['deploy_path'], **kwargs)
 
 class VideoReformatBaseHandler(VideoBaseHandler):
 
@@ -22,18 +29,11 @@ class VideoReformatBaseHandler(VideoBaseHandler):
         # TODO: return documentation
         self._exit_success({})
 
-class VideoReformatUIBaseHandler(VideoReformatBaseHandler):
+class VideoReformatUIBaseHandler(VideoReformatBaseHandler, VideoUIMixin):
     """ UI base class, renders main page when called """
-
-    def _get_response_content_type(self):
-        return 'text/html'
 
     def get(self):
         self.render('main.html')
-
-    def render(self, template, **kwargs):
-        super().render(template, deploy_path = self.settings['deploy_path'], **kwargs)
-
 
 class VideoTaskBaseHandler(VideoBaseHandler):
 
@@ -47,7 +47,7 @@ class VideoTaskBaseHandler(VideoBaseHandler):
     def _task_not_found(self):
         self._exit_error(f'Task with ID {self.task_id} not found.', status = 404)
 
-class VideoTaskUIBaseHandler(VideoTaskBaseHandler):
+class VideoTaskUIBaseHandler(VideoTaskBaseHandler, VideoUIMixin):
 
     def _task_not_found(self):
         self.render('tasks/show_task.html', task_id = self.task_id, status = None)

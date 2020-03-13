@@ -1,4 +1,4 @@
-from . import VideoReformatUIBaseHandler,VideoTaskUIBaseHandler
+from . import VideoReformatUIBaseHandler, VideoTaskUIBaseHandler, VideoUIMixin
 from .api import VideoReformatHandler, VideoCaptionHandler
 from ..util import VideoReformatTask
 
@@ -6,7 +6,7 @@ import logging
 from tornado.websocket import WebSocketHandler
 import urllib.parse as up
 
-class VideoReformatPostTaskUIHandler(VideoReformatHandler):
+class VideoReformatPostTaskUIHandler(VideoReformatHandler, VideoUIMixin):
     """ Handler for creating reformating tasks. """
 
     def get(self):
@@ -75,7 +75,7 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
             self.close(200, reason = "Process stopped")
 
 
-class VideoAddCaptionHandler(VideoCaptionHandler):
+class VideoAddCaptionHandler(VideoCaptionHandler, VideoUIMixin):
     """ Render the input form for caption transformations and receive POST requests. """
 
     def get(self, task_id):
@@ -85,7 +85,7 @@ class VideoAddCaptionHandler(VideoCaptionHandler):
         self._convert_to_vtt()
         self.get(task_id)
 
-class VideoCaptionPlayUIHandler(VideoCaptionHandler):
+class VideoCaptionPlayUIHandler(VideoCaptionHandler, VideoUIMixin):
     """ Plays video with captions or creates new captions file. """
 
     def get(self, task_id):
@@ -97,3 +97,6 @@ class VideoCaptionPlayUIHandler(VideoCaptionHandler):
             video_url = video_url,
             captions_language = self.language,
             **caption_data)
+
+    def post(self, task_id):
+        self._exit_no_route('POST')
