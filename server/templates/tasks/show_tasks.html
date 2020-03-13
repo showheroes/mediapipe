@@ -10,6 +10,7 @@
 				<td>Monitor</td>
 				<td>Download</td>
 				<td>Restart</td>
+				<td>Captions</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,6 +30,22 @@
 					<td>
 						{% if 'stopped' in task['status'] %}
 							<a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}/restart">Restart task</a>
+						{% end %}
+					</td>
+					<td>
+						<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id'] }}/captions/create">Add captions</a>
+						{% if 'captions' in task %}
+							<table class="table">
+								<tbody>
+									{% for lang in task['captions'] %}
+										<tr>
+											<td>
+												<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id'] }}/captions?language={{ lang }}">Play with {{ task['captions'][lang]['captions_label'] }} captions</a>
+											</td>
+										</tr>
+									{% end %}
+								</tbody>
+							</table>
 						{% end %}
 					</td>
 				</tr>

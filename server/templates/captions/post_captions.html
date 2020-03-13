@@ -1,0 +1,24 @@
+{% extends '../main.html' %}
+
+{% block content %}
+<form action="{{ deploy_path }}/video/flip/ui/tasks/{{ task_id }}/addcaptions" enctype="multipart/form-data" method="post">
+	<div class="form-group row">
+		<label class="col-sm-2 col-form-label" for="language">Language</label>
+		<div class="col-sm-10">
+			<input name="language" required="" type="text" class="form-control" id="language" placeholder="Specify caption language."/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="col-sm-2 col-form-label" for="target_format">Final Cut XML</label>
+		<div class="col-sm-10">
+			<input name="fcpro_file" required="" type="file" class="form-control-file" id="fcpro_file" placeholder="Scene descriptions in Final Cut Pro XML format."/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col">
+			<button type="submit" class="btn btn-primary">Create captions</button>
+		</div>
+	</div>
+</form>
+
+{% end %}
