@@ -177,6 +177,9 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         }
         # update managed dict
         self.settings['tasks'][self.task_id] = self.task_data
+        with open(os.path.join(task_dir, 'task_data'), 'w') as f:
+            json.dump(task_data, f)
+
         with open(self.task_data['captions'][self.args['language']]['file_path'], 'w') as vtt_file:
             vtt_file.write(f'WEBVTT Kind: captions; Language: {self.args["language"]}\n\n')
             vtt_file.write(video_text_track_string)
