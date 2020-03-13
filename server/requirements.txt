@@ -1,2 +1,4 @@
 tornado
 requests
+bs4
+langdetect
