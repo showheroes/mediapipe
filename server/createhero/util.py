@@ -138,6 +138,8 @@ class VideoReformatTask(object):
         if m.groups():
             (hours, minutes, seconds, hundredths) = map(int, m.groups())
             self.duration = hours*3600 + minutes*60 + seconds + hundredths/100
+            self.task_data['video_length'] = self.duration
+            self.update_tasklib()
         # strip audio off of input source
         # stripoff_process = subprocess.run(['ffmpeg', '-i', self.task_data['input_file'], '-c:v', 'copy', '-an', self.task_data['input_file_no_audio']], capture_output=True, text=True)
         # self.task_data['progress'].extend(stripoff_process.stdout.splitlines(keepends=True))
