@@ -52,5 +52,5 @@ class VideoTaskUIBaseHandler(VideoTaskBaseHandler):
     def _task_not_found(self):
         self.render('tasks/show_task.html', task_id = self.task_id, status = None)
 
-import .api
-import .ui
+from . import api
+from . import ui
