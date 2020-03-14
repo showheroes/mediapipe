@@ -158,7 +158,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             for title in s.gap.find_all('title'):
                 t_start = self._to_number(title['offset']) - gap_start
                 t_end = t_start + self._to_number(title['duration'])
-                video_text_track.append(f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)}\n')
+                video_text_track.append(f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)} region:1 align:center\n')
                 text_clean = re.sub(r'\n+','\n',title.text).strip()
                 video_text_track.append(f'{text_clean}\n\n')
 
@@ -186,6 +186,8 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
 
         with open(self.task_data['captions'][self.args['language']]['file_path'], 'w') as vtt_file:
             vtt_file.write(f'WEBVTT Kind: captions; Language: {self.args["language"]}\n\n')
+            vtt_file.write('REGION\n')
+            vtt_file.write('id:1\nwidth:40%\nlines:2\nregionanchor:0%,0%\nviewportanchor:30%,60%\nscroll:up\n\n')
             vtt_file.write(video_text_track_string)
 
     def _to_number(self, sec_string):
