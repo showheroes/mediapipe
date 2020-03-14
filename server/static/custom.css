@@ -11,14 +11,13 @@ html {
 	width: auto;
 }
 
-video::cue {
-	text-align: center;
+::cue {
 	color: white;
 	animation-duration: 1s;
 	animation-name: appear;
 }
 
-video::cue-region {
+::cue-region {
 	color: green;
 	animation-duration: 1s;
 	animation-name: appear;
