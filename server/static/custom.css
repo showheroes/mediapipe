@@ -14,6 +14,8 @@ html {
 video::cue {
 	text-align: center;
 	color: white;
+	animation-duration: 1s;
+	animation-name: appear;
 }
 
 video::cue-region {
