@@ -12,10 +12,13 @@ html {
 }
 
 video::cue {
+	text-align: center;
+	color: white;
+}
+
+video::cue-region {
 	width: 75%;
 	height: 15%;
 	margin-bottom: 25px;
-	text-align: center;
-	background-image: linear-gradient(to bottom, dimgray, lightgray);
-	color: white;
+	background-image: linear-gradient(to bottom, dimgray, lightgray);		
 }
