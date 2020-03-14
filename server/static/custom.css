@@ -17,8 +17,17 @@ video::cue {
 }
 
 video::cue-region {
-	width: 75%;
-	height: 15%;
-	margin-bottom: 25px;
-	background-image: linear-gradient(to bottom, dimgray, lightgray);		
+	color: green;
+	animation-duration: 1s;
+	animation-name: appear;
+}
+
+@keyframes appear {
+  from {
+    height: 0%;
+  }
+
+  to {
+    height: 100%;
+  }
 }
