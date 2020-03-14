@@ -12,7 +12,7 @@ html {
 }
 
 ::cue {
-	color: white;
+	color: blue;
 	animation-duration: 1s;
 	animation-name: appear;
 }
