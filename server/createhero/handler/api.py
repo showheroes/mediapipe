@@ -158,7 +158,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             for title in s.gap.find_all('title'):
                 t_start = self._to_number(title['offset']) - gap_start
                 t_end = t_start + self._to_number(title['duration'])
-                video_text_track.append(f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)} region:1 align:center\n')
+                video_text_track.append(f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)} region:1 align:middle\n')
                 text_clean = re.sub(r'\n+','\n',title.text).strip()
                 video_text_track.append(f'{text_clean}\n\n')
 
