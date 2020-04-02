@@ -11,24 +11,51 @@ html {
 	width: auto;
 }
 
-::cue {
-	color: blue;
-	animation-duration: 1s;
-	animation-name: appear;
+.sample-region {
+	animation: appear 5s;
+	-webkit-animation: appear 5s;
+	background-color: green;
+	/* opacity: 0; */
 }
 
-::cue-region {
-	color: green;
-	animation-duration: 1s;
-	animation-name: appear;
+::cue {
+	animation: appear 5s;
+	-webkit-animation: appear 5s;
+	color: white;
+}
+
+::cue(b) {
+	text-transform: uppercase;
+	color: yellow;
+}
+
+::cue-region(#large) {
+	animation: appear 5s;
+	-webkit-animation: appear 5s;
+}
+
+::cue-region(#small) {
+	animation: appear 5s;
+	-webkit-animation: appear 5s;
+}
+
+
+@-webkit-keyframes appear {
+	from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes appear {
   from {
-    height: 0%;
+    opacity: 0;
   }
 
   to {
-    height: 100%;
+    opacity: 1;
   }
 }
