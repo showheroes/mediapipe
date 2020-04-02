@@ -97,11 +97,7 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
         # 4) OR if get parameter download is set, respond with video file
         # (in case of success)
         if status == VideoReformatTask.STATUS_SUCCESS:
-            with open(self.task_data['output_file'], 'rb') as of:
-                while 1:
-                    data = of.read(16384)
-                    if not data: break
-                    self.write(data)
+            self._send_file(self.task_data['output_file'], 'rb')
             self.set_status(200)
             self.finish()
             return
@@ -133,7 +129,11 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
 
     def get(self, task_id):
         self._validate_get()
-        self._exit_success(self.task_data['captions'][self.language]['url'])
+        captions_file = self.task_data['captions'][self.language]['file_path']
+        self.set_header('Content-Type', 'text/vtt')
+        self._send_file(captions_file)
+        self.set_status(200)
+        self.finish()
 
     def post(self, task_id):
         """ This receives the Final Cut XML file, extracts the captions and creates a WebVTT file from them."""
@@ -176,7 +176,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             'file_path' : os.path.join(self.settings['working_directory'],
                             self.task_id, captions_filename),
             'captions_label' : self.lang_dict[self.args['language']],
-            'captions_source' : f'{self.settings["deploy_path"]}/static/video/{self.task_id}/{captions_filename}'
+            'captions_source' : f'video/flip/tasks/{self.task_id}/captions?language={self.args["language"]}'
         }
         # update managed dict
         self.settings['tasks'][self.task_id] = self.task_data

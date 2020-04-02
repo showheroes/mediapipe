@@ -40,7 +40,7 @@
 									{% for lang in task['captions'] %}
 										<tr>
 											<td>
-												<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id'] }}/captions?language={{ lang }}">Play with {{ task['captions'][lang]['captions_label'] }} captions</a>
+												<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id'] }}/play?language={{ lang }}">Play with {{ task['captions'][lang]['captions_label'] }} captions</a>
 											</td>
 										</tr>
 									{% end %}

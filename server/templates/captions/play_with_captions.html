@@ -2,9 +2,29 @@
 {% block content %}
 	<div class="row">
 		<div class="col col-md-6">
-			<video autoplay="true" src="{{ video_url }}" controls>
-				<track kind="captions" mode="showing" lang="{{ captions_language }}" srclang="{{ captions_language }}" label="{{ captions_label}}" src="{{ captions_source }}" default/>
+			<video autoplay="true" src="{{ video_url }}" controls muted ontimeupdate="showCues(this)">
+				<track id="texttrack" kind="captions" mode="showing" lang="{{ captions_language }}" srclang="{{ captions_language }}" label="{{ captions_label}}" src="{{ deploy_path}}/{{ captions_source }}" default/>
 			</video>
 		</div>
 	</div>
+	<script type="application/javascript">
+		// let cueData = {% raw captions_data %};
+		// var currentCueKey = null;
+		// function showCues(videoElmnt) {
+		// 	var curTime = videoElmnt.currentTime;
+		// 	for (var key in cueData) {
+		// 		if (cueData[key]['start'] <= curTime && cueData[key]['end'] > curTime) {
+		// 			activeCue = key;
+		// 			break;
+		// 		}
+		// 	}
+		// 	if (currentCueKey != activeCue) {
+		// 		alert("Cue has changed at " + curTime);
+		// 		currentCueKey = activeCue;
+		//
+		// 	}
+		// }
+		let textTrackElement = document.getElementById("texttrack");
+		textTrackElement.oncuechange()
+	</script>
 {% end %}

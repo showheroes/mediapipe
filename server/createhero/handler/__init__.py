@@ -15,6 +15,14 @@ class VideoBaseHandler(GenericHandler):
     def _authenticate(self):
         return
 
+    def _send_file(self, filname, open_as = 'r'):
+        with open(filname, open_as) as of:
+            while 1:
+                data = of.read(16384)
+                if not data: break
+                self.write(data)
+
+
 class VideoUIMixin(VideoBaseHandler):
 
     def _get_response_content_type(self):
