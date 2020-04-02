@@ -3,6 +3,7 @@ from .api import VideoReformatHandler, VideoCaptionHandler
 from ..util import VideoReformatTask
 
 import logging
+import os
 from tornado.websocket import WebSocketHandler
 import urllib.parse as up
 
