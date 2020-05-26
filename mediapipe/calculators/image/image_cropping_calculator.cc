@@ -75,11 +75,28 @@ REGISTER_CALCULATOR(ImageCroppingCalculator);
   }
 #endif  //  !MEDIAPIPE_DISABLE_GPU
 
-  RET_CHECK(cc->Inputs().HasTag(kRectTag) ^ cc->Inputs().HasTag(kNormRectTag) ^
-            (cc->Options<mediapipe::ImageCroppingCalculatorOptions>()
-                 .has_norm_width() &&
-             cc->Options<mediapipe::ImageCroppingCalculatorOptions>()
-                 .has_norm_height()));
+  int flags = 0;
+  if (cc->Inputs().HasTag(kRectTag)) {
+    ++flags;
+  }
+  if (cc->Inputs().HasTag(kWidthTag) && cc->Inputs().HasTag(kHeightTag)) {
+    ++flags;
+  }
+  if (cc->Inputs().HasTag(kNormRectTag)) {
+    ++flags;
+  }
+  if (cc->Options<mediapipe::ImageCroppingCalculatorOptions>()
+          .has_norm_width() &&
+      cc->Options<mediapipe::ImageCroppingCalculatorOptions>()
+          .has_norm_height()) {
+    ++flags;
+  }
+  if (cc->Options<mediapipe::ImageCroppingCalculatorOptions>().has_width() &&
+      cc->Options<mediapipe::ImageCroppingCalculatorOptions>().has_height()) {
+    ++flags;
+  }
+  RET_CHECK(flags == 1) << "Illegal combination of input streams/options.";
+
   if (cc->Inputs().HasTag(kRectTag)) {
     cc->Inputs().Tag(kRectTag).Set<Rect>();
   }
@@ -117,6 +134,13 @@ REGISTER_CALCULATOR(ImageCroppingCalculator);
 #else
     RET_CHECK_FAIL() << "GPU processing is for Android and iOS only.";
 #endif  //  !MEDIAPIPE_DISABLE_GPU
+  }
+
+  // Validate border mode.
+  if (use_gpu_) {
+    MP_RETURN_IF_ERROR(ValidateBorderModeForGPU(cc));
+  } else {
+    MP_RETURN_IF_ERROR(ValidateBorderModeForCPU(cc));
   }
 
   return ::mediapipe::OkStatus();
@@ -162,6 +186,32 @@ REGISTER_CALCULATOR(ImageCroppingCalculator);
   return ::mediapipe::OkStatus();
 }
 
+::mediapipe::Status ImageCroppingCalculator::ValidateBorderModeForCPU(
+    CalculatorContext* cc) {
+  int border_mode;
+  return GetBorderModeForOpenCV(cc, &border_mode);
+}
+
+::mediapipe::Status ImageCroppingCalculator::ValidateBorderModeForGPU(
+    CalculatorContext* cc) {
+  mediapipe::ImageCroppingCalculatorOptions options =
+      cc->Options<mediapipe::ImageCroppingCalculatorOptions>();
+
+  switch (options.border_mode()) {
+    case mediapipe::ImageCroppingCalculatorOptions::BORDER_ZERO:
+      LOG(WARNING) << "BORDER_ZERO mode is not supported by GPU "
+                   << "implementation and will fall back into BORDER_REPLICATE";
+      break;
+    case mediapipe::ImageCroppingCalculatorOptions::BORDER_REPLICATE:
+      break;
+    default:
+      RET_CHECK_FAIL() << "Unsupported border mode for GPU: "
+                       << options.border_mode();
+  }
+
+  return ::mediapipe::OkStatus();
+}
+
 ::mediapipe::Status ImageCroppingCalculator::RenderCpu(CalculatorContext* cc) {
   if (cc->Inputs().Tag(kImageTag).IsEmpty()) {
     return ::mediapipe::OkStatus();
@@ -169,8 +219,14 @@ REGISTER_CALCULATOR(ImageCroppingCalculator);
   const auto& input_img = cc->Inputs().Tag(kImageTag).Get<ImageFrame>();
   cv::Mat input_mat = formats::MatView(&input_img);
 
-  auto [target_width, target_height, rect_center_x, rect_center_y, rotation] =
-      GetCropSpecs(cc, input_img.Width(), input_img.Height());
+  RectSpec specs = GetCropSpecs(cc, input_img.Width(), input_img.Height());
+  int target_width = specs.width, target_height = specs.height,
+      rect_center_x = specs.center_x, rect_center_y = specs.center_y;
+  float rotation = specs.rotation;
+
+  // Get border mode and value for OpenCV.
+  int border_mode;
+  MP_RETURN_IF_ERROR(GetBorderModeForOpenCV(cc, &border_mode));
 
   const cv::RotatedRect min_rect(cv::Point2f(rect_center_x, rect_center_y),
                                  cv::Size2f(target_width, target_height),
@@ -191,7 +247,9 @@ REGISTER_CALCULATOR(ImageCroppingCalculator);
       cv::getPerspectiveTransform(src_points, dst_points);
   cv::Mat cropped_image;
   cv::warpPerspective(input_mat, cropped_image, projection_matrix,
-                      cv::Size(min_rect.size.width, min_rect.size.height));
+                      cv::Size(min_rect.size.width, min_rect.size.height),
+                      /* flags = */ 0,
+                      /* borderMode = */ border_mode);
 
   std::unique_ptr<ImageFrame> output_frame(new ImageFrame(
       input_img.Format(), cropped_image.cols, cropped_image.rows));
@@ -347,8 +405,10 @@ void ImageCroppingCalculator::GetOutputDimensions(CalculatorContext* cc,
                                                   int src_width, int src_height,
                                                   int* dst_width,
                                                   int* dst_height) {
-  auto [crop_width, crop_height, x_center, y_center, rotation] =
-      GetCropSpecs(cc, src_width, src_height);
+  RectSpec specs = GetCropSpecs(cc, src_width, src_height);
+  int crop_width = specs.width, crop_height = specs.height,
+      x_center = specs.center_x, y_center = specs.center_y;
+  float rotation = specs.rotation;
 
   const float half_width = crop_width / 2.0f;
   const float half_height = crop_height / 2.0f;
@@ -453,13 +513,28 @@ RectSpec ImageCroppingCalculator::GetCropSpecs(const CalculatorContext* cc,
       rotation = options.rotation();
     }
   }
-  return {
-      .width = crop_width,
-      .height = crop_height,
-      .center_x = x_center,
-      .center_y = y_center,
-      .rotation = rotation,
-  };
+
+  return {crop_width, crop_height, x_center, y_center, rotation};
+}
+
+::mediapipe::Status ImageCroppingCalculator::GetBorderModeForOpenCV(
+    CalculatorContext* cc, int* border_mode) {
+  mediapipe::ImageCroppingCalculatorOptions options =
+      cc->Options<mediapipe::ImageCroppingCalculatorOptions>();
+
+  switch (options.border_mode()) {
+    case mediapipe::ImageCroppingCalculatorOptions::BORDER_ZERO:
+      *border_mode = cv::BORDER_CONSTANT;
+      break;
+    case mediapipe::ImageCroppingCalculatorOptions::BORDER_REPLICATE:
+      *border_mode = cv::BORDER_REPLICATE;
+      break;
+    default:
+      RET_CHECK_FAIL() << "Unsupported border mode for CPU: "
+                       << options.border_mode();
+  }
+
+  return ::mediapipe::OkStatus();
 }
 
 }  // namespace mediapipe

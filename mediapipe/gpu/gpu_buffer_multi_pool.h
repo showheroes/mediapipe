@@ -22,8 +22,8 @@
 #ifndef MEDIAPIPE_GPU_GPU_BUFFER_MULTI_POOL_H_
 #define MEDIAPIPE_GPU_GPU_BUFFER_MULTI_POOL_H_
 
+#include <deque>
 #include <limits>
-#include <queue>
 #include <unordered_map>
 
 #include "absl/synchronization/mutex.h"
@@ -102,7 +102,8 @@ class GpuBufferMultiPool {
   typedef std::shared_ptr<GlTextureBufferPool> SimplePool;
 #endif  // MEDIAPIPE_GPU_BUFFER_USE_CV_PIXEL_BUFFER
 
-  SimplePool MakeSimplePool(BufferSpec spec);
+  SimplePool MakeSimplePool(const BufferSpec& spec);
+  SimplePool GetSimplePool(const BufferSpec& key);
   GpuBuffer GetBufferFromSimplePool(BufferSpec spec, const SimplePool& pool);
 
   absl::Mutex mutex_;
@@ -110,7 +111,7 @@ class GpuBufferMultiPool {
       ABSL_GUARDED_BY(mutex_);
   // A queue of BufferSpecs to keep track of the age of each BufferSpec added to
   // the pool.
-  std::queue<BufferSpec> buffer_specs_;
+  std::deque<BufferSpec> buffer_specs_;
 
 #ifdef __APPLE__
   // Texture caches used with this pool.

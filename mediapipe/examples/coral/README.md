@@ -1,9 +1,11 @@
 # Coral Dev Board Setup (experimental)
 
-**Dislaimer**: Running MediaPipe on Coral is experimental, and this process may
+**Disclaimer**: Running MediaPipe on Coral is experimental, and this process may
 not be exact and is subject to change. These instructions have only been tested
-on the [Coral Dev Board](https://coral.ai/products/dev-board/) with Mendel 4.0,
-and may vary for different devices and workstations.
+on the [Coral Dev Board](https://coral.ai/products/dev-board/)
+running [Mendel Enterprise Day 13](https://coral.ai/software/) OS and
+using [Diploria2](https://github.com/google-coral/edgetpu/tree/diploria2)
+edgetpu libs, and may vary for different devices and workstations.
 
 This file describes how to prepare a Coral Dev Board and setup a Linux
 Docker container for building MediaPipe applications that run on Edge TPU.
@@ -16,10 +18,12 @@ Docker container for building MediaPipe applications that run on Edge TPU.
 
 * Setup the coral device via [here](https://coral.withgoogle.com/docs/dev-board/get-started/), and ensure the _mdt_ command works
 
+        Note:   alias mdt="python3 -m mdt.main"    may be needed on some systems
+
 * (on coral device) prepare MediaPipe
 
         cd ~
-        sudo apt-get install -y git
+        sudo apt-get update && sudo apt-get install -y git
         git clone https://github.com/google/mediapipe.git
         mkdir mediapipe/bazel-bin
 
@@ -68,27 +72,30 @@ Docker container for building MediaPipe applications that run on Edge TPU.
 
         bazel build -c opt --define MEDIAPIPE_DISABLE_GPU=1 mediapipe/examples/desktop/hello_world:hello_world
 
-* Edit  /mediapipe/bazel-mediapipe/external/com_github_glog_glog/src/signalhandler.cc
-
-      on line 78, replace
-
-        return (void*)context->PC_FROM_UCONTEXT;
-
-      with
-
-        return NULL;
-
 * Edit /edgetpu/libedgetpu/BUILD
 
-      to add this build target
+     to add this build target
 
          cc_library(
-           name = "lib",
-           srcs = [
-               "libedgetpu.so",
-           ],
-           visibility = ["//visibility:public"],
+             name = "lib",
+             srcs = [
+                 "libedgetpu.so",
+             ],
+             visibility = ["//visibility:public"],
          )
+
+* Edit /edgetpu/WORKSPACE
+
+     update /mediapipe/WORKSPACE TENSORFLOW_* variables to match what /edgetpu/WORKSPACE has:
+
+        grep TENSORFLOW_ /mediapipe/WORKSPACE
+        grep TENSORFLOW_ /edgetpu/WORKSPACE
+
+        # Make sure the /mediapipe/WORKSPACE  _TENSORFLOW_GIT_COMMIT  and  _TENSORFLOW_SHA256
+        #   match the /edgetpu/WORKSPACE  TENSORFLOW_COMMIT  and  TENSORFLOW_SHA256  respectively.
+
+        # If they do not match, modify /mediapipe/WORKSPACE to match what /edgetpu/WORKSPACE has.
+        # Also comment out the MediaPipe org_tensorflow patch section.
 
 * Edit /mediapipe/mediapipe/calculators/tflite/BUILD to change rules for *tflite_inference_calculator.cc*
 
@@ -100,6 +107,10 @@ Docker container for building MediaPipe applications that run on Edge TPU.
         "@libedgetpu//:lib",
 
       to the _deps_ of tflite_inference_calculator.cc
+
+      Now also remove XNNPACK deps:
+
+        sed -i 's/\"@org_tensorflow\/\/tensorflow\/lite\/delegates\/xnnpack/#\"@org_tensorflow\/\/tensorflow\/lite\/delegates\/xnnpack/g' /mediapipe/mediapipe/calculators/tflite/BUILD
 
 #### Now try cross-compiling for device
 

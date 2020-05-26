@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <algorithm>
+
 #include "absl/memory/memory.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_join.h"
@@ -65,6 +67,27 @@ void AddTimedBoxProtoToRenderData(
     rect->set_top(box_proto.top());
     rect->set_bottom(box_proto.bottom());
     rect->set_rotation(box_proto.rotation());
+  }
+
+  if (box_proto.has_label()) {
+    auto* label_annotation = render_data->add_render_annotations();
+    label_annotation->mutable_color()->set_r(options.box_color().r());
+    label_annotation->mutable_color()->set_g(options.box_color().g());
+    label_annotation->mutable_color()->set_b(options.box_color().b());
+    label_annotation->set_thickness(options.thickness());
+    RenderAnnotation::Text* text = label_annotation->mutable_text();
+    text->set_display_text(box_proto.label());
+    text->set_normalized(true);
+    constexpr float text_left_start = 0.2f;
+    text->set_left((1.0f - text_left_start) * box_proto.left() +
+                   text_left_start * box_proto.right());
+    constexpr float text_baseline = 0.6f;
+    text->set_baseline(text_baseline * box_proto.bottom() +
+                       (1.0f - text_baseline) * box_proto.top());
+    constexpr float text_height = 0.1f;
+    text->set_font_height(std::min(box_proto.bottom() - box_proto.top(),
+                                   box_proto.right() - box_proto.left()) *
+                          text_height);
   }
 }
 

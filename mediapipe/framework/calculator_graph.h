@@ -143,7 +143,7 @@ class CalculatorGraph {
       const std::string& graph_type = "",
       const Subgraph::SubgraphOptions* options = nullptr);
 
-  // Resturns the canonicalized CalculatorGraphConfig for this graph.
+  // Returns the canonicalized CalculatorGraphConfig for this graph.
   const CalculatorGraphConfig& Config() const {
     return validated_graph_->Config();
   }
@@ -461,13 +461,13 @@ class CalculatorGraph {
   //
   // Only called by InitializeExecutors().
   ::mediapipe::Status InitializeDefaultExecutor(
-      const ThreadPoolExecutorOptions& default_executor_options,
+      const ThreadPoolExecutorOptions* default_executor_options,
       bool use_application_thread);
 
   // Creates a thread pool as the default executor. The num_threads argument
   // overrides the num_threads field in default_executor_options.
   ::mediapipe::Status CreateDefaultThreadPool(
-      const ThreadPoolExecutorOptions& default_executor_options,
+      const ThreadPoolExecutorOptions* default_executor_options,
       int num_threads);
 
   // Returns true if |name| is a reserved executor name.

@@ -29,6 +29,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         curl \
+        ffmpeg \
         git \
         wget \
         unzip \
@@ -58,7 +59,7 @@ RUN pip3 install future
 RUN pip3 install six
 
 # Install bazel
-ARG BAZEL_VERSION=1.1.0
+ARG BAZEL_VERSION=2.0.0
 RUN mkdir /bazel && \
     wget --no-check-certificate -O /bazel/installer.sh "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/b\
 azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \

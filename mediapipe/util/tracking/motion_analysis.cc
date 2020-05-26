@@ -661,13 +661,13 @@ void MotionAnalysis::RenderResults(const RegionFlowFeatureList& feature_list,
     cv::putText(*rendered_results, hud_text,
                 cv::Point(0.02 * frame_width_, 0.975 * frame_height_),
                 cv::FONT_HERSHEY_SIMPLEX, text_scale, cv::Scalar::all(255),
-                text_scale * 3, CV_AA);
+                text_scale * 3, cv::LINE_AA);
 
     cv::putText(*rendered_results,
                 absl::StrFormat("%6d", motion.timestamp_usec() / 1000),
                 cv::Point(0.9 * frame_width_, 0.05 * frame_height_),
                 cv::FONT_HERSHEY_SIMPLEX, text_scale, cv::Scalar::all(255),
-                text_scale * 3, CV_AA);
+                text_scale * 3, cv::LINE_AA);
   }
 #else
   LOG(FATAL) << "Code stripped out because of NO_RENDERING";
