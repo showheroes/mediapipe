@@ -1,6 +1,6 @@
 function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	let host = getBaseURL();
-	let socketPath = "ws://" + host + "/" + deployPath + "/video/flip/ui/tasks/" + taskID + "/progress";
+	let socketPath = "ws://" + host + deployPath + "/video/flip/ui/tasks/" + taskID + "/progress";
 	let socket = new WebSocket(socketPath);
 	var intervalHandler;
 	var spinnerSpan = $('span');
