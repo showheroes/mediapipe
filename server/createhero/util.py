@@ -185,7 +185,7 @@ class VideoReformatTask(object):
     def is_finished(self):
         status = self.process.poll()
         cur_duration = time.time() - self.process_start_time
-        if cur_duration > self.duration:
+        if cur_duration > 2*self.duration:
             self.process.kill()
             status = 1
         # self.log.debug(f'current status {status}')
