@@ -49,7 +49,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
 
         with open(os.path.join(task_dir, self.input_filename), 'wb') as input_file:
             input_file.write(file_obj['body'])
-        is not self.task_name:
+        if not self.task_name:
             self.task_name = 'task_' + task_id
         # save task_data
         task_data = {

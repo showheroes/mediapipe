@@ -96,6 +96,8 @@ class VideoReformatTask(object):
         else:
             self.log.debug('apparently a new task')
             self.set_status(self.STATUS_SUBMITTED)
+        if not 'task_name' in self.task_data:
+            self.task_data['task_name'] = 'task_' + self.task_id
 
     def set_status(self, status):
         self.task_data['status'] = status
