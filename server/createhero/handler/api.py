@@ -27,6 +27,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         tf = self.get_argument('target_format', None)
         if not tf:
             self._exit_error('No target format specified.', status = 400)
+        self.task_name = self.get_argument('taskname', '')
         self.target_format = tf
         if not 'videofile' in self.request.files:
             self._exit_error('No videofile provided.', status = 400)
@@ -48,10 +49,12 @@ class VideoReformatHandler(VideoReformatBaseHandler):
 
         with open(os.path.join(task_dir, self.input_filename), 'wb') as input_file:
             input_file.write(file_obj['body'])
-
+        is not self.task_name:
+            self.task_name = 'task_' + task_id
         # save task_data
         task_data = {
             'target_format' : self.target_format,
+            'task_name' : self.task_name,
             'input_file_name' : self.input_filename,
             'task_id' : task_id,
             'status' : VideoReformatTask.STATUS_SUBMITTED
@@ -63,7 +66,11 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         # put task on queue
         self.settings['task_queue'].put(task_id)
         # return with task id
-        return {'task_id' : task_id, 'status' : VideoReformatTask.STATUS_SUBMITTED}
+        return {
+            'task_id' : task_id,
+            'task_name' : self.task_name,
+            'status' : VideoReformatTask.STATUS_SUBMITTED
+        }
 
     def get(self):
         """ Get a list of available tasks. """
@@ -88,7 +95,7 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
         status = self.task_data['status']
         # 3) report either status or results if available (via download URL)
         if self.get_query_argument('download', None) == None:
-            task_status = {'status' : status}
+            task_status = {'status' : status, 'task_name' : self.task_data['task_name']}
             if status == VideoReformatTask.STATUS_SUCCESS:
                 dl_path = self.setting['deploy_path'] + '/video/flip/ui/tasks/' + task_id + '?download'
                 task_status.update({'download_url' : dl_path})
