@@ -32,6 +32,9 @@ if [ "$1" ] && [ "$1" != "config_only" ]
     exit 0
 fi
 
+opencv_build_file="$( cd "$(dirname "$0")" ; pwd -P )"/third_party/opencv_linux.BUILD
+workspace_file="$( cd "$(dirname "$0")" ; pwd -P )"/WORKSPACE
+
 if [ -z "$1" ]
   then
     echo "Installing OpenCV from source"
