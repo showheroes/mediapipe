@@ -59,7 +59,7 @@ RUN pip3 install future
 RUN pip3 install six
 
 # Install bazel
-ARG BAZEL_VERSION=3.0.0
+ARG BAZEL_VERSION=3.4.1
 RUN mkdir /bazel && \
     wget --no-check-certificate -O /bazel/installer.sh "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/b\
 azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
