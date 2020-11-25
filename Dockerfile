@@ -17,11 +17,6 @@ FROM python:3.7-slim
 WORKDIR /mediapipe
 
 ENV DEBIAN_FRONTEND=noninteractive
-# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EB9B1D8886F44E2A
-# RUN apt update
-# RUN apt install -y ffmpeg
-# RUN ffmpeg -version
-
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gpg gpg-agent ca-certificates dirmngr && \
