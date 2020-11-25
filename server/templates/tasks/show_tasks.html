@@ -21,28 +21,28 @@
 					<td>{{ task['task_name'] }}</td>
 					<td>{{ task['input_file_name'] }}</td>
 					<td>{{ task['status'] }}</td>
-					<td><a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}">Show progress</a></td>
+					<td><a href="{{ deploy_path }}/tasks/{{task['task_id']}}">Show progress</a></td>
 					<td>
 						{% if 'success' in task['status'] %}
-							<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id']}}?download">Download</a>
+							<a href="{{ deploy_path }}/tasks/{{ task['task_id']}}?download">Download</a>
 						{% else %}
 							N/A
 						{% end %}
 					</td>
 					<td>
 						{% if 'stopped' in task['status'] %}
-							<a href="{{ deploy_path }}/video/flip/ui/tasks/{{task['task_id']}}/restart">Restart task</a>
+							<a href="{{ deploy_path }}/tasks/{{task['task_id']}}/restart">Restart task</a>
 						{% end %}
 					</td>
 					<td>
-						<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id'] }}/captions/create">Add captions</a>
+						<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/captions/create">Add captions</a>
 						{% if 'captions' in task %}
 							<table class="table">
 								<tbody>
 									{% for lang in task['captions'] %}
 										<tr>
 											<td>
-												<a href="{{ deploy_path }}/video/flip/ui/tasks/{{ task['task_id'] }}/play?language={{ lang }}">Play with {{ task['captions'][lang]['captions_label'] }} captions</a>
+												<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play?language={{ lang }}">Play with {{ task['captions'][lang]['captions_label'] }} captions</a>
 											</td>
 										</tr>
 									{% end %}

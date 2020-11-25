@@ -1,21 +1,19 @@
-import sys
 import subprocess
-import random
-import time
 import threading
 import os
 import queue
-import uuid
 import json
 import logging
 import re
 import time
+
+
 class AsynchronousFileReader(threading.Thread):
-    '''
+    """
     Helper class to implement asynchronous reading of a file
     in a separate thread. Pushes read lines on a queue to
     be consumed in another thread.
-    '''
+    """
 
     def __init__(self, fd, q):
         assert isinstance(q, queue.Queue)
@@ -30,14 +28,14 @@ class AsynchronousFileReader(threading.Thread):
         self._fd = fd
 
     def run(self):
-        '''The body of the tread: read lines and put them on the queue.'''
+        """ The body of the tread: read lines and put them on the queue. """
         self.log.debug('file reader running...')
         for line in iter(self._fd.readline, b''):
             # self.log.debug(f'putting on queue: {line}')
             self._queue.put(line.decode())
 
     def eof(self):
-        '''Check whether there is no more content to expect.'''
+        """ Check whether there is no more content to expect. """
         return not self.is_alive() and self._queue.empty()
 
 
@@ -58,13 +56,14 @@ class VideoReformatTask(object):
         self.task_id = task_id
         self.working_base_dir = working_base_dir
         self.task_lib = task_lib
+        self.duration = 100
         if task_id not in self.task_lib:
             self.task_data = {}
             self.read_status()
         else:
             self.task_data = self.task_lib[self.task_id]
 
-        if not 'progress' in self.task_data:
+        if 'progress' not in self.task_data:
             self.task_data['progress'] = []
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
@@ -86,7 +85,7 @@ class VideoReformatTask(object):
                 self.task_data.update(json.load(f))
         elif os.path.isdir(self.get_task_directory()):
             source_files = [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
-            if any(map(lambda fname : fname.endswith('mp3'), source_files)):
+            if any(map(lambda fname: fname.endswith('mp3'), source_files)):
                 self.log.debug('no json data, but mp3 source file found')
                 self.set_status(self.STATUS_STOPPED)
             else:
@@ -96,7 +95,7 @@ class VideoReformatTask(object):
         else:
             self.log.debug('apparently a new task')
             self.set_status(self.STATUS_SUBMITTED)
-        if not 'task_name' in self.task_data:
+        if 'task_name' not in self.task_data:
             self.task_data['task_name'] = 'task_' + self.task_id
 
     def set_status(self, status):
@@ -126,17 +125,20 @@ class VideoReformatTask(object):
 
     def prepare(self):
         # extract audio from source
-        extract_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', self.task_data['input_file'], '-vn', '-f', 'adts', self.task_data['audio_file']], capture_output=True, text=True)
+        extract_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', self.task_data['input_file'],
+                                          '-vn', '-f', 'adts', self.task_data['audio_file']],
+                                         capture_output=True, text=True)
         self.task_data['progress'].extend(extract_process.stdout.splitlines(keepends=True))
         self.update_tasklib()
 
         # get video length
-        vid_length_process = subprocess.Popen(['ffmpeg', '-i', self.task_data['input_file']], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        extract_duration_process = subprocess.Popen(['grep', 'Duration'], stdin=vid_length_process.stdout, stdout=subprocess.PIPE)
+        vid_length_process = subprocess.Popen(['ffmpeg', '-i', self.task_data['input_file']],
+                                              stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        extract_duration_process = subprocess.Popen(['grep', 'Duration'],
+                                                    stdin=vid_length_process.stdout, stdout=subprocess.PIPE)
         vid_length_process.wait()
         dur_string = extract_duration_process.stdout.readline().decode().strip()
         m = re.match(r'Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),.*', dur_string)
-        self.duration = 100
         if m.groups():
             (hours, minutes, seconds, hundredths) = map(int, m.groups())
             self.duration = hours*3600 + minutes*60 + seconds + hundredths/100
@@ -151,10 +153,12 @@ class VideoReformatTask(object):
         if self.task_data['status'] != self.STATUS_INIT:
             return "Task not yet initialized."
         # prepare call to subprocess
-        command = ['GLOG_logtostderr=1', '/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
-                        '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
-                        f'--input_side_packets=input_video_path={self.task_data["input_file"]},output_video_path={self.task_data["output_file_no_audio"]},aspect_ratio={self.task_data["target_format"]}'
-                        ]
+        command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
+                   '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
+                   f'--input_side_packets=input_video_path={self.task_data["input_file"]},'
+                   f'output_video_path={self.task_data["output_file_no_audio"]},'
+                   f'aspect_ratio={self.task_data["target_format"]}'
+                  ]
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
         my_env = os.environ.copy()
@@ -173,16 +177,6 @@ class VideoReformatTask(object):
                 self.task_data['progress'].append(cur_line)
                 # make changes available in managed dict but do not write
                 self.update_tasklib()
-        # Launch the asynchronous readers of the process' stdout and stderr.
-        # self.log_reader = AsynchronousFileReader(self.process.stdout, self.log_reader_queue)
-        # self.log.debug(f'[{self.task_id}] created log reader')
-        # self.log_reader.run()
-        # self.log.debug(f'[{self.task_id}] log reader running')
-
-        # while not self.is_finished():
-        #     while not self.log_reader_queue.empty():
-        #         self.task_data['progress'].append(self.log_reader_queue.get())
-        #         self.set_status(self.STATUS_RUNNING)
 
     def is_finished(self):
         status = self.process.poll()
@@ -190,18 +184,14 @@ class VideoReformatTask(object):
         if cur_duration > 2*self.duration:
             self.process.kill()
             status = 1
-        # self.log.debug(f'current status {status}')
-        if status != None:
+        if status is not None:
             # rejoin video and audio
-            join_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'], '-c', 'copy', '-map', '0:v:0', '-map', '1:a:0', self.task_data['output_file']], capture_output=True, text=True)
+            join_process = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i',
+                                           self.task_data['output_file_no_audio'], '-i', self.task_data['audio_file'],
+                                           '-c', 'copy', '-map', '0:v:0', '-map', '1:a:0',
+                                           self.task_data['output_file']], capture_output=True, text=True)
             self.task_data['progress'].extend(join_process.stdout.splitlines(keepends=True))
             self.update_tasklib()
-            # # Let's be tidy and join the threads we've started.
-            # try:
-            #     self.log_reader.join()
-            # except RuntimeError as re:
-            #     self.log.warn(f'Could not join log reader thread: {re}')
-
             # Close subprocess' file descriptors.
             if self.process.stdout:
                 self.process.stdout.close()

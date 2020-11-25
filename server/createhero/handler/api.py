@@ -9,6 +9,7 @@ import os
 import re
 import uuid
 
+
 class VideoReformatHandler(VideoReformatBaseHandler):
     """
     Creates a reformating request. Reads in the original video file from the
@@ -26,13 +27,13 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         self.args = {}
         tf = self.get_argument('target_format', None)
         if not tf:
-            self._exit_error('No target format specified.', status = 400)
+            self._exit_error('No target format specified.', status=400)
         self.task_name = self.get_argument('taskname', '')
         self.target_format = tf
         if not 'videofile' in self.request.files:
-            self._exit_error('No videofile provided.', status = 400)
+            self._exit_error('No videofile provided.', status=400)
         if not self.request.files['videofile']:
-            self._exit_error('Videofile not complete.', status = 400)
+            self._exit_error('Videofile not complete.', status=400)
 
     def _post_task(self):
         """ Creates a new task directory and places the submitted video there. """
@@ -53,11 +54,11 @@ class VideoReformatHandler(VideoReformatBaseHandler):
             self.task_name = 'task_' + task_id
         # save task_data
         task_data = {
-            'target_format' : self.target_format,
-            'task_name' : self.task_name,
-            'input_file_name' : self.input_filename,
-            'task_id' : task_id,
-            'status' : VideoReformatTask.STATUS_SUBMITTED
+            'target_format': self.target_format,
+            'task_name': self.task_name,
+            'input_file_name': self.input_filename,
+            'task_id': task_id,
+            'status': VideoReformatTask.STATUS_SUBMITTED
         }
         self.settings['tasks'][task_id] = task_data
         with open(os.path.join(task_dir, 'task_data'), 'w') as f:
@@ -67,9 +68,9 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         self.settings['task_queue'].put(task_id)
         # return with task id
         return {
-            'task_id' : task_id,
-            'task_name' : self.task_name,
-            'status' : VideoReformatTask.STATUS_SUBMITTED
+            'task_id': task_id,
+            'task_name': self.task_name,
+            'status': VideoReformatTask.STATUS_SUBMITTED
         }
 
     def get(self):
@@ -78,7 +79,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
 
     def post(self):
         """ Creates a new task directory and places the submitted video there. """
-        self._exit_success(self._post_task(), status = 201)
+        self._exit_success(self._post_task(), status=201)
 
 
 class VideoReformatResultHandler(VideoTaskBaseHandler):
@@ -95,10 +96,10 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
         status = self.task_data['status']
         # 3) report either status or results if available (via download URL)
         if self.get_query_argument('download', None) == None:
-            task_status = {'status' : status, 'task_name' : self.task_data['task_name']}
+            task_status = {'status': status, 'task_name': self.task_data['task_name']}
             if status == VideoReformatTask.STATUS_SUCCESS:
                 dl_path = self.setting['deploy_path'] + '/video/flip/ui/tasks/' + task_id + '?download'
-                task_status.update({'download_url' : dl_path})
+                task_status.update({'download_url': dl_path})
             self._exit_success(task_status)
 
         # 4) OR if get parameter download is set, respond with video file
@@ -111,6 +112,7 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
         self.set_status(204)
         self.finish()
 
+
 class VideoCaptionHandler(VideoTaskBaseHandler):
     """
     Responds with captions for the given task and language.
@@ -120,15 +122,15 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
 
     def _validate_get(self):
         if 'captions' not in self.task_data:
-            self._exit_error(f'No captions available for Video {self.task_id}', status = 404)
+            self._exit_error(f'No captions available for Video {self.task_id}', status=404)
         self.language = self.get_query_argument('language', None)
-        if self.language == None:
+        if self.language is None:
             # no language provided, take first one
             self.language = list(keys(self.task_data['captions']))[0]
 
         # check for existence of language captions
         if self.language not in self.task_data['captions']:
-            self._exit_error(f'No captions available for language {self.lang_dict[self.language]}', status = 404)
+            self._exit_error(f'No captions available for language {self.lang_dict[self.language]}', status=404)
 
     def _get_accept_content_type(self):
         # to include files, form must be of type multipart/form-data
@@ -159,14 +161,15 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         for s in sequences:
             # find text and time codes
             duration = self._to_number(s['duration'])
-            gap_offset = self._to_number(s.gap['offset']) # offset against sequence
-            gap_start = self._to_number(s.gap['start']) # starting point of local timeline
+            gap_offset = self._to_number(s.gap['offset'])  # offset against sequence
+            gap_start = self._to_number(s.gap['start'])  # starting point of local timeline
 
             for title in s.gap.find_all('title'):
                 t_start = self._to_number(title['offset']) - gap_start
                 t_end = t_start + self._to_number(title['duration'])
-                video_text_track.append(f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)} region:1 align:middle\n')
-                text_clean = re.sub(r'\n+','\n',title.text).strip()
+                video_text_track.append(
+                    f'{self._create_time_string(t_start)} --> {self._create_time_string(t_end)} region:1 align:middle\n')
+                text_clean = re.sub(r'\n+', '\n', title.text).strip()
                 video_text_track.append(f'{text_clean}\n\n')
 
         video_text_track_string = ''.join(video_text_track)
@@ -180,10 +183,10 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         if not 'captions' in self.task_data:
             self.task_data['captions'] = {}
         self.task_data['captions'][self.args['language']] = {
-            'file_path' : os.path.join(self.settings['working_directory'],
-                            self.task_id, captions_filename),
-            'captions_label' : self.lang_dict[self.args['language']],
-            'captions_source' : f'video/flip/tasks/{self.task_id}/captions?language={self.args["language"]}'
+            'file_path': os.path.join(self.settings['working_directory'],
+                                      self.task_id, captions_filename),
+            'captions_label': self.lang_dict[self.args['language']],
+            'captions_source': f'video/flip/tasks/{self.task_id}/captions?language={self.args["language"]}'
         }
         # update managed dict
         self.settings['tasks'][self.task_id] = self.task_data
@@ -198,10 +201,10 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             vtt_file.write(video_text_track_string)
 
     def _to_number(self, sec_string):
-        sec_removed = sec_string.replace('s','')
+        sec_removed = sec_string.replace('s', '')
         if '/' in sec_removed:
             numerator, denominator = sec_removed.split('/')
-            return math.floor(float(numerator)/float(denominator))
+            return math.floor(float(numerator) / float(denominator))
         return int(sec_removed)
 
     def _create_time_string(self, seconds):

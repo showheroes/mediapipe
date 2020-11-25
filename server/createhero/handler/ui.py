@@ -7,6 +7,7 @@ import os
 from tornado.websocket import WebSocketHandler
 import urllib.parse as up
 
+
 class VideoReformatPostTaskUIHandler(VideoReformatHandler, VideoUIMixin):
     """ Handler for creating reformating tasks. """
 
@@ -19,6 +20,7 @@ class VideoReformatPostTaskUIHandler(VideoReformatHandler, VideoUIMixin):
         task = self._post_task()
         self.redirect(f'{self.settings["deploy_path"]}/video/flip/ui/tasks/{task["task_id"]}')
 
+
 class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
 
     def get(self):
@@ -27,16 +29,20 @@ class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
             data.append(self.settings['tasks'][t])
         self.render('tasks/show_tasks.html', tasks=data)
 
+
 class VideoReformatTaskUIHandler(VideoTaskUIBaseHandler):
 
     def get(self, task_id):
-        if self.get_query_argument('download', None) != None and self.task_data['status'] == VideoReformatTask.STATUS_SUCCESS:
+        if self.get_query_argument('download', None) is not None \
+                and self.task_data['status'] == VideoReformatTask.STATUS_SUCCESS:
             self.set_header('Content-Type', 'video/mp4')
-            self.set_header('Content-Disposition', f'attachment; filename={os.path.basename(self.task_data["output_file"])}')
+            self.set_header('Content-Disposition',
+                            f'attachment; filename={os.path.basename(self.task_data["output_file"])}')
             self._send_file(self.task_data['output_file'], 'rb')
             self.finish()
         else:
             self.render('tasks/show_task.html', **self.task_data)
+
 
 class VideoReformatTaskRestartHandler(VideoTaskUIBaseHandler):
 
@@ -47,29 +53,31 @@ class VideoReformatTaskRestartHandler(VideoTaskUIBaseHandler):
         self.settings['task_queue'].put(task_id)
         self.render('tasks/show_task.html', **self.task_data)
 
+
 class VideoReformatTaskProgressSocket(WebSocketHandler):
     """
     UI socket for monitoring a task, returns stdout messages and the download
     link when ready.
     """
+
     def check_origin(self, origin):
         parsed_origin = up.urlparse(origin)
         return '.showheroes.com' in parsed_origin.netloc
 
     def open(self, task_id):
         # when opening the websocket, get the task
-        if not task_id in self.settings['tasks']:
-            self.close(404, reason = f'No task with ID {task_id} found.')
-        self.task_id =  task_id
+        if task_id not in self.settings['tasks']:
+            self.close(404, reason=f'No task with ID {task_id} found.')
+        self.task_id = task_id
         self.log = logging.getLogger("WebSocketHandler")
 
     def on_message(self, message):
         task = self.settings['tasks'][self.task_id]
         if 'progress' == message:
-            answer = ''.join(list(map(lambda _in : _in.strip() + '<br/>', task['progress'])))
+            answer = ''.join(list(map(lambda _in: _in.strip() + '<br/>', task['progress'])))
             self.write_message(answer)
         if task['status'] == VideoReformatTask.STATUS_STOPPED or task['status'] == VideoReformatTask.STATUS_SUCCESS:
-            self.close(200, reason = "Process stopped")
+            self.close(200, reason="Process stopped")
 
 
 class VideoAddCaptionHandler(VideoCaptionHandler, VideoUIMixin):
@@ -88,6 +96,7 @@ class VideoAddCaptionHandler(VideoCaptionHandler, VideoUIMixin):
         self._convert_to_vtt()
         self.get(task_id)
 
+
 class VideoCaptionPlayUIHandler(VideoCaptionHandler, VideoUIMixin):
     """ Plays video with captions or creates new captions file. """
 
@@ -96,10 +105,8 @@ class VideoCaptionPlayUIHandler(VideoCaptionHandler, VideoUIMixin):
         self._validate_get()
         caption_data = self.task_data['captions'][self.language]
         video_url = f'{self.settings["deploy_path"]}/static/video/{task_id}/{self.task_data["input_file_name"]}'
-        self.render('captions/play_with_captions.html',
-            video_url = video_url,
-            captions_language = self.language,
-            **caption_data)
+        self.render('captions/play_with_captions.html', video_url=video_url, captions_language=self.language,
+                    **caption_data)
 
     def post(self, task_id):
         self._exit_no_route('POST')

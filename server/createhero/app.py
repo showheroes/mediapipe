@@ -16,17 +16,17 @@ class CreateHeroAPI(Application):
 
     def add_routes(self):
         route_list = [
-                (r"/video/flip/tasks/(.*)/captions", h.api.VideoCaptionHandler),
-                (r"/video/flip/tasks/(.*)", h.api.VideoReformatResultHandler),
-                (r"/video/flip/tasks", h.api.VideoReformatHandler),
-                (r"/video/flip/ui", h.VideoReformatUIBaseHandler),
-                (r"/video/flip/ui/tasks/create", h.ui.VideoReformatPostTaskUIHandler),
-                (r"/video/flip/ui/tasks/(.*)/progress", h.ui.VideoReformatTaskProgressSocket),
-                (r"/video/flip/ui/tasks/(.*)/restart", h.ui.VideoReformatTaskRestartHandler),
-                (r"/video/flip/ui/tasks/(.*)/play", h.ui.VideoCaptionPlayUIHandler),
-                (r"/video/flip/ui/tasks/(.*)/captions/create", h.ui.VideoAddCaptionHandler),
-                (r"/video/flip/ui/tasks/(.*)", h.ui.VideoReformatTaskUIHandler),
-                (r"/video/flip/ui/tasks", h.ui.VideoReformatTasksUIHandler),
+                (r"/api/tasks/(.*)/captions", h.api.VideoCaptionHandler),
+                (r"/api/tasks/(.*)", h.api.VideoReformatResultHandler),
+                (r"/api/tasks", h.api.VideoReformatHandler),
+                (r"/", h.VideoReformatUIBaseHandler),
+                (r"/tasks/create", h.ui.VideoReformatPostTaskUIHandler),
+                (r"/tasks/(.*)/progress", h.ui.VideoReformatTaskProgressSocket),
+                (r"/tasks/(.*)/restart", h.ui.VideoReformatTaskRestartHandler),
+                (r"/tasks/(.*)/play", h.ui.VideoCaptionPlayUIHandler),
+                (r"/tasks/(.*)/captions/create", h.ui.VideoAddCaptionHandler),
+                (r"/tasks/(.*)", h.ui.VideoReformatTaskUIHandler),
+                (r"/tasks", h.ui.VideoReformatTasksUIHandler),
             ]
         ### FALLBACK
         # route_list.append((r"/.*", h.VideoReformatBaseHandler))
