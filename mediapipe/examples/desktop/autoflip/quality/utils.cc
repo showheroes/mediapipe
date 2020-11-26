@@ -130,6 +130,27 @@ void RectUnion(const Rect& rect_to_add, Rect* rect) {
       LOG(ERROR) << "Detection missing a bounding box, skipped.";
     }
     if (has_valid_location) {
+      //// HACKHACKHACK ////
+      // rect pos x + rec width = right pos of rect, subtract frame width
+      // if difference is larger 0 then right pos of rect is outside original frame
+      int diff_x = (&location)->x() + (&location)->width() - original_frame_width;
+      int diff_y = (&location)->y() + (&location)->height() - original_frame_height;
+      if (diff_x > 0) {
+        if ((&location)->x() >= diff_x) {
+          (&location)->set_x((&location)->x() - diff_x - 1);
+        } else {
+          (&location)->set_width((&location)->width() - diff_x - 1);
+        }
+      }
+      if (diff_y > 0) {
+        if ((&location)->y() >= diff_y) {
+          (&location)->set_y((&location)->y() - diff_y - 1);
+        } else {
+          (&location)->set_height((&location)->height() - diff_y - 1);
+        }
+        LOG_EVERY_N(ERROR, 10) << "[check] location x: " << (&location)->x() << ", location y: " << (&location)->y();
+        LOG_EVERY_N(ERROR, 10) << "[check] location width: " << (&location)->width() << ", location height: " << (&location)->height();
+        LOG_EVERY_N(ERROR, 10) << "[check] original width: " << original_frame_width << ", original height: " << original_frame_height;
       if (!ClampRect(original_frame_width, original_frame_height, &location)
                .ok()) {
         LOG(ERROR) << "Invalid detection bounding box, skipped.";
