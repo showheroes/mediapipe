@@ -37,9 +37,13 @@ RUN apt-get update && \
         libopencv-video-dev \
         libopencv-calib3d-dev \
         libopencv-features2d-dev \
-        software-properties-common && \
-    add-apt-repository -y -r ppa:openjdk-r/ppa && \
-    apt-get update -q && apt-get install -y openjdk-8-jdk && \
+        software-properties-common
+
+RUN add-apt-repository -y -r ppa:openjdk-r/ppa
+
+RUN mkdir -p /usr/share/man/man1
+
+RUN apt-get update -q && apt-get install -y openjdk-11-jre openjdk-11-jdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -63,7 +67,7 @@ azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
 
 VOLUME /mediapipe/server/static/video
 
-COPY .bazelrc WORKSPACE BUILD setup_opencv.sh /mediapipe/
+COPY .bazelrc WORKSPACE BUILD.bazel setup_opencv.sh /mediapipe/
 COPY ./third_party /mediapipe/third_party
 
 RUN bash setup_opencv.sh
