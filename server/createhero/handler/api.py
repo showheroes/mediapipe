@@ -98,7 +98,7 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
         if self.get_query_argument('download', None) == None:
             task_status = {'status': status, 'task_name': self.task_data['task_name']}
             if status == VideoReformatTask.STATUS_SUCCESS:
-                dl_path = self.setting['deploy_path'] + '/video/flip/ui/tasks/' + task_id + '?download'
+                dl_path = self.setting['deploy_path'] + '/tasks/' + task_id + '?download'
                 task_status.update({'download_url': dl_path})
             self._exit_success(task_status)
 
@@ -186,7 +186,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             'file_path': os.path.join(self.settings['working_directory'],
                                       self.task_id, captions_filename),
             'captions_label': self.lang_dict[self.args['language']],
-            'captions_source': f'video/flip/tasks/{self.task_id}/captions?language={self.args["language"]}'
+            'captions_source': f'   tasks/{self.task_id}/captions?language={self.args["language"]}'
         }
         # update managed dict
         self.settings['tasks'][self.task_id] = self.task_data

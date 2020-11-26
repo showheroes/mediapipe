@@ -18,7 +18,7 @@ class VideoReformatPostTaskUIHandler(VideoReformatHandler, VideoUIMixin):
     def post(self):
         # validate the request and generate a uuid task_id, using the API method
         task = self._post_task()
-        self.redirect(f'{self.settings["deploy_path"]}/video/flip/ui/tasks/{task["task_id"]}')
+        self.redirect(f'{self.settings["deploy_path"]}/tasks/{task["task_id"]}')
 
 
 class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
