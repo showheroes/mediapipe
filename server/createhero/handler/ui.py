@@ -45,6 +45,7 @@ class VideoReformatTaskDeleteHandler(VideoReformatResultHandler, VideoUIMixin):
 
     def get(self, task_id):
         success, msg = self.delete_task_dir(task_id)
+        del self.settings['tasks'][task_id]
         messages = []
         if not success:
             messages.append({'type': 'danger', 'message': msg})
