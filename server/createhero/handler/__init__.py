@@ -1,3 +1,5 @@
+import os
+
 from adhero_utils.handlers import GenericHandler
 
 
@@ -19,8 +21,11 @@ class VideoBaseHandler(GenericHandler):
     def _authenticate(self):
         return
 
-    def _send_file(self, filname, open_as='r'):
-        with open(filname, open_as) as of:
+    def get_task_dir(self, task_id):
+        return os.path.join(self.settings['working_directory'], task_id)
+
+    def _send_file(self, filename, open_as='r'):
+        with open(filename, open_as) as of:
             while 1:
                 data = of.read(16384)
                 if not data: break

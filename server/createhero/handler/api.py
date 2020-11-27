@@ -3,9 +3,9 @@ from ..util import VideoReformatTask
 
 from bs4 import BeautifulSoup
 import json
-import langdetect
 import math
 import os
+import shutil
 import re
 import uuid
 
@@ -45,7 +45,7 @@ class VideoReformatHandler(VideoReformatBaseHandler):
 
         # create a task ID, create the directory and place the file there
         task_id = str(uuid.uuid4())
-        task_dir = os.path.join(self.settings['working_directory'], task_id)
+        task_dir = self.get_task_dir(task_id)
         os.mkdir(task_dir)
 
         with open(os.path.join(task_dir, self.input_filename), 'wb') as input_file:
@@ -95,10 +95,10 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
         # 2) extract task status
         status = self.task_data['status']
         # 3) report either status or results if available (via download URL)
-        if self.get_query_argument('download', None) == None:
+        if self.get_query_argument('download', None) is None:
             task_status = {'status': status, 'task_name': self.task_data['task_name']}
             if status == VideoReformatTask.STATUS_SUCCESS:
-                dl_path = self.setting['deploy_path'] + '/tasks/' + task_id + '?download'
+                dl_path = self.settings['deploy_path'] + '/tasks/' + task_id + '?download'
                 task_status.update({'download_url': dl_path})
             self._exit_success(task_status)
 
@@ -111,6 +111,26 @@ class VideoReformatResultHandler(VideoTaskBaseHandler):
             return
         self.set_status(204)
         self.finish()
+
+    def delete(self, task_id):
+        """ Deletes the given task. """
+        success, msg = self.delete_task_dir(task_id)
+        if not success:
+            self._exit_error(msg, status=404)
+        if msg:
+            self._exit_warn({}, msg)
+        # success and no message, all good
+        self.set_status(204)
+        self.finish()
+
+    def delete_task_dir(self, task_id):
+        if task_id not in self.settings['tasks']:
+            return False, f'Task ID "{task_id}" unknown.'
+        task_dir = self.get_task_dir(task_id)
+        if not os.path.isdir(task_dir):
+            return True, f'No data for task "{task_id}"'
+        shutil.rmtree(task_dir)
+        return True, ''
 
 
 class VideoCaptionHandler(VideoTaskBaseHandler):

@@ -23,6 +23,7 @@ class CreateHeroAPI(Application):
                 (r"/tasks/create", h.ui.VideoReformatPostTaskUIHandler),
                 (r"/tasks/(.*)/progress", h.ui.VideoReformatTaskProgressSocket),
                 (r"/tasks/(.*)/restart", h.ui.VideoReformatTaskRestartHandler),
+                (r"/tasks/(.*)/delete", h.ui.VideoReformatTaskRestartHandler),
                 (r"/tasks/(.*)/play", h.ui.VideoCaptionPlayUIHandler),
                 (r"/tasks/(.*)/captions/create", h.ui.VideoAddCaptionHandler),
                 (r"/tasks/(.*)", h.ui.VideoReformatTaskUIHandler),

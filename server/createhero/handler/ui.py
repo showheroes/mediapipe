@@ -1,5 +1,5 @@
 from . import VideoReformatUIBaseHandler, VideoTaskUIBaseHandler, VideoUIMixin
-from .api import VideoReformatHandler, VideoCaptionHandler
+from .api import VideoReformatHandler, VideoCaptionHandler, VideoReformatResultHandler
 from ..util import VideoReformatTask
 
 import logging
@@ -24,10 +24,7 @@ class VideoReformatPostTaskUIHandler(VideoReformatHandler, VideoUIMixin):
 class VideoReformatTasksUIHandler(VideoReformatUIBaseHandler):
 
     def get(self):
-        data = []
-        for t in self.settings['tasks']:
-            data.append(self.settings['tasks'][t])
-        self.render('tasks/show_tasks.html', tasks=data)
+        self.render('tasks/show_tasks.html', tasks=list(self.settings['tasks'].values()))
 
 
 class VideoReformatTaskUIHandler(VideoTaskUIBaseHandler):
@@ -42,6 +39,20 @@ class VideoReformatTaskUIHandler(VideoTaskUIBaseHandler):
             self.finish()
         else:
             self.render('tasks/show_task.html', **self.task_data)
+
+
+class VideoReformatTaskDeleteHandler(VideoReformatResultHandler, VideoUIMixin):
+
+    def get(self, task_id):
+        success, msg = self.delete_task_dir(task_id)
+        messages = []
+        if not success:
+            messages.append({'type': 'danger', 'message': msg})
+        elif msg:
+            messages.append({'type': 'warning', 'message': msg})
+        else:
+            messages.append({'type': 'success', 'message': f'Deleted data for task ID {task_id}'})
+        self.render('tasks/show_tasks.html', tasks=list(self.settings['tasks'].values()), messages=messages)
 
 
 class VideoReformatTaskRestartHandler(VideoTaskUIBaseHandler):

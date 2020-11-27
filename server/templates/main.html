@@ -2,6 +2,20 @@
 
 {% include 'partials/navigation.html' %}
 <div id="container">
+	{% try %}
+		{% if messages %}
+			<div class="row justify-content-center">
+				<div class="col-md-10" id="messages">
+					{% for m in messages %}
+						<div class="alert-{{m['type']}}" role="alert">
+							{{ m['message'] }}
+						</div>
+					{% end %}
+				</div>
+			</div>
+		{% end %}
+	{% except %}
+	{% end %}
 	<div class="row justify-content-center">
 		<div class="col col-md-10" id="content">
 			{% block content %}

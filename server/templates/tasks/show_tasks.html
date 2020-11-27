@@ -50,6 +50,11 @@
 							</table>
 						{% end %}
 					</td>
+					<td>
+						{% if 'stopped' in task['status'] or 'success' in task['status'] %}
+							<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/delete" onclick="return confirm('This will delete the task \"{{ task['task_name'] }}\"')">Delete</a>
+						{% end %}
+					</td>
 				</tr>
 			{% end %}
 		</tbody>
