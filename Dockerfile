@@ -92,13 +92,9 @@ RUN python -m pip install -r requirements.txt
 
 COPY ./server/DataScienceHeroUtils /mediapipe/server/DataScienceHeroUtils
 
-COPY ./server/DataScienceHeroUtils /mediapipe/server/DataScienceHeroUtils
-
 WORKDIR /mediapipe/server/DataScienceHeroUtils
 
 RUN python -m pip install -r requirements.txt && python -m pip install .
-
-COPY ./server /mediapipe/server
 
 COPY ./server /mediapipe/server
 
