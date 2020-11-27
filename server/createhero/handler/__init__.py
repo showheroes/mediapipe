@@ -13,6 +13,9 @@ class VideoBaseHandler(GenericHandler):
             'fr': 'Français'
         }
 
+    def _get_authentication_token(self):
+        return 'Basic', 'dummy'
+
     def _authenticate(self):
         return
 
