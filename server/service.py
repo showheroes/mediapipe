@@ -47,6 +47,9 @@ def main():
 
         settings = {}
         settings['deploy_path'] = os.environ.get('DEPLOY_PATH', '')
+        settings['oauth_server'] = os.environ.get('OAUTH_SERVER', '')
+        settings['auth_redirect_url'] = os.environ.get('OAUTH_REDIRECT')
+        settings['auth_client_id'] = os.environ.get('OAUTH_CLIENT_ID')
         # set internal url everywhere
         settings['documentation'] = os.path.dirname(os.path.abspath(__file__)) + '/swagger.yml'
         # create shared communication dict
