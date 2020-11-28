@@ -1,3 +1,5 @@
+import json
+
 from . import VideoReformatUIBaseHandler, VideoTaskUIBaseHandler, VideoUIMixin
 from .api import VideoReformatHandler, VideoCaptionHandler, VideoReformatResultHandler
 from ..util import VideoReformatTask
@@ -85,11 +87,18 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
 
     def on_message(self, message):
         task = self.settings['tasks'][self.task_id]
-        if 'progress' == message:
-            answer = ''.join(list(map(lambda _in: _in.strip() + '<br/>', task['progress'])))
-            self.write_message(answer)
+        mo = json.loads(message)
+        answer = {}
+        if 'progress' in mo['command']:
+            answer['data'] = ''.join(list(map(lambda _in: _in.strip() + '<br/>', task['progress'])))
         if task['status'] == VideoReformatTask.STATUS_STOPPED or task['status'] == VideoReformatTask.STATUS_SUCCESS:
-            self.close(200, reason="Process stopped")
+            answer['type'] = 'complete'
+        else:
+            answer['type'] = 'progress'
+        self.write_message(json.dumps(answer))
+        
+    def on_close(self) -> None:
+        self.log.info("websocket has been closed")
 
 
 class VideoAddCaptionHandler(VideoCaptionHandler, VideoUIMixin):
