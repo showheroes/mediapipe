@@ -28,7 +28,7 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 	};
 
 	socket.onmessage = function(event) {
-	    message = JSON.parse(event);
+	    message = JSON.parse(event.data);
         progressWindow.html(message.data);
 	    switch(message.type) {
 	        case "progress":
