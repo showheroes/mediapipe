@@ -200,13 +200,13 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
             self.args['language'] = langdetect.detect(video_text_track_string)
 
         captions_filename = f'{self.args["language"]}_subtitle.vtt'
-        if not 'captions' in self.task_data:
+        if 'captions' not in self.task_data:
             self.task_data['captions'] = {}
         self.task_data['captions'][self.args['language']] = {
             'file_path': os.path.join(self.settings['working_directory'],
                                       self.task_id, captions_filename),
             'captions_label': self.lang_dict[self.args['language']],
-            'captions_source': f'   tasks/{self.task_id}/captions?language={self.args["language"]}'
+            'captions_source': f'api/tasks/{self.task_id}/captions?language={self.args["language"]}'
         }
         # update managed dict
         self.settings['tasks'][self.task_id] = self.task_data
