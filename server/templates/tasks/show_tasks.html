@@ -1,17 +1,21 @@
 {% extends '../main.html' %}
 {% block content %}
 	{% import os %}
-	<table class="table">
+	<table id="task-list" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%"	>
 		<thead>
 			<tr>
-				<td>Task ID</td>
-				<td>Task name</td>
-				<td>Source video</td>
-				<td>Status</td>
-				<td>Monitor</td>
-				<td>Download</td>
-				<td>Restart</td>
-				<td>Captions</td>
+				<th class="th-sm">Task ID</th>
+				<th class="th-sm">Task name</th>
+				<th class="th-sm">Source video</th>
+				<th class="th-sm">Status</th>
+				<th class="th-sm">Monitor</th>
+				{% if 'success' in task['status'] %}
+					<th class="th-sm">Download</th>
+				{% end %}
+				{% if 'stopped' in task['status'] %}
+					<th class="th-sm">Restart</th>
+				{% end %}
+				<th class="th-sm">Captions</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,18 +26,16 @@
 					<td>{{ task['input_file_name'] }}</td>
 					<td>{{ task['status'] }}</td>
 					<td><a href="{{ deploy_path }}/tasks/{{task['task_id']}}">Show progress</a></td>
-					<td>
-						{% if 'success' in task['status'] %}
+					{% if 'success' in task['status'] %}
+						<td>
 							<a href="{{ deploy_path }}/tasks/{{ task['task_id']}}?download">Download</a>
-						{% else %}
-							N/A
-						{% end %}
-					</td>
-					<td>
-						{% if 'stopped' in task['status'] %}
+						</td>
+					{% end %}
+					{% if 'stopped' in task['status'] %}
+						<td>
 							<a href="{{ deploy_path }}/tasks/{{task['task_id']}}/restart">Restart task</a>
-						{% end %}
-					</td>
+						</td>
+					{% end %}
 					<td>
 						<a target="_blank" href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play">Play video</a>
 						<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/captions/create">Add captions</a>
@@ -53,7 +55,7 @@
 					</td>
 					<td>
 						{% if 'stopped' in task['status'] or 'success' in task['status'] %}
-							<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/delete" onclick="return confirm('This will delete the task \"{{ task['task_name'] }}\"')">Delete</a>
+							<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/delete" onclick="return confirm('This will delete the task {{ task['task_name'] }}')">Delete</a>
 						{% end %}
 					</td>
 				</tr>

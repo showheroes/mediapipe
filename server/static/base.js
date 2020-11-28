@@ -46,3 +46,8 @@ function initiateProgressSocket(progressWindow, taskID, deployPath) {
 function getBaseURL() {
 	return window.location.host;
 }
+
+$(document).ready(function () {
+$('#task-list').DataTable();
+$('.dataTables_length').addClass('bs-select');
+});
