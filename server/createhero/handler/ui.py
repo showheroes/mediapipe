@@ -87,7 +87,11 @@ class VideoReformatTaskProgressSocket(WebSocketHandler):
 
     def on_message(self, message):
         task = self.settings['tasks'][self.task_id]
-        mo = json.loads(message)
+        try:
+            mo = json.loads(message)
+        except json.decoder.JSONDecodeError as e:
+            self.log.error(f'Could not parse message {message}')
+            return
         answer = {}
         if 'progress' in mo['command']:
             answer['data'] = ''.join(list(map(lambda _in: _in.strip() + '<br/>', task['progress'])))
