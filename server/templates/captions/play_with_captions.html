@@ -2,8 +2,11 @@
 {% block content %}
 	<div class="row">
 		<div class="col col-md-6">
-			<video autoplay="true" src="{{ video_url }}" controls muted ontimeupdate="showCues(this)">
-				<track id="texttrack" kind="captions" mode="showing" lang="{{ captions_language }}" srclang="{{ captions_language }}" label="{{ captions_label}}" src="{{ deploy_path}}/{{ captions_source }}" default/>
+			<video autoplay="true" src="{{ video_url }}" controls muted">
+				{% try %}
+					<track id="texttrack" kind="captions" mode="showing" lang="{{ captions_language }}" srclang="{{ captions_language }}" label="{{ captions_label}}" src="{{ deploy_path}}/{{ captions_source }}" default/>
+				{% except %}
+				{% end %}
 			</video>
 		</div>
 	</div>

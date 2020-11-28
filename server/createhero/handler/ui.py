@@ -107,7 +107,7 @@ class VideoAddCaptionHandler(VideoCaptionHandler, VideoUIMixin):
     def _validate_request(self):
         self.args = {}
         lang = self.get_argument('language', None)
-        if lang != None:
+        if lang is not None:
             self.args['language'] = lang
 
     def get(self, task_id):
@@ -123,11 +123,13 @@ class VideoCaptionPlayUIHandler(VideoCaptionHandler, VideoUIMixin):
 
     def get(self, task_id):
         """ This renders the chosen video with the subtitles enabled. """
-        self._validate_get()
-        caption_data = self.task_data['captions'][self.language]
+        caption_data = {}
+        if 'captions' in self.task_data:
+            self._validate_get()
+            caption_data.update(self.task_data['captions'][self.language])
+            caption_data['captions_language'] = self.language
         video_url = f'{self.settings["deploy_path"]}/static/video/{task_id}/{self.task_data["input_file_name"]}'
-        self.render('captions/play_with_captions.html', video_url=video_url, captions_language=self.language,
-                    **caption_data)
+        self.render('captions/play_with_captions.html', video_url=video_url, **caption_data)
 
     def post(self, task_id):
         self._exit_no_route('POST')

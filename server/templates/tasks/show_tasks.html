@@ -35,6 +35,7 @@
 						{% end %}
 					</td>
 					<td>
+						<a target="_blank" href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play">Play video</a>
 						<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/captions/create">Add captions</a>
 						{% if 'captions' in task %}
 							<table class="table">
