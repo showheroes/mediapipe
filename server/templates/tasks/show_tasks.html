@@ -9,12 +9,8 @@
 				<th class="th-sm">Source video</th>
 				<th class="th-sm">Status</th>
 				<th class="th-sm">Monitor</th>
-				{% if 'success' in task['status'] %}
-					<th class="th-sm">Download</th>
-				{% end %}
-				{% if 'stopped' in task['status'] %}
-					<th class="th-sm">Restart</th>
-				{% end %}
+				<th class="th-sm">Download</th>
+				<th class="th-sm">Restart</th>
 				<th class="th-sm">Captions</th>
 			</tr>
 		</thead>
@@ -26,16 +22,16 @@
 					<td>{{ task['input_file_name'] }}</td>
 					<td>{{ task['status'] }}</td>
 					<td><a href="{{ deploy_path }}/tasks/{{task['task_id']}}">Show progress</a></td>
-					{% if 'success' in task['status'] %}
-						<td>
+					<td>
+						{% if 'success' in task['status'] %}
 							<a href="{{ deploy_path }}/tasks/{{ task['task_id']}}?download">Download</a>
-						</td>
-					{% end %}
-					{% if 'stopped' in task['status'] %}
-						<td>
+						{% end %}
+					</td>
+					<td>
+						{% if 'stopped' in task['status'] %}
 							<a href="{{ deploy_path }}/tasks/{{task['task_id']}}/restart">Restart task</a>
-						</td>
-					{% end %}
+						{% end %}
+					</td>
 					<td>
 						<a target="_blank" href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play">Play video</a>
 						<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/captions/create">Add captions</a>
