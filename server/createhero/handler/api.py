@@ -146,7 +146,7 @@ class VideoCaptionHandler(VideoTaskBaseHandler):
         self.language = self.get_query_argument('language', None)
         if self.language is None:
             # no language provided, take first one
-            self.language = list(keys(self.task_data['captions']))[0]
+            self.language = list(self.task_data['captions'].keys())[0]
 
         # check for existence of language captions
         if self.language not in self.task_data['captions']:
