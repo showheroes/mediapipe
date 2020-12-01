@@ -15,29 +15,30 @@
 			{% for task in tasks %}
 				<tr>
 					<td>{{ task['task_name'] }}</td>
-					<td>{{ task['input_file_name'] }}</td>
+					<td>{{ task['input_file_name'] }} ({{ "{:.2f}".format(task['input_file_size']) }})</td>
 					<td>{{ task['status'] }}
 						<a href="{{ deploy_path }}/tasks/{{task['task_id']}}">
 							<i class="fas fa-info-circle"></i>
 						</a>
 					</td>
 					<td>
-						<a target="_blank" href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play">
-							<i class="fas fa-play-circle"></i>
-						</a>
 						{% if 'success' in task['status'] %}
+							{{ "{:.2f}".format(task['output_file_size']) }}
+							<a target="_blank" href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play">
+								<i class="fas fa-play-circle"></i>
+							</a>
 							<a href="{{ deploy_path }}/tasks/{{ task['task_id']}}?download">
 								<i class="fas fa-cloud-download-alt"></i>
 							</a>
 						{% end %}
-						{% if 'stopped' in task['status'] or 'success' in task['status'] %}
+						{% if 'stopped' in task['status'] %}
 							<a href="{{ deploy_path }}/tasks/{{task['task_id']}}/restart">
 								<i class="fas fa-redo"></i>
 							</a>
-							<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/delete" onclick="return confirm('This will delete the task {{ task['task_name'] }}')">
-								<i class="fas fa-trash"></i>
-							</a>
 						{% end %}
+						<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/delete" onclick="return confirm('This will delete the task {{ task['task_name'] }}')">
+							<i class="fas fa-trash"></i>
+						</a>
 					</td>
 					<td>
 						<a href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/captions/create">

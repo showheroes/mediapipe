@@ -83,6 +83,11 @@ class VideoReformatTask(object):
         if os.path.exists(data_file):
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
+            if 'input_file' in self.task_data and 'input_file_size' not in self.task_data:
+                self.task_data['input_file_size'] = os.path.getsize(self.task_data['input_file'])
+            if 'output_file' in self.task_data and 'output_file_size' not in self.task_data:
+                self.task_data['output_file_size'] = os.path.getsize(self.task_data['output_file'])
+            self.update_tasklib()
         elif os.path.isdir(self.get_task_directory()):
             source_files = [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
             if any(map(lambda fname: fname.endswith('mp3'), source_files)):
@@ -113,6 +118,7 @@ class VideoReformatTask(object):
         output_file_name = input_file_name + '_' + self.task_data['target_format'].replace(':','_') + input_ext
         input_file = os.path.join(self.get_task_directory(), self.task_data['input_file_name'])
         self.task_data['input_file'] = input_file
+        self.task_data['input_file_size'] = os.path.getsize(input_file)
         output_file = os.path.join(self.get_task_directory(), output_file_name)
         self.task_data['output_file'] = output_file
 
@@ -191,14 +197,15 @@ class VideoReformatTask(object):
                                            '-c', 'copy', '-map', '0:v:0', '-map', '1:a:0',
                                            self.task_data['output_file']], capture_output=True, text=True)
             self.task_data['progress'].extend(join_process.stdout.splitlines(keepends=True))
-            self.update_tasklib()
             # Close subprocess' file descriptors.
             if self.process.stdout:
                 self.process.stdout.close()
             if status == 0:
                 self.set_status(self.STATUS_SUCCESS)
+                self.task_data['output_file_size'] = os.path.getsize(self.task_data['output_file'])
             else:
                 self.set_status(self.STATUS_STOPPED)
+            self.update_tasklib()
             self.store_task_data()
             return True
         return False
