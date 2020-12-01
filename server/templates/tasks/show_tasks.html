@@ -15,7 +15,7 @@
 			{% for task in tasks %}
 				<tr>
 					<td>{{ task['task_name'] }}</td>
-					<td>{{ task['input_file_name'] }} ({{ "{:.2f}".format(task['input_file_size']) }})</td>
+					<td>{{ task['input_file_name'] }} ({{ "{:.2f}".format(task['input_file_size']/(1024*1024)) }}MB)</td>
 					<td>{{ task['status'] }}
 						<a href="{{ deploy_path }}/tasks/{{task['task_id']}}">
 							<i class="fas fa-info-circle"></i>
@@ -23,7 +23,7 @@
 					</td>
 					<td>
 						{% if 'success' in task['status'] %}
-							{{ "{:.2f}".format(task['output_file_size']) }}
+							{{ "{:.2f}".format(task['output_file_size']/(1024*1024)) }}MB
 							<a target="_blank" href="{{ deploy_path }}/tasks/{{ task['task_id'] }}/play">
 								<i class="fas fa-play-circle"></i>
 							</a>
