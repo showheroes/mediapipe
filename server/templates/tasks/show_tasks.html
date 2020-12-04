@@ -4,8 +4,10 @@
 	<table id="task-list" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%"	>
 		<thead>
 			<tr>
+				<th class="th-sm">Task type</th>
 				<th class="th-sm">Task name</th>
 				<th class="th-sm">Source video</th>
+				<th class="th-sm">Target</th>
 				<th class="th-sm">Status</th>
 				<th class="th-sm">Result</th>
 				<th class="th-sm">Captions</th>
@@ -14,8 +16,10 @@
 		<tbody>
 			{% for task in tasks %}
 				<tr>
+					<td>{{ task['action'] }}</td>
 					<td>{{ task['task_name'] }}</td>
 					<td>{{ task['input_file_name'] }} ({{ "{:.2f}".format(task['input_file_size']/(1024*1024)) }}MB)</td>
+					<td>{{ task['target_quality'] }} quality, {{ task['target_size'] }} size{% if 'flip' in task['action'] %}, {{ task['target_format'] }} aspect ratio{% end %}</td>
 					<td>{{ task['status'] }}
 						<a href="{{ deploy_path }}/tasks/{{task['task_id']}}">
 							<i class="fas fa-info-circle"></i>

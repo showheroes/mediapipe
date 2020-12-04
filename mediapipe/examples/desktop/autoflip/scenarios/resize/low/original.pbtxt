@@ -1,0 +1,42 @@
+# Autoflip graph that only renders the final cropped video. For use with
+# end user applications.
+max_queue_size: -1
+
+# VIDEO_PREP: Decodes an input video file into images and a video header.
+node {
+  calculator: "OpenCvVideoDecoderCalculator"
+  input_side_packet: "INPUT_FILE_PATH:input_video_path"
+  output_stream: "VIDEO:video_raw"
+  output_stream: "VIDEO_PRESTREAM:video_header"
+#  output_side_packet: "SAVED_AUDIO_PATH:audio_path"
+}
+
+# VIDEO_PREP: Scale the input video before feature extraction.
+node {
+  calculator: "ScaleImageCalculator"
+  input_stream: "FRAMES:video_raw"
+  input_stream: "VIDEO_HEADER:video_header"
+  output_stream: "FRAMES:video_frames_scaled"
+  options: {
+    [mediapipe.ScaleImageCalculatorOptions.ext]: {
+      preserve_aspect_ratio: true
+      output_format: SRGB
+      target_width: 240
+      algorithm: DEFAULT_WITHOUT_UPSCALE
+    }
+  }
+}
+
+node {
+  calculator: "OpenCvVideoEncoderCalculator"
+  input_stream: "VIDEO:video_frames_scaled"
+  input_stream: "VIDEO_PRESTREAM:output_frames_video_header"
+  input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
+#  input_side_packet: "AUDIO_FILE_PATH:audio_path"
+  options: {
+    [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
+      codec: "avc1"
+      video_format: "mp4"
+    }
+  }
+}

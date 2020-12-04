@@ -63,8 +63,17 @@ class VideoReformatTask(object):
         else:
             self.task_data = self.task_lib[self.task_id]
 
+        if 'action' not in self.task_data:
+            self.task_data['action'] = 'resize'
+
         if 'progress' not in self.task_data:
             self.task_data['progress'] = []
+
+        if 'target_quality' not in self.task_data:
+            self.task_data['target_quality'] = 'high'
+
+        if 'target_size' not in self.task_data:
+            self.task_data['target_size'] = 'original'
 
         if self.task_data['status'] == self.STATUS_SUBMITTED:
             self.initialize()
@@ -158,9 +167,12 @@ class VideoReformatTask(object):
     async def start(self):
         if self.task_data['status'] != self.STATUS_INIT:
             return "Task not yet initialized."
+        # find graph description
+        graph_filename = f'{self.task_data["target_size"]}.pbtxt'
+        graph_path = os.path.join('scenarios', self.task_data['action'], self.task_data['target_quality'], graph_filename)
         # prepare call to subprocess
         command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
-                   '--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/autoflip_graph.pbtxt',
+                   f'--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/{graph_path}',
                    f'--input_side_packets=input_video_path={self.task_data["input_file"]},'
                    f'output_video_path={self.task_data["output_file_no_audio"]},'
                    f'aspect_ratio={self.task_data["target_format"]}'

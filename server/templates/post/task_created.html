@@ -2,7 +2,13 @@
 {% block content %}
 	<h4>Successfully created a task</h4>
 	<p>Task ID: {{ task_id }}</p>
+	<p>Action: {{ action }}</p>
 	<p>Task name: {{ task_name}}</p>
+	<p>Target quality: {{ target_quality }}</p>
+	<p>Target size: {{ target_size }}</p>
+	{% if 'flip' in action %}
+		<p>Target aspect ratio: {{ target_format }}</p>
+	{% end %}
 	<p>Task status: {{ status }}</p>
 	<p><a href="{{ deploy_path }}/tasks/{{ task_id }}">Monitor progress here</a></p>
 {% end %}

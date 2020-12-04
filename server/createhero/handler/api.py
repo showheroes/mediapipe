@@ -25,15 +25,19 @@ class VideoReformatHandler(VideoReformatBaseHandler):
     def _validate_request(self):
         # super()._validate_request()
         self.args = {}
-        tf = self.get_argument('target_format', None)
-        if not tf:
-            self._exit_error('No target format specified.', status=400)
+        self.target_quality = self.get_argument('target_quality', 'high')
+        self.action = self.get_argument('action', 'resize')
+        self.target_size = self.get_argument('target_size', 'adjusted')
+        if 'flip' in self.action:
+            tf = self.get_argument('target_format', None)
+            if not tf:
+                self._exit_error('No target format specified.', status=400)
+            self.target_format = tf
         self.task_name = self.get_argument('taskname', '')
-        self.target_format = tf
-        if not 'videofile' in self.request.files:
-            self._exit_error('No videofile provided.', status=400)
+        if 'videofile' not in self.request.files:
+            self._exit_error('No video file provided.', status=400)
         if not self.request.files['videofile']:
-            self._exit_error('Videofile not complete.', status=400)
+            self._exit_error('Video file not complete.', status=400)
 
     def _post_task(self):
         """ Creates a new task directory and places the submitted video there. """
@@ -58,6 +62,9 @@ class VideoReformatHandler(VideoReformatBaseHandler):
             'task_name': self.task_name,
             'input_file_name': self.input_filename,
             'task_id': task_id,
+            'action': self.action,
+            'target_quality': self.target_quality,
+            'target_size': self.target_size,
             'status': VideoReformatTask.STATUS_SUBMITTED
         }
         self.settings['tasks'][task_id] = task_data
