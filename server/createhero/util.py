@@ -174,9 +174,10 @@ class VideoReformatTask(object):
         command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                    f'--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/{graph_path}',
                    f'--input_side_packets=input_video_path={self.task_data["input_file"]},'
-                   f'output_video_path={self.task_data["output_file_no_audio"]},'
-                   f'aspect_ratio={self.task_data["target_format"]}'
+                   f'output_video_path={self.task_data["output_file_no_audio"]}'
                   ]
+        if 'flip' in self.task_data['action']:
+            command.append(f',aspect_ratio={self.task_data["target_format"]}')
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
         my_env = os.environ.copy()

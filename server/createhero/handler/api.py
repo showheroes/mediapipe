@@ -28,11 +28,9 @@ class VideoReformatHandler(VideoReformatBaseHandler):
         self.target_quality = self.get_argument('target_quality', 'high')
         self.action = self.get_argument('action', 'resize')
         self.target_size = self.get_argument('target_size', 'adjusted')
-        if 'flip' in self.action:
-            tf = self.get_argument('target_format', None)
-            if not tf:
-                self._exit_error('No target format specified.', status=400)
-            self.target_format = tf
+        self.target_format = self.get_argument('target_format', None)
+        if 'flip' in self.action and not self.target_format:
+            self._exit_error('No target format specified.', status=400)
         self.task_name = self.get_argument('taskname', '')
         if 'videofile' not in self.request.files:
             self._exit_error('No video file provided.', status=400)
@@ -58,7 +56,6 @@ class VideoReformatHandler(VideoReformatBaseHandler):
             self.task_name = 'task_' + task_id
         # save task_data
         task_data = {
-            'target_format': self.target_format,
             'task_name': self.task_name,
             'input_file_name': self.input_filename,
             'task_id': task_id,
@@ -67,6 +64,9 @@ class VideoReformatHandler(VideoReformatBaseHandler):
             'target_size': self.target_size,
             'status': VideoReformatTask.STATUS_SUBMITTED
         }
+        if 'flip' in self.action:
+            task_data['target_format'] = self.target_format
+
         self.settings['tasks'][task_id] = task_data
         with open(os.path.join(task_dir, 'task_data'), 'w') as f:
             json.dump(task_data, f)

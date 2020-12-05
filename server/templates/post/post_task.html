@@ -1,157 +1,183 @@
 {% extends '../main.html' %}
 {% block content %}
-	<!-- Pills navs -->
-	<ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-		<li class="nav-item" role="presentation">
-		<a
-		  class="nav-link active"
-		  id="tab-flip"
-		  data-toggle="pill"
-		  href="#pills-flip"
-		  role="tab"
-		  aria-controls="pills-flip"
-		  aria-selected="true"
-		  >Flip video</a
-		>
-	  </li>
-	  <li class="nav-item" role="presentation">
-		<a
-		  class="nav-link"
-		  id="tab-resize"
-		  data-toggle="pill"
-		  href="#pills-resize"
-		  role="tab"
-		  aria-controls="pills-resize"
-		  aria-selected="false"
-		  >Resize videor</a
-		>
-	  </li>
-	</ul>
-	<!-- Pills navs -->
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Pills navs -->
+        <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a
+                        class="nav-link active"
+                        id="tab-flip"
+                        data-toggle="pill"
+                        href="#pills-flip"
+                        role="tab"
+                        aria-controls="pills-flip"
+                        aria-selected="true"
+                >Flip video</a
+                >
+            </li>
+            <li class="nav-item" role="presentation">
+                <a
+                        class="nav-link"
+                        id="tab-resize"
+                        data-toggle="pill"
+                        href="#pills-resize"
+                        role="tab"
+                        aria-controls="pills-resize"
+                        aria-selected="false"
+                >Resize video</a
+                >
+            </li>
+        </ul>
+        <!-- Pills navs -->
 
-	<!-- Pills content -->
-	<div class="tab-content">
-	  <div
-		class="tab-pane fade show active"
-		id="pills-flip"
-		role="tabpanel"
-		aria-labelledby="tab-flip"
-	  >
-		<form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
-		  <input type="hidden" name="action" value="flip">
-		  <!-- Task name input -->
-		  <div class="form-outline mb-4">
-			<input name="taskname" required="" type="text" class="form-control" id="taskname_flip" placeholder="Specify a task name."/>
-			<label class="form-label" for="taskname_flip">Task name</label>
-		  </div>
+        <!-- Pills content -->
+        <div class="tab-content">
+            <div
+                    class="tab-pane fade show active"
+                    id="pills-flip"
+                    role="tabpanel"
+                    aria-labelledby="tab-flip"
+            >
+                <form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
+                    <input type="hidden" name="action" value="flip">
+                    <!-- Task name input -->
+                    <div class="form-outline mb-4">
+                        <input name="taskname" required="" type="text" class="form-control" id="taskname_flip"
+                               placeholder="Specify a task name."/>
+                        <label class="form-label" for="taskname_flip">Task name</label>
+                    </div>
 
-		  <!-- File input -->
-		  <div class="form-outline mb-4">
-			<input type="password" id="loginPassword" class="form-control" />
-			  <input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip" aria-describedby="videofileHelp" placeholder="Specify input file."/>
-			<label class="form-label" for="videofile_flip">Password</label>
-		  </div>
+                    <!-- File input -->
+                    <div class="form-outline mb-4">
+                        <input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip"
+                               aria-describedby="videofileHelp" placeholder="Specify input file."/>
+                        <label class="form-label" for="videofile_flip">Password</label>
+                    </div>
 
-		  <!-- 2 column grid layout -->
-		  <div class="row mb-4">
-			<div class="col-md-6 d-flex justify-content-center">
-			  <!-- Simple link -->
-			  Choose aspect ratio:
-			</div>
-			<div class="col-md-6 d-flex justify-content-center">
-			  <!-- Checkbox -->
-			  <div class="btn-group">
-				<input class="btn-check" type="radio" name="target_format" id="target_format_1_1" value="1:1" checked />
-				<label class="btn btn-secondary" for="target_format_1_1">1:1</label>
-				<input class="btn-check" type="radio" name="target_format" id="target_format_16_9" value="16:9" />
-				<label class="btn btn-secondary" for="target_format_16_9">16:9</label>
-				<input class="btn-check" type="radio" name="target_format" id="target_format_9_16" value="9:16" />
-				<label class="btn btn-secondary" for="target_format_9_16">9:16</label>
-			  </div>
-			</div>
-		  </div>
+                    <!-- 2 column grid layout -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <!-- Simple link -->
+                            Choose aspect ratio:
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <!-- Checkbox -->
+                            <div class="btn-group">
+                                <input class="btn-check" type="radio" name="target_format" id="target_format_1_1"
+                                       value="1:1" checked/>
+                                <label class="btn btn-secondary" for="target_format_1_1">1:1</label>
+                                <input class="btn-check" type="radio" name="target_format" id="target_format_16_9"
+                                       value="16:9"/>
+                                <label class="btn btn-secondary" for="target_format_16_9">16:9</label>
+                                <input class="btn-check" type="radio" name="target_format" id="target_format_9_16"
+                                       value="9:16"/>
+                                <label class="btn btn-secondary" for="target_format_9_16">9:16</label>
+                            </div>
+                        </div>
+                    </div>
 
-		  <div class="row mb-4">
-			<div class="col-md-6 d-flex justify-content-center">
-			  <!-- Simple link -->
-			  Choose target quality level:
-			</div>
-			<div class="col-md-6 d-flex justify-content-center">
-			  <!-- Checkbox -->
-			  <div class="btn-group">
-				<input class="btn-check" type="radio" name="target_quality" id="target_quality_low" value="low" checked />
-				<label class="btn btn-secondary" for="target_quality_low">Low</label>
-				<input class="btn-check" type="radio" name="target_quality" id="target_quality_medium" value="medium" />
-				<label class="btn btn-secondary" for="target_quality_medium">Medium</label>
-				<input class="btn-check" type="radio" name="target_quality" id="target_quality_hgh" value="high" />
-				<label class="btn btn-secondary" for="target_quality_hgh">High</label>
-			  </div>
-			</div>
-		  </div>
-			<!-- Checked switch -->
-			<div class="form-check form-switch">
-			  <input class="form-check-input" type="checkbox" id="keep_original_flip" name="target_size" value="original" checked />
-			  <label class="form-check-label" for="keep_original_flip">
-				  Keep original size
-			  </label>
-			</div>
-		  <!-- Submit button -->
-		  <button type="submit" class="btn btn-primary btn-block mb-4">
-			Submit task
-		  </button>
-		</form>
-	  </div>
-	  <div
-		class="tab-pane fade"
-		id="pills-resize"
-		role="tabpanel"
-		aria-labelledby="tab-resize"
-	  >
-		<form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
-		  <input type="hidden" name="action" value="resize">
-		  <!-- Task name input -->
-		  <div class="form-outline mb-4">
-			<input name="taskname" required="" type="text" class="form-control" id="taskname_flip" placeholder="Specify a task name."/>
-			<label class="form-label" for="taskname_flip">Task name</label>
-		  </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <!-- Simple link -->
+                            Choose target quality level:
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <!-- Checkbox -->
+                            <div class="btn-group">
+                                <input class="btn-check" type="radio" name="target_quality" id="target_quality_low_flip"
+                                       value="low" checked/>
+                                <label class="btn btn-secondary" for="target_quality_low_flip">Low</label>
+                                <input class="btn-check" type="radio" name="target_quality"
+                                       id="target_quality_medium_flip" value="medium"/>
+                                <label class="btn btn-secondary" for="target_quality_medium_flip">Medium</label>
+                                <input class="btn-check" type="radio" name="target_quality"
+                                       id="target_quality_high_flip" value="high"/>
+                                <label class="btn btn-secondary" for="target_quality_high_flip">High</label>
+                            </div>
+							<!-- Checked switch -->
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" id="keep_original_flip" name="target_size"
+									   value="original" checked/>
+								<label class="form-check-label" for="keep_original_flip">
+									Keep original size
+								</label>
+							</div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block mb-4">
+                                Submit task
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div
+                    class="tab-pane fade"
+                    id="pills-resize"
+                    role="tabpanel"
+                    aria-labelledby="tab-resize"
+            >
+                <form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
+                    <input type="hidden" name="action" value="resize">
+                    <!-- Task name input -->
+                    <div class="form-outline mb-4">
+                        <input name="taskname" required="" type="text" class="form-control" id="taskname_resize"
+                               placeholder="Specify a task name."/>
+                        <label class="form-label" for="taskname_resize">Task name</label>
+                    </div>
 
-		  <!-- File input -->
-		  <div class="form-outline mb-4">
-			<input type="password" id="loginPassword" class="form-control" />
-			  <input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip" aria-describedby="videofileHelp" placeholder="Specify input file."/>
-			<label class="form-label" for="videofile_flip">Password</label>
-		  </div>
+                    <!-- File input -->
+                    <div class="form-outline mb-4">
+                        <input type="password" id="loginPassword" class="form-control"/>
+                        <input name="videofile" required="" type="file" class="form-control-file" id="videofile_resize"
+                               aria-describedby="videofileHelp" placeholder="Specify input file."/>
+                        <label class="form-label" for="videofile_resize">Password</label>
+                    </div>
 
-		  <div class="row mb-4">
-			<div class="col-md-6 d-flex justify-content-center">
-			  <!-- Simple link -->
-			  Choose target quality level:
-			</div>
-			<div class="col-md-6 d-flex justify-content-center">
-			  <!-- Checkbox -->
-			  <div class="btn-group">
-				<input class="btn-check" type="radio" name="target_quality" id="target_quality_low" value="low" checked />
-				<label class="btn btn-secondary" for="target_quality_low">Low</label>
-				<input class="btn-check" type="radio" name="target_quality" id="target_quality_medium" value="medium" />
-				<label class="btn btn-secondary" for="target_quality_medium">Medium</label>
-				<input class="btn-check" type="radio" name="target_quality" id="target_quality_hgh" value="high" />
-				<label class="btn btn-secondary" for="target_quality_hgh">High</label>
-			  </div>
-			</div>
-		  </div>
-			<!-- Checked switch -->
-			<div class="form-check form-switch">
-			  <input class="form-check-input" type="checkbox" id="keep_original_resize" name="target_size" value="original" checked />
-			  <label class="form-check-label" for="keep_original_resize">
-				  Keep original size
-			  </label>
-			</div>
-		  <!-- Submit button -->
-		  <button type="submit" class="btn btn-primary btn-block mb-4">
-			Submit task
-		  </button>
-		</form>
-	  </div>
-	</div>
-	<!-- Pills content -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <!-- Simple link -->
+                            Choose target quality level:
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-center">
+                            <!-- Checkbox -->
+                            <div class="btn-group">
+                                <input class="btn-check" type="radio" name="target_quality"
+                                       id="target_quality_low_resize" value="low" checked/>
+                                <label class="btn btn-secondary" for="target_quality_low_resize">Low</label>
+                                <input class="btn-check" type="radio" name="target_quality"
+                                       id="target_quality_medium_resize" value="medium"/>
+                                <label class="btn btn-secondary" for="target_quality_medium_resize">Medium</label>
+                                <input class="btn-check" type="radio" name="target_quality"
+                                       id="target_quality_high_resize" value="high"/>
+                                <label class="btn btn-secondary" for="target_quality_high_resize">High</label>
+                            </div>
+                            <!-- Checked switch -->
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="keep_original_resize"
+                                       name="target_size" value="original" checked/>
+                                <label class="form-check-label" for="keep_original_resize">
+                                    Keep original size
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <!-- Submit button -->
+                            <button type="submit" class="btn btn-primary btn-block mb-4">
+                                Submit task
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Pills content -->
+    </div>
+</div>
 {% end %}
