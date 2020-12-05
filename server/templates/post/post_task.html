@@ -42,19 +42,23 @@
                 <form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
                     <input type="hidden" name="action" value="flip">
                     <!-- Task name input -->
-					<div class="row form-outline mb-4">
-						<div class="col-md-6 justify-content-center">
-							<input name="taskname" required="" type="text" class="form-control" id="taskname_flip"
-								   placeholder="Specify a task name."/>
-							<label class="form-label" for="taskname_flip">Task name</label>
+					<div class="row justify-content-center">
+						<div class="col-md-6">
+							<div class="form-outline mb-4">
+								<input name="taskname" required="" type="text" class="form-control" id="taskname_flip"
+									   placeholder="Specify a task name."/>
+								<label class="form-label" for="taskname_flip">Task name</label>
+							</div>
 						</div>
 					</div>
 
                     <!-- File input -->
-                    <div class="row form-outline mb-4">
-						<div class="col-md-6 justify-content-center">
-							<input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip"
-								   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+                    <div class="row justify-content-center">
+						<div class="col-md-6">
+							<div class="form-outline mb-4">
+								<input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip"
+									   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+							</div>
 						</div>
                     </div>
 
@@ -117,42 +121,47 @@
                 <form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
                     <input type="hidden" name="action" value="resize">
                     <!-- Task name input -->
-                    <div class="row form-outline mb-4">
-						<div class="col-md-6 justify-content-center">
-							<input name="taskname" required="" type="text" class="form-control" id="taskname_resize"
-								   placeholder="Specify a task name."/>
-							<label class="form-label" for="taskname_resize">Task name</label>
+                    <div class="row justify-content-center">
+						<div class="col-md-6">
+							<div class="form-outline mb-4">
+								<input name="taskname" required="" type="text" class="form-control" id="taskname_resize"
+									   placeholder="Specify a task name."/>
+								<label class="form-label" for="taskname_resize">Task name</label>
+							</div>
 						</div>
 					</div>
 
                     <!-- File input -->
-                    <div class="row form-outline mb-4">
-						<div class="col-md-6 justify-content-center">
-							<input name="videofile" required="" type="file" class="form-control-file" id="videofile_resize"
-								   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+                    <div class="row justify-content-center">
+						<div class="col-md-6">
+							<div class="form-outline mb-4">
+								<input name="videofile" required="" type="file" class="form-control-file" id="videofile_resize"
+									   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+							</div>
 						</div>
                     </div>
-
-					<div class="col-md-6 d-flex justify-content-center">
-						<!-- Checkbox -->
-						<div class="btn-group">
-							<input class="btn-check" type="radio" name="target_quality"
-								   id="target_quality_low_resize" value="low" checked/>
-							<label class="btn btn-secondary" for="target_quality_low_resize">Low</label>
-							<input class="btn-check" type="radio" name="target_quality"
-								   id="target_quality_medium_resize" value="medium"/>
-							<label class="btn btn-secondary" for="target_quality_medium_resize">Medium</label>
-							<input class="btn-check" type="radio" name="target_quality"
-								   id="target_quality_high_resize" value="high"/>
-							<label class="btn btn-secondary" for="target_quality_high_resize">High</label>
-						</div>
-						<!-- Checked switch -->
-						<div class="form-check form-switch pt-2 ml-2">
-							<input class="form-check-input" type="checkbox" id="keep_original_resize"
-								   name="target_size" value="original" checked/>
-							<label class="form-check-label" for="keep_original_resize">
-								Keep original size
-							</label>
+					<div class="row justify-content-center">
+						<div class="col-md-6 d-flex justify-content-center">
+							<!-- Checkbox -->
+							<div class="btn-group">
+								<input class="btn-check" type="radio" name="target_quality"
+									   id="target_quality_low_resize" value="low" checked/>
+								<label class="btn btn-secondary" for="target_quality_low_resize">Low</label>
+								<input class="btn-check" type="radio" name="target_quality"
+									   id="target_quality_medium_resize" value="medium"/>
+								<label class="btn btn-secondary" for="target_quality_medium_resize">Medium</label>
+								<input class="btn-check" type="radio" name="target_quality"
+									   id="target_quality_high_resize" value="high"/>
+								<label class="btn btn-secondary" for="target_quality_high_resize">High</label>
+							</div>
+							<!-- Checked switch -->
+							<div class="form-check form-switch pt-2 ml-2">
+								<input class="form-check-input" type="checkbox" id="keep_original_resize"
+									   name="target_size" value="original" checked/>
+								<label class="form-check-label" for="keep_original_resize">
+									Keep original size
+								</label>
+							</div>
 						</div>
 					</div>
                     <div class="row justify-content-center">
