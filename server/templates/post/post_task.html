@@ -1,7 +1,7 @@
 {% extends '../main.html' %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <!-- Pills navs -->
         <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
             <li class="nav-item" role="presentation">
@@ -42,31 +42,23 @@
                 <form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
                     <input type="hidden" name="action" value="flip">
                     <!-- Task name input -->
-					<div class="row justify-content-center">
-						<div class="col-md-6">
-							<div class="form-outline mb-4">
-								<input name="taskname" required="" type="text" class="form-control" id="taskname_flip"
-									   placeholder="Specify a task name."/>
-								<label class="form-label" for="taskname_flip">Task name</label>
-							</div>
-						</div>
+					<div class="form-outline mb-4">
+						<input name="taskname" required="" type="text" class="form-control" id="taskname_flip"
+							   placeholder="Specify a task name."/>
+						<label class="form-label" for="taskname_flip">Task name</label>
 					</div>
 
                     <!-- File input -->
-                    <div class="row justify-content-center">
-						<div class="col-md-6">
-							<div class="form-outline mb-4">
-								<input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip"
-									   aria-describedby="videofileHelp" placeholder="Specify input file."/>
-							</div>
-						</div>
-                    </div>
+					<div class="form-outline mb-4">
+						<input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip"
+							   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+					</div>
 
                     <!-- 2 column grid layout -->
-                    <div class="row mb-4">
-                        <div class="col-md-6 d-flex justify-content-center">
+                    <div class="row mb-4 justify-content-center">
+                        <div class="col-md-6 d-flex">
                             <!-- Checkbox -->
-                            <div class="btn-group">
+                            <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target aspect ratio">
                                 <input class="btn-check" type="radio" name="target_format" id="target_format_1_1"
                                        value="1:1" checked/>
                                 <label class="btn btn-secondary" for="target_format_1_1">1:1</label>
@@ -78,9 +70,11 @@
                                 <label class="btn btn-secondary" for="target_format_9_16">9:16</label>
                             </div>
                         </div>
-                        <div class="col-md-6 d-flex justify-content-center">
+					</div>
+                    <div class="row mb-4 justify-content-center">
+                        <div class="col-md-6 d-flex">
                             <!-- Checkbox -->
-                            <div class="btn-group">
+                            <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
                                 <input class="btn-check" type="radio" name="target_quality" id="target_quality_low_flip"
                                        value="low" checked/>
                                 <label class="btn btn-secondary" for="target_quality_low_flip">Low</label>
@@ -141,9 +135,9 @@
 						</div>
                     </div>
 					<div class="row justify-content-center">
-						<div class="col-md-6 d-flex justify-content-center">
+						<div class="col-md-6 d-flex">
 							<!-- Checkbox -->
-							<div class="btn-group">
+							<div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
 								<input class="btn-check" type="radio" name="target_quality"
 									   id="target_quality_low_resize" value="low" checked/>
 								<label class="btn btn-secondary" for="target_quality_low_resize">Low</label>
