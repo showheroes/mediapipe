@@ -40,7 +40,6 @@ class AsynchronousFileReader(threading.Thread):
 
 
 class VideoReformatTask(object):
-
     FORMAT_1x1 = '1:1'
     FORMAT_16x9 = '16:9'
     FORMAT_9x16 = '9:16'
@@ -104,7 +103,8 @@ class VideoReformatTask(object):
                     self.task_data['output_file_size'] = 0
             self.update_tasklib()
         elif os.path.isdir(self.get_task_directory()):
-            source_files = [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
+            source_files = [f.name for f in os.scandir(self.get_task_directory()) if
+                            f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
             if any(map(lambda fname: fname.endswith('mp3'), source_files)):
                 self.log.debug('no json data, but mp3 source file found')
                 self.set_status(self.STATUS_STOPPED)
@@ -130,7 +130,7 @@ class VideoReformatTask(object):
 
     def initialize(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
-        output_file_name = input_file_name + '_' + self.task_data['target_format'].replace(':','_') + input_ext
+        output_file_name = input_file_name + '_' + self.task_data['target_format'].replace(':', '_') + input_ext
         input_file = os.path.join(self.get_task_directory(), self.task_data['input_file_name'])
         self.task_data['input_file'] = input_file
         self.task_data['input_file_size'] = os.path.getsize(input_file)
@@ -141,7 +141,9 @@ class VideoReformatTask(object):
         self.task_data['audio_file'] = audio_file
         input_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_no_audio' + input_ext)
         self.task_data['input_file_no_audio'] = input_no_audio
-        output_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_' + self.task_data['target_format'].replace(':','_') + '_no_audio' + input_ext)
+        output_no_audio = os.path.join(self.get_task_directory(),
+                                       input_file_name + '_' + self.task_data['target_format'].replace(':',
+                                                                                                       '_') + '_no_audio' + input_ext)
         self.task_data['output_file_no_audio'] = output_no_audio
 
     def prepare(self):
@@ -162,7 +164,7 @@ class VideoReformatTask(object):
         m = re.match(r'Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2}),.*', dur_string)
         if m.groups():
             (hours, minutes, seconds, hundredths) = map(int, m.groups())
-            self.duration = hours*3600 + minutes*60 + seconds + hundredths/100
+            self.duration = hours * 3600 + minutes * 60 + seconds + hundredths / 100
             self.task_data['video_length'] = self.duration
             self.update_tasklib()
         # strip audio off of input source
@@ -175,15 +177,16 @@ class VideoReformatTask(object):
             return "Task not yet initialized."
         # find graph description
         graph_filename = f'{self.task_data["target_size"]}.pbtxt'
-        graph_path = os.path.join('scenarios', self.task_data['action'], self.task_data['target_quality'], graph_filename)
+        graph_path = os.path.join('scenarios', self.task_data['action'], self.task_data['target_quality'],
+                                  graph_filename)
         # prepare call to subprocess
         command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                    f'--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/{graph_path}',
                    f'--input_side_packets=input_video_path={self.task_data["input_file"]},'
                    f'output_video_path={self.task_data["output_file_no_audio"]}'
-                  ]
+                   ]
         if 'flip' in self.task_data['action']:
-            command.append(f',aspect_ratio={self.task_data["target_format"]}')
+            command[-1] += f',aspect_ratio={self.task_data["target_format"]}'
         self.log.debug(f'[{self.task_id}] starting command {command}')
         # Launch the command as subprocess, route stderr to stdout
         my_env = os.environ.copy()
@@ -206,7 +209,7 @@ class VideoReformatTask(object):
     def is_finished(self):
         status = self.process.poll()
         cur_duration = time.time() - self.process_start_time
-        if cur_duration > 4*self.duration:
+        if cur_duration > 4 * self.duration:
             self.process.kill()
             status = 1
         if status is not None:
