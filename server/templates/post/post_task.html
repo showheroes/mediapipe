@@ -49,14 +49,16 @@
 					</div>
 
                     <!-- File input -->
-					<div class="form-outline mb-4">
-						<input name="videofile" required="" type="file" class="form-control-file" id="videofile_flip"
-							   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+					<div class="form-file mb-4">
+						<input type="file" class="form-file-input" id="videofile_flip" name="videofile" />
+						<label class="form-file-label" for="videofile_flip">
+							<span class="form-file-text"><i class="fas fa-film pr-2"></i>Specify input file.</span>
+							<span class="form-file-button">Browse</span>
+						</label>
 					</div>
-
                     <!-- 2 column grid layout -->
                     <div class="row mb-4 justify-content-center">
-                        <div class="col-md-6 d-flex">
+                        <div class="col-md-6 d-flex justify-content-center">
                             <!-- Checkbox -->
                             <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target aspect ratio">
                                 <input class="btn-check" type="radio" name="target_format" id="target_format_1_1"
@@ -70,7 +72,7 @@
                                 <label class="btn btn-secondary" for="target_format_9_16">9:16</label>
                             </div>
                         </div>
-						<div class="col-md-6 d-flex">
+						<div class="col-md-6 d-flex justify-content-center">
 							<!-- Checkbox -->
                             <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
                                 <input class="btn-check" type="radio" name="target_quality" id="target_quality_low_flip"
@@ -124,13 +126,17 @@
 					</div>
 
                     <!-- File input -->
-					<div class="form-outline mb-4">
-						<input name="videofile" required="" type="file" class="form-control-file" id="videofile_resize"
-							   aria-describedby="videofileHelp" placeholder="Specify input file."/>
+					<div class="form-file mb-4">
+						<input type="file" class="form-file-input" id="videofile_resize" name="videofile" required/>
+						<label class="form-file-label" for="videofile_resize">
+							<span class="form-file-text"><i class="fas fa-film pr-2"></i>Specify input file.</span>
+							<span class="form-file-button">Browse</span>
+						</label>
 					</div>
+
                     <!-- 2 column grid layout -->
                     <div class="row mb-4 justify-content-center">
-						<div class="col-md-6 d-flex">
+						<div class="col-md-6 d-flex justify-content-center">
 							<!-- Checkbox -->
 							<div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
 								<input class="btn-check" type="radio" name="target_quality"
@@ -146,7 +152,7 @@
 						</div>
 					</div>
                     <div class="row mb-4 justify-content-center">
-                        <div class="col-md-10 d-flex">
+                        <div class="col-md-10 d-flex justify-content-center">
 							<!-- Checked switch -->
 							<div class="form-check form-switch pt-2 ml-2">
 								<input class="form-check-input" type="checkbox" id="keep_original_resize"
