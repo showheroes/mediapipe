@@ -131,7 +131,11 @@ class VideoReformatTask(object):
 
     def initialize(self):
         input_file_name, input_ext = os.path.splitext(self.task_data['input_file_name'])
-        output_file_name = input_file_name + '_' + self.task_data['target_format'].replace(':', '_') + input_ext
+        output_file_name_prefix = input_file_name + '_' + self.task_data['target_quality'] + '_quality'
+        output_file_name_prefix += '_' + self.task_data['target_size'] + '_size'
+        if 'flip' in self.task_data['action']:
+            output_file_name_prefix += self.task_data['target_format'].replace(':', '_')
+        output_file_name = output_file_name_prefix + input_ext
         self.task_data['output_file_name'] = output_file_name
         input_file = os.path.join(self.get_task_directory(), self.task_data['input_file_name'])
         self.task_data['input_file'] = input_file
@@ -144,8 +148,7 @@ class VideoReformatTask(object):
         input_no_audio = os.path.join(self.get_task_directory(), input_file_name + '_no_audio' + input_ext)
         self.task_data['input_file_no_audio'] = input_no_audio
         output_no_audio = os.path.join(self.get_task_directory(),
-                                       input_file_name + '_' + self.task_data['target_format'].replace(':',
-                                                                                                       '_') + '_no_audio' + input_ext)
+                                       output_file_name_prefix + '_no_audio' + input_ext)
         self.task_data['output_file_no_audio'] = output_no_audio
 
     def prepare(self):
