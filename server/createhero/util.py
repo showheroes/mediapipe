@@ -92,10 +92,16 @@ class VideoReformatTask(object):
         if os.path.exists(data_file):
             with open(data_file, 'r') as f:
                 self.task_data.update(json.load(f))
-            if 'input_file' in self.task_data and 'input_file_size' not in self.task_data:
-                self.task_data['input_file_size'] = os.path.getsize(self.task_data['input_file'])
-            if 'output_file' in self.task_data and 'output_file_size' not in self.task_data:
-                self.task_data['output_file_size'] = os.path.getsize(self.task_data['output_file'])
+            if 'input_file' in self.task_data and os.path.isfile(self.task_data['input_file']):
+                if 'input_file_size' not in self.task_data:
+                    self.task_data['input_file_size'] = os.path.getsize(self.task_data['input_file'])
+                else:
+                    self.task_data['input_file_size'] = 0
+            if 'output_file' in self.task_data and os.path.isfile(self.task_data['output_file']):
+                if 'output_file_size' not in self.task_data:
+                    self.task_data['output_file_size'] = os.path.getsize(self.task_data['output_file'])
+                else:
+                    self.task_data['output_file_size'] = 0
             self.update_tasklib()
         elif os.path.isdir(self.get_task_directory()):
             source_files = [f.name for f in os.scandir(self.get_task_directory()) if f.is_file() and ('mp3' in f.name or 'mp4' in f.name)]
