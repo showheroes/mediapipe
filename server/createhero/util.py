@@ -93,13 +93,11 @@ class VideoReformatTask(object):
                 self.task_data.update(json.load(f))
             # self.log.debug(f'read task data: {self.task_data}')
             if 'input_file' in self.task_data and os.path.isfile(self.task_data['input_file']):
-                if 'input_file_size' not in self.task_data:
-                    self.task_data['input_file_size'] = os.path.getsize(self.task_data['input_file'])
+                self.task_data['input_file_size'] = os.path.getsize(self.task_data['input_file'])
             else:
                 self.task_data['input_file_size'] = 0
             if 'output_file' in self.task_data and os.path.isfile(self.task_data['output_file']):
-                if 'output_file_size' not in self.task_data:
-                    self.task_data['output_file_size'] = os.path.getsize(self.task_data['output_file'])
+                self.task_data['output_file_size'] = os.path.getsize(self.task_data['output_file'])
                 if 'output_file_name' not in self.task_data:
                     self.task_data['output_file_name'] = self.task_data['output_file'].split('/')[-1]
             else:
