@@ -27,11 +27,21 @@ node {
   }
 }
 
+# ENCODING(required): encode the video stream for the final cropped output.
+node {
+  calculator: "VideoPreStreamCalculator"
+  # Fetch frame format and dimension from input frames.
+  input_stream: "FRAME:video_frames_scaled"
+  # Copying frame rate and duration from original video.
+  input_stream: "VIDEO_PRESTREAM:video_header"
+  output_stream: "output_frames_video_header"
+}
+
 # ENCODE: Reencode the scaled video
 node {
   calculator: "OpenCvVideoEncoderCalculator"
   input_stream: "VIDEO:video_frames_scaled"
-  input_stream: "VIDEO_PRESTREAM:video_header"
+  input_stream: "VIDEO_PRESTREAM:output_frames_video_header"
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
 #  input_side_packet: "AUDIO_FILE_PATH:audio_path"
   options: {
