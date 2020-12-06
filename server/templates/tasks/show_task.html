@@ -25,8 +25,8 @@
 		</div>
 	{% end %}
 	<script type="application/javascript">
-		$(document).ready(function() {
-			console.log( "opening socket..." );
+		document.addEventListener("DOMContentLoaded", function(event) {
+			console.log("opening socket...");
 			initiateProgressSocket($('#progress'), "{{ task_id }}", "{{ deploy_path }}")
 		});
 	</script>
