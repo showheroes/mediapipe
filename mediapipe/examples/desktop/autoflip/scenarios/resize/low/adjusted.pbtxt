@@ -30,7 +30,7 @@ node {
 node {
   calculator: "OpenCvVideoEncoderCalculator"
   input_stream: "VIDEO:video_frames_scaled"
-  input_stream: "VIDEO_PRESTREAM:output_frames_video_header"
+  input_stream: "VIDEO_PRESTREAM:video_header"
   input_side_packet: "OUTPUT_FILE_PATH:output_video_path"
 #  input_side_packet: "AUDIO_FILE_PATH:audio_path"
   options: {
