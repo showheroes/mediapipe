@@ -74,7 +74,7 @@
                         </div>
 						<div class="col-md-6 d-flex justify-content-center">
 							<!-- Checkbox -->
-                            <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
+                            <div id="target_quality_flip" class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
                                 <input class="btn-check" type="radio" name="target_quality" id="target_quality_low_flip"
                                        value="240" checked/>
                                 <label class="btn btn-secondary" for="target_quality_low_flip">240p</label>
@@ -95,9 +95,9 @@
 							<!-- Checked switch -->
 							<div class="form-check form-switch pt-2 ml-2">
 								<input class="form-check-input" type="checkbox" id="keep_original_flip" name="target_size"
-									   value="original" />
+									   value="original" onchange="$('#target_quality_flip').children('input').prop('disabled', function(i, v) { return !v; });"/>
 								<label class="form-check-label" for="keep_original_flip">
-									Keep original size
+									Keep original resolution
 								</label>
 							</div>
                         </div>
