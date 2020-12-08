@@ -14,6 +14,7 @@ node {
 # VIDEO_PREP: Scale the input video.
 node {
   calculator: "ScaleImageCalculator"
+  input_side_packet: "TARGET_HEIGHT:target_height"
   input_stream: "FRAMES:video_raw"
   input_stream: "VIDEO_HEADER:video_header"
   output_stream: "FRAMES:video_frames_scaled"
@@ -21,7 +22,6 @@ node {
     [mediapipe.ScaleImageCalculatorOptions.ext]: {
       preserve_aspect_ratio: true
       output_format: SRGB
-      target_width: 480
       algorithm: DEFAULT_WITHOUT_UPSCALE
     }
   }
@@ -48,7 +48,6 @@ node {
     [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
-      width: 480
     }
   }
 }

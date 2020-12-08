@@ -11,7 +11,7 @@ node {
 #  output_side_packet: "SAVED_AUDIO_PATH:audio_path"
 }
 
-# VIDEO_PREP: Scale the input video.
+# VIDEO_PREP: Scale the input video before feature extraction.
 node {
   calculator: "ScaleImageCalculator"
   input_stream: "FRAMES:video_raw"
@@ -34,10 +34,9 @@ node {
   input_stream: "FRAME:video_frames_scaled"
   # Copying frame rate and duration from original video.
   input_stream: "VIDEO_PRESTREAM:video_header"
-      output_stream: "output_frames_video_header"
+  output_stream: "output_frames_video_header"
 }
 
-# ENCODE: Reencode the scaled video
 node {
   calculator: "OpenCvVideoEncoderCalculator"
   input_stream: "VIDEO:video_frames_scaled"
@@ -48,7 +47,6 @@ node {
     [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
-      width: 480
     }
   }
 }
