@@ -97,10 +97,10 @@ void CropImageFrame(const ImageFrame& original, int col_start, int row_start,
       "Target height std::string must be a plain number "
       "'540' or '1080', your input was " +
       target_height_string;
-  auto pos = aspect_ratio_string.find(".");
+  auto pos = target_height_string.find(".");
   RET_CHECK(pos == std::string::npos) << error_msg;
   double height;
-  RET_CHECK(absl::SimpleAtod(aspect_ratio_string, &height))
+  RET_CHECK(absl::SimpleAtod(target_height_string, &height))
       << error_msg;
   *target_height = height;
   return ::mediapipe::OkStatus();
