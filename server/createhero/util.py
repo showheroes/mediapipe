@@ -182,8 +182,7 @@ class VideoReformatTask(object):
             return "Task not yet initialized."
         # find graph description
         graph_filename = f'{self.task_data["target_size"]}.pbtxt'
-        graph_path = os.path.join('scenarios', self.task_data['action'], self.task_data['target_quality'],
-                                  graph_filename)
+        graph_path = os.path.join('scenarios', self.task_data['action'], graph_filename)
         # prepare call to subprocess
         command = ['/mediapipe/bazel-bin/mediapipe/examples/desktop/autoflip/run_autoflip',
                    f'--calculator_graph_config_file=/mediapipe/mediapipe/examples/desktop/autoflip/{graph_path}',

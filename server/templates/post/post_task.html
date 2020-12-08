@@ -87,9 +87,6 @@
                                 <input class="btn-check" type="radio" name="target_quality"
                                        id="target_quality_highest_flip" value="540"/>
                                 <label class="btn btn-secondary" for="target_quality_highest_flip">540p</label>
-                                <input class="btn-check" type="radio" name="target_quality"
-                                       id="target_quality_original_flip" value=""/>
-                                <label class="btn btn-secondary" for="target_quality_original_flip">original</label>
                             </div>
 						</div>
 					</div>
@@ -98,7 +95,7 @@
 							<!-- Checked switch -->
 							<div class="form-check form-switch pt-2 ml-2">
 								<input class="form-check-input" type="checkbox" id="keep_original_flip" name="target_size"
-									   value="original" checked/>
+									   value="original" />
 								<label class="form-check-label" for="keep_original_flip">
 									Keep original size
 								</label>
@@ -124,6 +121,7 @@
             >
                 <form action="{{ deploy_path }}/tasks/create" enctype="multipart/form-data" method="post">
                     <input type="hidden" name="action" value="resize">
+                    <input type="hidden" name="target_size" value="adjusted">
                     <!-- Task name input -->
 					<div class="form-outline mb-4">
 						<input name="taskname" required="" type="text" class="form-control" id="taskname_resize"
@@ -160,18 +158,6 @@
 							</div>
 						</div>
 					</div>
-                    <div class="row mb-4 justify-content-center">
-                        <div class="col-md-10 d-flex justify-content-center">
-							<!-- Checked switch -->
-							<div class="form-check form-switch pt-2 ml-2">
-								<input class="form-check-input" type="checkbox" id="keep_original_resize"
-									   name="target_size" value="original" checked/>
-								<label class="form-check-label" for="keep_original_resize">
-									Keep original size
-								</label>
-							</div>
-                        </div>
-                    </div>
                     <div class="row justify-content-center">
                         <div class="col-md-6">
                             <!-- Submit button -->
