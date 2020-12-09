@@ -62,13 +62,13 @@
                             <!-- Checkbox -->
                             <div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target aspect ratio">
                                 <input class="btn-check" type="radio" name="target_format" id="target_format_1_1"
-                                       value="1:1" checked/>
+                                       value="1:1" checked autocomplete="off"/>
                                 <label class="btn btn-secondary" for="target_format_1_1">1:1</label>
                                 <input class="btn-check" type="radio" name="target_format" id="target_format_16_9"
-                                       value="16:9"/>
+                                       value="16:9" autocomplete="off"/>
                                 <label class="btn btn-secondary" for="target_format_16_9">16:9</label>
                                 <input class="btn-check" type="radio" name="target_format" id="target_format_9_16"
-                                       value="9:16"/>
+                                       value="9:16" autocomplete="off"/>
                                 <label class="btn btn-secondary" for="target_format_9_16">9:16</label>
                             </div>
                         </div>
@@ -76,16 +76,16 @@
 							<!-- Checkbox -->
                             <div id="target_quality_flip" class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
                                 <input class="btn-check" type="radio" name="target_quality" id="target_quality_low_flip"
-                                       value="240" checked/>
+                                       value="240" autocomplete="off" checked/>
                                 <label class="btn btn-secondary" for="target_quality_low_flip">240p</label>
                                 <input class="btn-check" type="radio" name="target_quality"
-                                       id="target_quality_medium_flip" value="360"/>
+                                       id="target_quality_medium_flip" value="360" autocomplete="off"/>
                                 <label class="btn btn-secondary" for="target_quality_medium_flip">360p</label>
                                 <input class="btn-check" type="radio" name="target_quality"
-                                       id="target_quality_high_flip" value="480"/>
+                                       id="target_quality_high_flip" value="480" autocomplete="off"/>
                                 <label class="btn btn-secondary" for="target_quality_high_flip">480p</label>
                                 <input class="btn-check" type="radio" name="target_quality"
-                                       id="target_quality_highest_flip" value="540"/>
+                                       id="target_quality_highest_flip" value="540" autocomplete="off"/>
                                 <label class="btn btn-secondary" for="target_quality_highest_flip">540p</label>
                             </div>
 						</div>
@@ -95,7 +95,7 @@
 							<!-- Checked switch -->
 							<div class="form-check form-switch pt-2 ml-2">
 								<input class="form-check-input" type="checkbox" id="keep_original_flip" name="target_size"
-									   value="original" onchange="$('#target_quality_flip').children('input').prop('disabled', function(i, v) { return !v; });"/>
+									   value="original" onchange="$('#target_quality_flip').children('label').toggleClass('disabled');"/>
 								<label class="form-check-label" for="keep_original_flip">
 									Keep original resolution
 								</label>
@@ -144,16 +144,16 @@
 							<!-- Checkbox -->
 							<div class="btn-group" data-toggle="tooltip" data-placement="top" title="Choose target video quality">
 								<input class="btn-check" type="radio" name="target_quality"
-									   id="target_quality_low_resize" value="240" checked/>
+									   id="target_quality_low_resize" value="240" autocomplete="off" checked/>
 								<label class="btn btn-secondary" for="target_quality_low_resize">240p</label>
 								<input class="btn-check" type="radio" name="target_quality"
-									   id="target_quality_medium_resize" value="360"/>
+									   id="target_quality_medium_resize" value="360" autocomplete="off"/>
 								<label class="btn btn-secondary" for="target_quality_medium_resize">360p</label>
 								<input class="btn-check" type="radio" name="target_quality"
-									   id="target_quality_high_resize" value="480"/>
+									   id="target_quality_high_resize" value="480" autocomplete="off"/>
 								<label class="btn btn-secondary" for="target_quality_high_resize">480p</label>
 								<input class="btn-check" type="radio" name="target_quality"
-									   id="target_quality_highest_resize" value="540"/>
+									   id="target_quality_highest_resize" value="540" autocomplete="off"/>
 								<label class="btn btn-secondary" for="target_quality_highest_resize">540p</label>
 							</div>
 						</div>
