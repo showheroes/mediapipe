@@ -17,9 +17,27 @@ services:
       - external
     ports:
       - 127.0.0.1:5000:8888
+  mediapipe-stage:
+    build:
+      context: .
+    shm_size: '2gb'
+    environment:
+      - INTERNAL_API_TOKEN=32aa1e16-3d91-435a-897b-5aaa740b18ad
+      - NVIDIA_VISIBLE_DEVICES=3
+      - DEPLOY_PATH=
+      - OAUTH_SERVER=https://video-library.showheroes.com
+      - OAUTH_CLIENT_ID=9
+      - OAUTH_REDIRECT=https://semantichero.showheroes.com/api/v1/oauth/callback
+    volumes:
+      - video-data-stage:/mediapipe/server/static/video
+    networks:
+      - external
+    ports:
+      - 127.0.0.1:5001:8888
 
 networks:
   external:
 
 volumes:
   video-data:
+  video-data-stage:

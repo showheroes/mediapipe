@@ -7,9 +7,15 @@
 		<div class="row">
 			<div class="col col-12">
 				<h4>Information on task {{ task_id }}</h4>
+				<p>Task: {{ action }}</p>
 				<p>Task ID: {{ task_id }}</p>
 				<p>Task name: {{ task_name }}</p>
 				<p>Source video: {{ input_file_name }}</p>
+				{% if 'flip' in action %}
+					<p>Target aspect ratio: {{ target_format }}</p>
+				{% end %}
+				<p>Target quality: {{ target_quality }}</p>
+				<p>Target size: {{ target_size }}</p>
 				<p>Task status: {{ status }}</p>
 			</div>
 		</div>
@@ -19,8 +25,8 @@
 		</div>
 	{% end %}
 	<script type="application/javascript">
-		$(document).ready(function() {
-			console.log( "opening socket..." );
+		document.addEventListener("DOMContentLoaded", function(event) {
+			console.log("opening socket...");
 			initiateProgressSocket($('#progress'), "{{ task_id }}", "{{ deploy_path }}")
 		});
 	</script>

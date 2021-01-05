@@ -132,7 +132,7 @@ class VideoCaptionPlayUIHandler(VideoCaptionHandler, VideoUIMixin):
             self._validate_get()
             caption_data.update(self.task_data['captions'][self.language])
             caption_data['captions_language'] = self.language
-        video_url = f'{self.settings["deploy_path"]}/static/video/{task_id}/{self.task_data["input_file_name"]}'
+        video_url = f'{self.settings["deploy_path"]}/static/video/{task_id}/{self.task_data["output_file_name"]}'
         self.render('captions/play_with_captions.html', video_url=video_url, **caption_data)
 
     def post(self, task_id):

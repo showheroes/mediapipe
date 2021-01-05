@@ -91,6 +91,21 @@ void CropImageFrame(const ImageFrame& original, int col_start, int row_start,
     ++des_y;
   }
 }
+::mediapipe::Status ParseTargetHeightString(
+    const std::string& target_height_string, double* target_height) {
+  std::string error_msg =
+      "Target height std::string must be a plain number "
+      "'540' or '1080', your input was " +
+      target_height_string;
+  auto pos = target_height_string.find(".");
+  RET_CHECK(pos == std::string::npos) << error_msg;
+  double height;
+  RET_CHECK(absl::SimpleAtod(target_height_string, &height))
+      << error_msg;
+  *target_height = height;
+  return ::mediapipe::OkStatus();
+}
+
 
 }  // namespace
 
@@ -158,6 +173,9 @@ class ScaleImageCalculator : public CalculatorBase {
     CollectionItemId output_data_id = cc->Outputs().GetId("FRAMES", 0);
     if (!output_data_id.IsValid()) {
       output_data_id = cc->Outputs().GetId("", 0);
+    }
+    if (cc->InputSidePackets().HasTag("TARGET_HEIGHT")) {
+      cc->InputSidePackets().Tag("TARGET_HEIGHT").Set<std::string>();
     }
 
     if (cc->Inputs().HasTag("VIDEO_HEADER")) {
@@ -259,10 +277,27 @@ ScaleImageCalculator::~ScaleImageCalculator() {}
                                       options_.max_aspect_ratio(),  //
                                       &crop_width_, &crop_height_,  //
                                       &col_start_, &row_start_));
+
+  double requested_target_height;
+  if (cc->InputSidePackets().HasTag("TARGET_HEIGHT")) {
+      MP_RETURN_IF_ERROR(ParseTargetHeightString(
+          cc->InputSidePackets().Tag("TARGET_HEIGHT").Get<std::string>(),
+          &requested_target_height));
+  } else {
+    requested_target_height = options_.target_height();
+  }
+  double requested_target_width = options_.target_width();
+  // handle flipped images
+  if (input_height_ > input_width_) {
+    double temp = requested_target_width;
+    requested_target_width = requested_target_height;
+    requested_target_height = temp;
+  }
+
   MP_RETURN_IF_ERROR(
       scale_image::FindOutputDimensions(crop_width_, crop_height_,         //
-                                        options_.target_width(),           //
-                                        options_.target_height(),          //
+                                        requested_target_width,           //
+                                        requested_target_height,          //
                                         options_.preserve_aspect_ratio(),  //
                                         options_.scale_to_multiple_of(),   //
                                         &output_width_, &output_height_));
