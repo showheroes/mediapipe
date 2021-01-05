@@ -197,7 +197,6 @@ node {
     [mediapipe.OpenCvVideoEncoderCalculatorOptions.ext]: {
       codec: "avc1"
       video_format: "mp4"
-      width: 480
     }
   }
 }

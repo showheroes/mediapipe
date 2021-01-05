@@ -189,7 +189,7 @@ class VideoReformatTask(object):
                    f'--input_side_packets=input_video_path={self.task_data["input_file"]},'
                    f'output_video_path={self.task_data["output_file_no_audio"]}'
                    ]
-        if self.task_data['target_quality']:
+        if self.task_data['target_quality'] and 'adjusted' in self.task_data['target_size']:
             command[-1] += f',target_height={self.task_data["target_quality"]}'
 
         if 'flip' in self.task_data['action']:
